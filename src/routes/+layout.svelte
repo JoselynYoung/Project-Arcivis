@@ -29,7 +29,7 @@
             class="flex items-center gap-2 h-16 mb-8 w-full {sideBar ? 'justify-start' : 'justify-center'}">
             <Home size={24} class="text-primary-600 shrink-0" />
             {#if sideBar}
-                <span class="font-bold text-xl text-primary-600 animate-fade-in">edu.utbk</span>
+                <span class="font-bold text-xl text-primary-600 animate-fade-in">ARKHIVIS</span>
             {/if}
         </button>
 
