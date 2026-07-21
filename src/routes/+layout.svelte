@@ -29,7 +29,7 @@
             class="flex items-center gap-2 h-16 mb-8 w-full {sideBar ? 'justify-start' : 'justify-center'}">
             <Home size={24} class="text-primary-600 shrink-0" />
             {#if sideBar}
-                <span class="font-bold text-xl text-primary-600 animate-fade-in">ARKHIVIS</span>
+                <span class="font-bold text-xl text-primary-600 animate-fade-in">Arcivis</span>
             {/if}
         </button>
 
@@ -70,7 +70,7 @@
 
     </nav>
 
-    <main class="flex-1 bg-white bg-[radial-gradient(var(--color-primary-200)_1px,transparent_1px)] bg-[size:24px_24px] relative pb-24 md:pb-8">
+    <main class="flex-1 bg-white bg-[radial-gradient(var(--color-primary-200)_1px,transparent_1px)] bg-size-[24px_24px] relative pb-24 md:pb-8">
         <div class="absolute inset-0 bg-linear-to-r from-primary-50/60 to-transparent"></div>
         <div class="relative z-10 p-8">
             {@render children()}
