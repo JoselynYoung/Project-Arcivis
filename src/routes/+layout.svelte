@@ -1,9 +1,14 @@
 <script lang="ts">
     import './layout.css';
+    import { resolve } from '$app/paths';
+    import { page } from '$app/state';
     import favicon from '$lib/assets/favicon.svg';
     import { Home, BookOpen, Layers, Newspaper, Settings, Users, Trophy, BarChart3, User, ChevronUp,} from '@lucide/svelte';
 
     let { children } = $props();
+
+    let isBerandaActive = $derived(page.url.pathname === '/');
+    let isLatihanActive = $derived(page.url.pathname === '/latihan');
 
     let sideBar = $state(true);
     let isMobileMenuOpen = $state(false);
@@ -35,16 +40,18 @@
 
         <div class="flex flex-col gap-2 flex-1">
 
-            <span class="flex items-center gap-3 rounded-xl cursor-pointer bg-linear-to-br from-primary-800 to-primary-700 text-white font-medium shadow-xs transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
+            <a href={resolve('/')}
+                class="flex items-center gap-3 rounded-xl cursor-pointer font-medium transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'} {isBerandaActive ? 'bg-linear-to-br from-primary-800 to-primary-700 text-white shadow-xs' : 'text-slate-500 hover:bg-primary-50 hover:text-primary-700'}">
                 <Home size={20} class="shrink-0" />
                 {#if sideBar}<span>Beranda</span>{/if}
-            </span>
+            </a>
 
-            <span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
+            <a href={resolve('/latihan')}
+                class="flex items-center gap-3 rounded-xl cursor-pointer font-medium transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'} {isLatihanActive ? 'bg-linear-to-br from-primary-800 to-primary-700 text-white shadow-xs' : 'text-slate-500 hover:bg-primary-50 hover:text-primary-700'}">
                 <BookOpen size={20} class="shrink-0" />
                 {#if sideBar}<span>Latihan</span>{/if}
-            </span>
-
+            </a>
+            
             <span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
                 <Layers size={20} class="shrink-0" />
                 {#if sideBar}<span>Materi</span>{/if}
