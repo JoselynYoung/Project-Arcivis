@@ -1,5 +1,6 @@
 <script lang="ts">
-import { fade } from 'svelte/transition';
+	import { ChevronRight } from '@lucide/svelte';
+	import { fade } from 'svelte/transition';
 
 	// Carousel
 	let banners = [
@@ -39,7 +40,7 @@ import { fade } from 'svelte/transition';
 </div>
 
 <!-- Banner Carousel -->
-<div class="relative w-full h-48 rounded-2xl overflow-hidden mb-8">
+<div class="relative w-full h-48 rounded-2xl overflow-hidden mb-10">
 	{#key currentIndex}
 		<div transition:fade={{ duration: 400 }}
 			class="absolute inset-0 flex flex-col justify-end p-6 text-white {banners[currentIndex].warna}">
@@ -66,7 +67,7 @@ import { fade } from 'svelte/transition';
 </div>
 
 <!-- Statistics Card -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
 	<div class="bg-white rounded-xl shadow-sm p-4">
 		<p class="text-2xl font-bold text-slate-800">18 sesi</p>
 		<p class="text-sm text-slate-500">Riwayat belajar</p>
@@ -78,5 +79,77 @@ import { fade } from 'svelte/transition';
 	<div class="bg-white rounded-xl shadow-sm p-4">
 		<p class="text-2xl font-bold text-slate-800">340</p>
 		<p class="text-sm text-slate-500">Soal dikerjakan</p>
+	</div>
+</div>
+
+<!-- Fresh Materials Cards -->
+<div class="mb-10">
+	<div class="flex items-center justify-between mb-4">
+		<h2 class="text-lg font-bold text-slate-800">Materi Fresh</h2>
+		<button type="button" class="text-primary-600 hover:text-primary-700">
+			<ChevronRight size={20} />
+		</button>
+	</div>
+
+	<div class="flex gap-4 overflow-x-auto pb-3">
+		<div class="relative shrink-0 w-40 h-40 bg-linear-to-br from-accent to-cyan-400 rounded-xl p-4 text-white flex flex-col justify-end overflow-visible">
+			<div class="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-white/20 blur-sm"></div>
+			<div class="absolute -bottom-1 -left-1 h-6 w-6 rounded-full bg-white/20"></div>
+			<p class="relative z-10 text-xs opacity-80">Kumpulan</p>
+			<p class="relative z-10 font-bold leading-snug">Materi UTBK 2026</p>
+		</div>
+		<div class="shrink-0 w-40 bg-white rounded-xl shadow-sm p-3 border-2 border-cyan-100">
+			<div class="bg-cyan-50 rounded-lg h-24 mb-3"></div>
+			<p class="text-xs text-slate-400 mb-0.5">Matematika</p>
+			<p class="text-sm font-medium text-slate-800 leading-snug">Fungsi Kuadrat Lanjutan</p>
+		</div>
+		<div class="shrink-0 w-40 bg-white rounded-xl shadow-sm p-3 border-2 border-cyan-100">
+			<div class="bg-cyan-50 rounded-lg h-24 mb-3"></div>
+			<p class="text-xs text-slate-400 mb-0.5">Bahasa Indonesia</p>
+			<p class="text-sm font-medium text-slate-800 leading-snug">Literasi Lanjutan</p>
+		</div>
+		<div class="shrink-0 w-40 bg-white rounded-xl shadow-sm p-3 border-2 border-cyan-100">
+			<div class="bg-cyan-50 rounded-lg h-24 mb-3"></div>
+			<p class="text-xs text-slate-400 mb-0.5">Fisika</p>
+			<p class="text-sm font-medium text-slate-800 leading-snug">Gerak Parabola</p>
+		</div>
+	</div>
+</div>
+
+<!-- fresh latihan soal card-->
+<div class="mb-10">
+	<div class="flex items-center justify-between mb-4">
+		<h2 class="text-lg font-bold text-slate-800">Paket Latihan Soal</h2>
+		<button type="button" class="text-primary-600 hover:text-primary-700">
+			<ChevronRight size={20} />
+		</button>
+	</div>
+
+	<div class="flex gap-4 overflow-x-auto pb-3">
+
+		<div class="relative shrink-0 w-40 h-40 bg-linear-to-br from-emerald-700 to-emerald-500 rounded-xl p-4 text-white flex flex-col justify-end overflow-visible">
+			<div class="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-white/20 blur-sm"></div>
+			<div class="absolute -bottom-1 -left-1 h-6 w-6 rounded-full bg-white/20"></div>
+			<p class="relative z-10 text-xs opacity-80">Simulasi</p>
+			<p class="relative z-10 font-bold leading-snug">UTBK 2026</p>
+		</div>
+
+		<div class="shrink-0 w-40 bg-white rounded-xl shadow-sm p-3 border-2 border-emerald-100">
+			<div class="bg-emerald-50 rounded-lg h-24 mb-3"></div>
+			<p class="text-xs text-slate-400 mb-0.5">Penalaran Matematika</p>
+			<p class="text-sm font-medium text-slate-800 leading-snug">20 Soal</p>
+		</div>
+
+		<div class="shrink-0 w-40 bg-white rounded-xl shadow-sm p-3 border-2 border-emerald-100">
+			<div class="bg-emerald-50 rounded-lg h-24 mb-3"></div>
+			<p class="text-xs text-slate-400 mb-0.5">Literasi B. Indonesia</p>
+			<p class="text-sm font-medium text-slate-800 leading-snug">15 Soal</p>
+		</div>
+
+		<div class="shrink-0 w-40 bg-white rounded-xl shadow-sm p-3 border-2 border-emerald-100">
+			<div class="bg-emerald-50 rounded-lg h-24 mb-3"></div>
+			<p class="text-xs text-slate-400 mb-0.5">Penalaran Umum</p>
+			<p class="text-sm font-medium text-slate-800 leading-snug">20 Soal</p>
+		</div>
 	</div>
 </div>

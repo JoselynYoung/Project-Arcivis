@@ -1,7 +1,7 @@
 <script lang="ts">
     import './layout.css';
     import favicon from '$lib/assets/favicon.svg';
-    import { Home, BookOpen, Layers, Newspaper, Settings, Users, Trophy, BarChart3, User, ChevronUp } from '@lucide/svelte';
+    import { Home, BookOpen, Layers, Newspaper, Settings, Users, Trophy, BarChart3, User, ChevronUp,} from '@lucide/svelte';
 
     let { children } = $props();
 
