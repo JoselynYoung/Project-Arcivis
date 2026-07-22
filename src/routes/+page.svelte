@@ -2,6 +2,28 @@
 	import { ChevronRight } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
 
+	// For Calendar
+	let namaBulan = 'Juli 2026';
+	let namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+	// hardcode dulu: bulan ini mulai dari hari ke berapa (0=Minggu, 3=Rabu, dst)
+	let offsetAwal = 3;
+	let jumlahHari = 31;
+
+	// gabungkan jadi 1 array: kotak kosong (null) + angka tanggal
+	let tanggalGrid = [
+		...Array(offsetAwal).fill(null),
+		...Array(jumlahHari).fill(0).map((_, i) => i + 1)
+	];
+
+	let tanggalPenting = 22; // dianggap "hari ini", buat dikasih highlight
+
+	let jadwal = [
+		{ tanggal: 25, label: 'Pendaftaran SNBT dibuka', warna: 'bg-primary-600' },
+		{ tanggal: 12, label: 'Simulasi UTBK nasional', warna: 'bg-emerald-500' },
+		{ tanggal: 30, label: 'Batas akhir isi PDSS', warna: 'bg-amber-500' }
+	];
+
 	// Carousel
 	let banners = [
 		{ judul: 'Paket Soal Baru', keterangan: '5 paket latihan penalaran', warna: 'bg-primary-700' },
@@ -151,5 +173,53 @@
 			<p class="text-xs text-slate-400 mb-0.5">Penalaran Umum</p>
 			<p class="text-sm font-medium text-slate-800 leading-snug">20 Soal</p>
 		</div>
+	</div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm p-5 mb-10">
+
+	<div class="flex items-center justify-between mb-4">
+		<p class="font-bold text-slate-800">{namaBulan}</p>
+		<div class="flex gap-1">
+			<button type="button" class="h-7 w-7 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400">‹</button>
+			<button type="button" class="h-7 w-7 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400">›</button>
+		</div>
+	</div>
+
+	<div class="grid grid-cols-7 text-center text-xs text-slate-400 mb-2">
+		{#each namaHari as hari (hari)}
+			<span>{hari}</span>
+		{/each}
+	</div>
+
+	<div class="grid grid-cols-7 gap-y-2 text-center text-sm">
+		{#each tanggalGrid as tgl, i (i)}
+			{#if tgl === null}
+				<span></span>
+			{:else}
+				<div class="flex flex-col items-center gap-0.5">
+					<span class="h-7 w-7 flex items-center justify-center rounded-full {tgl === tanggalPenting ? 'bg-primary-600 text-white font-semibold' : 'text-slate-700'}">
+						{tgl}
+					</span>
+					{#if jadwal.some(j => j.tanggal === tgl)}
+						<span class="h-1 w-1 rounded-full {jadwal.find(j => j.tanggal === tgl)?.warna}"></span>
+					{/if}
+				</div>
+			{/if}
+		{/each}
+	</div>
+
+</div>
+
+<div class="bg-white rounded-xl shadow-sm p-5 mb-10">
+	<p class="font-bold text-slate-800 mb-4">Jadwal Penting</p>
+	<div class="flex flex-col gap-3">
+		{#each jadwal as j (j.tanggal)}
+			<div class="flex items-center gap-3">
+				<span class="h-2 w-2 rounded-full {j.warna} shrink-0"></span>
+				<p class="text-sm text-slate-600">{j.label}</p>
+				<p class="text-xs text-slate-400 ml-auto">Juli {j.tanggal}</p>
+			</div>
+		{/each}
 	</div>
 </div>
