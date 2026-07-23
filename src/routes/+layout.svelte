@@ -26,7 +26,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="flex min-h-screen w-full max-w-full overflow-x-hidden">
+<div class="flex min-h-screen w-full max-w-full">
 
 	<nav class="hidden md:flex flex-col sticky top-0 bg-white/40 backdrop-blur-md text-slate-700 h-screen py-4 rounded-r-2xl border-r border-primary-100/60 shadow-sm z-20 transition-all duration-300 {sideBar ? 'w-64 px-4' : 'w-20 px-3'}">
 
