@@ -9,6 +9,7 @@
 
 	let isBerandaActive = $derived(page.url.pathname === '/');
 	let isLatihanActive = $derived(page.url.pathname === '/latihan');
+	let isMateriActive = $derived(page.url.pathname === '/materi');
 
 	let sideBar = $state(true);
 	let isMobileMenuOpen = $state(false);
@@ -52,10 +53,11 @@
 				{#if sideBar}<span>Latihan</span>{/if}
 			</a>
 
-			<span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
+			<a href={resolve('/materi')}
+				class="flex items-center gap-3 rounded-xl cursor-pointer font-medium transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'} {isMateriActive ? 'bg-linear-to-br from-primary-800 to-primary-700 text-white shadow-xs' : 'text-slate-500 hover:bg-primary-50 hover:text-primary-700'}">
 				<Layers size={20} class="shrink-0" />
 				{#if sideBar}<span>Materi</span>{/if}
-			</span>
+			</a>
 
 			<span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
 				<Newspaper size={20} class="shrink-0" />
@@ -134,9 +136,10 @@
 				<LayoutGrid size={22} />
 			{/if}
 		</button>
-		<button type="button" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary-600">
+		<a href={resolve('/materi')}
+			class="w-12 h-12 rounded-full flex items-center justify-center transition-colors {isMateriActive ? 'bg-primary-50 text-primary-700' : 'text-slate-400 hover:text-primary-600'}">
 			<Layers size={22} />
-		</button>
+		</a>
 		<button type="button" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary-600">
 			<Newspaper size={22} />
 		</button>

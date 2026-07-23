@@ -57,7 +57,7 @@
 				<span class="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl flex items-center justify-center shrink-0 {m.warna}">
 					<m.icon size={22} />
 				</span>
-				<span class="text-[11px] sm:text-xs text-slate-600 text-center leading-tight break-words max-w-full">{m.nama}</span>
+				<span class="text-[11px] sm:text-xs text-slate-600 text-center leading-tight wrap-break max-w-full">{m.nama}</span>
 			</button>
 		{/each}
 	</div>
