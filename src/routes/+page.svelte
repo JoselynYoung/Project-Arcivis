@@ -117,7 +117,7 @@
 				</button>
 			</div>
 
-			<div class="flex gap-4 overflow-x-auto pb-3">
+			<div class="flex gap-3 sm:gap-4 overflow-x-auto pb-3 w-full max-w-full">
 				<div class="relative shrink-0 w-40 h-40 bg-linear-to-br from-accent to-cyan-400 rounded-xl p-4 text-white flex flex-col justify-end overflow-visible">
 					<div class="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-white/20 blur-sm"></div>
 					<div class="absolute -bottom-1 -left-1 h-6 w-6 rounded-full bg-white/20"></div>
@@ -151,7 +151,7 @@
 				</button>
 			</div>
 
-			<div class="flex gap-4 overflow-x-auto pb-3">
+			<div class="flex gap-3 sm:gap-4 overflow-x-auto pb-3 w-full max-w-full">
 
 				<div class="relative shrink-0 w-40 h-40 bg-linear-to-br from-emerald-700 to-emerald-500 rounded-xl p-4 text-white flex flex-col justify-end overflow-visible">
 					<div class="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-white/20 blur-sm"></div>

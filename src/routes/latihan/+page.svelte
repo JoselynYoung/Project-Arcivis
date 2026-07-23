@@ -40,24 +40,24 @@
 </script>
 
 <!-- Search bar -->
-<div class="mb-8">
+<div class="mb-6 sm:mb-8">
 	<input
 		type="text"
 		placeholder="Cari paket soal atau topik..."
-		class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-600"
+		class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-600 text-sm sm:text-base"
 	/>
 </div>
 
 <!-- Shortcut ikon mapel -->
-<div class="mb-10">
+<div class="mb-8 sm:mb-10">
 	<p class="text-sm font-medium text-slate-500 mb-3">Tempat Latihan Soal</p>
-	<div class="grid grid-cols-4 sm:grid-cols-7 gap-3">
+	<div class="grid grid-cols-4 sm:grid-cols-7 gap-2.5 sm:gap-4">
 		{#each mapel as m (m.nama)}
-			<button type="button" class="flex flex-col items-center gap-2">
-				<span class="h-12 w-12 rounded-2xl flex items-center justify-center {m.warna}">
+			<button type="button" class="flex flex-col items-center gap-1.5 p-1 rounded-xl hover:bg-slate-50 transition-colors">
+				<span class="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl flex items-center justify-center shrink-0 {m.warna}">
 					<m.icon size={22} />
 				</span>
-				<span class="text-xs text-slate-600 text-center leading-tight">{m.nama}</span>
+				<span class="text-[11px] sm:text-xs text-slate-600 text-center leading-tight break-words max-w-full">{m.nama}</span>
 			</button>
 		{/each}
 	</div>
@@ -65,12 +65,12 @@
 
 <!-- Paket Latihan Soal A/B/C -->
 {#each paketSoal as paket (paket.judul)}
-	<div class="mb-10">
-		<p class="text-lg font-bold text-slate-800 mb-4">{paket.judul}</p>
+	<div class="mb-8 sm:mb-10">
+		<p class="text-base sm:text-lg font-bold text-slate-800 mb-3 sm:mb-4">{paket.judul}</p>
 
-		<div class="flex gap-4 overflow-x-auto pb-3">
+		<div class="flex gap-3 sm:gap-4 overflow-x-auto pb-3 w-full max-w-full scrollbar-thin">
 			{#each paket.items as item (item.label)}
-				<div class="shrink-0 w-44 bg-white rounded-xl shadow-sm p-3 border-2 border-primary-100">
+				<div class="shrink-0 w-40 sm:w-44 bg-white rounded-xl shadow-sm p-3 border-2 border-primary-100">
 					<div class="bg-primary-50 rounded-lg h-24 mb-3"></div>
 					<p class="text-xs text-slate-400 mb-0.5">{item.label}</p>
 					<p class="text-sm font-medium text-slate-800 leading-snug">{item.jumlah}</p>

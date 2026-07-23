@@ -26,7 +26,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="flex min-h-screen">
+<div class="flex min-h-screen w-full max-w-full overflow-x-hidden">
 
 	<nav class="hidden md:flex flex-col sticky top-0 bg-white/40 backdrop-blur-md text-slate-700 h-screen py-4 rounded-r-2xl border-r border-primary-100/60 shadow-sm z-20 transition-all duration-300 {sideBar ? 'w-64 px-4' : 'w-20 px-3'}">
 
@@ -82,9 +82,9 @@
 
 	</nav>
 
-	<main class="flex-1 bg-white bg-[radial-gradient(var(--color-primary-200)_1px,transparent_1px)] bg-size-[24px_24px] relative pb-24 md:pb-8">
+	<main class="flex-1 min-w-0 bg-white bg-[radial-gradient(var(--color-primary-200)_1px,transparent_1px)] bg-size-[24px_24px] relative pb-24 md:pb-8">
 		<div class="absolute inset-0 bg-linear-to-r from-primary-50/60 to-transparent"></div>
-		<div class="relative z-10 p-8">
+		<div class="relative z-10 p-4 sm:p-6 md:p-8">
 			{@render children()}
 		</div>
 	</main>
