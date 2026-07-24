@@ -186,7 +186,6 @@
 	}
 </script>
 
-<!-- Wrapper to prevent any overflow -->
 <div class="w-full min-w-0 max-w-full box-border">
 
 	<!-- Search & Sort Controls -->

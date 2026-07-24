@@ -59,27 +59,27 @@
 				{#if sideBar}<span>Materi</span>{/if}
 			</a>
 
-			<span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
+			<a href={resolve('/bacaan')} class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
 				<Newspaper size={20} class="shrink-0" />
 				{#if sideBar}<span>Bacaan</span>{/if}
-			</span>
+			</a>
 
-			<span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
+			<a href={resolve('/statistik')} class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
 				<BarChart3 size={20} class="shrink-0" />
 				{#if sideBar}<span>Statistik</span>{/if}
-			</span>
+			</a>
 
 		</div>
 
 		<div class="flex flex-col gap-2 mt-auto border-t border-primary-100/40 pt-4">
-			<span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
+			<a href={resolve('/pengaturan')} class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
 				<Settings size={20} class="shrink-0" />
 				{#if sideBar}<span>Pengaturan</span>{/if}
-			</span>
-			<span class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
+			</a>
+			<a href={resolve('/akun')} class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
 				<User size={20} class="shrink-0" />
 				{#if sideBar}<span>Akun</span>{/if}
-			</span>
+			</a>
 		</div>
 
 	</nav>
@@ -129,7 +129,7 @@
 			class="w-12 h-12 rounded-full flex items-center justify-center transition-colors {isLatihanActive ? 'bg-primary-50 text-primary-700' : 'text-slate-400 hover:text-primary-600'}">
 			<BookOpen size={22} />
 		</a>
-        <button onclick={toggleMobileMenu} type="button" class="w-12 h-12 flex items-center justify-center text-slate-600">
+        <button onclick={toggleMobileMenu} class="w-12 h-12 rounded-full flex items-center justify-center transition-colors text-slate-400 hover:text-primary-600">
 			{#if isMobileMenuOpen}
 				<X size={22} class="text-primary-600" />
 			{:else}
@@ -140,9 +140,9 @@
 			class="w-12 h-12 rounded-full flex items-center justify-center transition-colors {isMateriActive ? 'bg-primary-50 text-primary-700' : 'text-slate-400 hover:text-primary-600'}">
 			<Layers size={22} />
 		</a>
-		<button type="button" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary-600">
+		<a href={resolve('/bacaan')} class="w-12 h-12 rounded-full flex items-center justify-center transition-colors text-slate-400 hover:text-primary-600">
 			<Newspaper size={22} />
-		</button>
+		</a>
 		
 	</div>
 
