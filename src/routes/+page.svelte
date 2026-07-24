@@ -6,7 +6,7 @@
 	let namaBulan = 'Juli 2026';
 	let namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
-	// hardcode dulu: bulan ini mulai dari hari ke berapa (0=Minggu, 3=Rabu, dst)
+	// hardcode date
 	let offsetAwal = 3;
 	let jumlahHari = 31;
 
@@ -16,7 +16,7 @@
 		...Array(jumlahHari).fill(0).map((_, i) => i + 1)
 	];
 
-	let tanggalPenting = 22; // dianggap "hari ini", buat dikasih highlight
+	let tanggalPenting = 22; // Today's date (hardcoded for demo purposes)
 
 	let jadwal = [
 		{ tanggal: 25, label: 'Pendaftaran SNBT dibuka', warna: 'bg-primary-600' },
@@ -41,7 +41,7 @@
 		currentIndex = (currentIndex - 1 + banners.length) % banners.length;
 	}
 
-	// auto-scroll: ganti banner tiap 4 detik, berhenti kalau komponen ini hilang dari layar
+	// auto-scroll: ganti banner tiap 4 detik
 	$effect(() => {
 		const timer = setInterval(next, 4000);
 		return () => clearInterval(timer);
@@ -58,7 +58,7 @@
 		Mau <span class="text-primary-600">belajar</span> apa hari ini?
 	</h1>
 	<p class="text-slate-500 text-sm">
-		Investasikan waktumu, ambil langkah pertama menuju UTBK impianmu.
+		Investasikan waktumu, ambil langkah pertama menuju PTN impianmu.
 	</p>
 </div>
 

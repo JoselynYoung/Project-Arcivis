@@ -311,8 +311,14 @@
 					
 					<!-- Card text content -->
 					<p class="text-xs text-slate-400 font-medium mb-1 line-clamp-1">{item.mapel}</p>
-					<p class="text-sm sm:text-base font-medium text-slate-800 leading-snug line-clamp-2">{item.judul}</p>
-					
+					<p class="text-sm sm:text-base font-medium text-slate-800 leading-snug line-clamp-2">{item.judul}</p>						<div class="mt-auto flex justify-end pt-3">
+							<button
+								type="button"
+								class="text-primary-700 hover:text-primary-800 text-sm font-semibold"
+							>
+								Lihat &gt;
+							</button>
+						</div>					
 					<!-- Bookmark absolute button -->
 					<button
 						type="button"
