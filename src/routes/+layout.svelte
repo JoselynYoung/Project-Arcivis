@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import favicon from '$lib/assets/favicon.svg';
-	import { Home, BookOpen, Layers, Newspaper, Settings, BarChart3, User, LayoutGrid, X } from '@lucide/svelte';
+	import { Home, BookOpen, Layers, Newspaper, Settings, BarChart3, LayoutGrid, X } from '@lucide/svelte';
 
 	let { children } = $props();
 
@@ -76,10 +76,6 @@
 				<Settings size={20} class="shrink-0" />
 				{#if sideBar}<span>Pengaturan</span>{/if}
 			</a>
-			<a href={resolve('/akun')} class="flex items-center gap-3 rounded-xl cursor-pointer text-slate-500 hover:bg-primary-50 hover:text-primary-700 transition-all {sideBar ? 'w-full justify-start p-2.5' : 'w-12 h-12 justify-center mx-auto'}">
-				<User size={20} class="shrink-0" />
-				{#if sideBar}<span>Akun</span>{/if}
-			</a>
 		</div>
 
 	</nav>
@@ -95,26 +91,19 @@
 		<div class="md:hidden fixed bottom-24 left-4 right-4 bg-white/90 backdrop-blur-lg border border-primary-100/60 rounded-3xl p-6 shadow-xl z-40">
 			<div class="grid grid-cols-3 gap-4">
 
-				<button type="button" class="flex flex-col items-center gap-2">
-					<span class="h-14 w-14 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-700">
-						<BarChart3 size={22} />
-					</span>
-					<span class="text-xs text-slate-600 text-center">Statistik</span>
-				</button>
+			<a href={resolve('/statistik')} class="flex flex-col items-center gap-2">
+				<span class="h-14 w-14 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-700">
+					<BarChart3 size={22} />
+				</span>
+				<span class="text-xs text-slate-600 text-center">Statistik</span>
+			</a>
 
-				<button type="button" class="flex flex-col items-center gap-2">
-					<span class="h-14 w-14 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-700">
-						<Settings size={22} />
-					</span>
-					<span class="text-xs text-slate-600 text-center">Pengaturan</span>
-				</button>
-
-				<button type="button" class="flex flex-col items-center gap-2">
-					<span class="h-14 w-14 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-700">
-						<User size={22} />
-					</span>
-					<span class="text-xs text-slate-600 text-center">Akun</span>
-				</button>
+			<a href={resolve('/pengaturan')} class="flex flex-col items-center gap-2">
+				<span class="h-14 w-14 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-700">
+					<Settings size={22} />
+				</span>
+				<span class="text-xs text-slate-600 text-center">Pengaturan</span>
+			</a>
 
 			</div>
 		</div>
