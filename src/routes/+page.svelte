@@ -18,14 +18,14 @@
 
 	let tanggalPenting = 22; // Today's date (hardcoded for demo purposes)
 
-	let jadwal = [
+	let scheduleItems = [
 		{ tanggal: 25, label: 'Pendaftaran SNBT dibuka', warna: 'bg-primary-600' },
 		{ tanggal: 12, label: 'Simulasi UTBK nasional', warna: 'bg-emerald-500' },
 		{ tanggal: 30, label: 'Batas akhir isi PDSS', warna: 'bg-amber-500' }
 	];
 
 	// Carousel
-	let banners = [
+	let bannersItems = [
 		{ judul: 'Paket Soal Baru', keterangan: '5 paket latihan penalaran', warna: 'bg-primary-700' },
 		{ judul: 'Bacaan Tematik', keterangan: 'Krisis iklim & energi', warna: 'bg-accent' },
 		{ judul: 'Cheat Sheet', keterangan: 'Rumus deret & barisan', warna: 'bg-primary-900' }
@@ -34,11 +34,11 @@
 	let currentIndex = $state(0); // index banner yang lagi ditampilkan
 
 	function next() {
-		currentIndex = (currentIndex + 1) % banners.length;
+		currentIndex = (currentIndex + 1) % bannersItems.length;
 	}
 
 	function prev() {
-		currentIndex = (currentIndex - 1 + banners.length) % banners.length;
+		currentIndex = (currentIndex - 1 + bannersItems.length) % bannersItems.length;
 	}
 
 	// auto-scroll: ganti banner tiap 4 detik
@@ -48,13 +48,13 @@
 	});
 
 	// for Welcome Page
-	let nama = 'Pejuang';
+	let userName = 'Pejuang';
 </script>
 
 <!-- Page Header (full width, di luar grid) -->
 <div class="flex flex-col gap-2 mb-8">
 	<h1 class="text-3xl font-bold text-slate-800 leading-snug">
-		Halo, {nama}! 👋<br />
+		Halo, {userName}! 👋<br />
 		Mau <span class="text-primary-600">belajar</span> apa hari ini?
 	</h1>
 	<p class="text-slate-500 text-sm">
@@ -72,15 +72,15 @@
 			<!-- Slide aktif (fade transition tiap ganti currentIndex) -->
 			{#key currentIndex}
 				<div transition:fade={{ duration: 400 }}
-					class="absolute inset-0 flex flex-col justify-end p-6 text-white {banners[currentIndex].warna}">
-					<p class="text-xs font-medium uppercase tracking-wide opacity-80">{banners[currentIndex].judul}</p>
-					<p class="text-lg font-semibold">{banners[currentIndex].keterangan}</p>
+					class="absolute inset-0 flex flex-col justify-end p-6 text-white {bannersItems[currentIndex].warna}">
+					<p class="text-xs font-medium uppercase tracking-wide opacity-80">{bannersItems[currentIndex].judul}</p>
+					<p class="text-lg font-semibold">{bannersItems[currentIndex].keterangan}</p>
 				</div>
 			{/key}
 
 			<!-- Dots indikator (bisa diklik langsung loncat ke banner tertentu) -->
 			<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-				{#each banners as banner, i (banner.judul)}
+				{#each bannersItems as banner, i (banner.judul)}
 					<button onclick={() => currentIndex = i} type="button"
 						aria-label={`Pilih banner ${banner.judul}`}
 						class="h-1.5 rounded-full transition-all {i === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}">
@@ -250,8 +250,8 @@
 								{tgl}
 							</span>
 							<!-- Titik kecil penanda kalau tanggal ini ada di daftar jadwal -->
-							{#if jadwal.some(j => j.tanggal === tgl)}
-								<span class="h-1 w-1 rounded-full {jadwal.find(j => j.tanggal === tgl)?.warna}"></span>
+							{#if scheduleItems.some(j => j.tanggal === tgl)}
+								<span class="h-1 w-1 rounded-full {scheduleItems.find(j => j.tanggal === tgl)?.warna}"></span>
 							{/if}
 						</div>
 					{/if}
@@ -264,7 +264,7 @@
 		<div class="bg-white rounded-xl shadow-sm p-5">
 			<p class="font-bold text-slate-800 mb-4">Jadwal Penting</p>
 			<div class="flex flex-col gap-3">
-				{#each jadwal as j (j.tanggal)}
+				{#each scheduleItems as j (j.tanggal)}
 					<!-- 1 baris jadwal: titik warna + label + tanggal -->
 					<div class="flex items-center gap-3">
 						<span class="h-2 w-2 rounded-full {j.warna} shrink-0"></span>
