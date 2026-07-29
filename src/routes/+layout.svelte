@@ -14,17 +14,17 @@
 		{ href: '/materi',      label: 'Materi',     icon: Layers },
 		{ href: '/bacaan',      label: 'Bacaan',     icon: Newspaper },
 		{ href: '/statistik',   label: 'Statistik',  icon: BarChart3 },
-		{ href: '/pengaturan',  label: 'Pengaturan', icon: Settings },
-		{ href: '/akun',        label: 'Akun',       icon: User }
+		{ href: '/settings',    label: 'Pengaturan', icon: Settings },
+		{ href: '/account',     label: 'Akun',       icon: User }
 	];
 
 	// Desktop Sidebar
-	const desktopFooterHrefs = ['/pengaturan', '/akun'];
+	const desktopFooterHrefs = ['/settings', '/account'];
 	const desktopMainNav = navItems.filter((i) => !desktopFooterHrefs.includes(i.href));
 	const desktopFooterNav = navItems.filter((i) => desktopFooterHrefs.includes(i.href));
 
 	// Mobile 
-	const mobileDrawerHrefs = ['/statistik', '/pengaturan', '/akun'];
+	const mobileDrawerHrefs = ['/statistik', '/settings', '/account'];
 	const mobileBottomNav = navItems.filter((i) => !mobileDrawerHrefs.includes(i.href));
 	const mobileDrawerNav = navItems.filter((i) => mobileDrawerHrefs.includes(i.href));
 
