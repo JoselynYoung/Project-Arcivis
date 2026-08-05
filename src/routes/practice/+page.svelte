@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { resolve } from '$app/paths';
   import {
     Calculator,
     Atom,
@@ -10,6 +9,7 @@
     Brain
   } from '@lucide/svelte';
   import { subjects, practicePackages } from '$lib/mocks/practice';
+  import { getPracticeDetailRoute } from '$lib/constants/routes';
 
   // Group practice packages by their 'group' field
   const groupedPackages = $derived(
@@ -82,7 +82,7 @@
       {#each group.packages as pkg (pkg.id)}
         <li class="shrink-0 w-40 sm:w-44">
           <a
-            href={resolve('/latihan/[ID]', { ID: String(pkg.id) })}
+            href={getPracticeDetailRoute(pkg.id)}
             class="block bg-white rounded-xl shadow-sm p-3 border-2 border-primary-100 hover:border-primary-300 transition-colors"
             aria-label={`${pkg.title}: ${pkg.questionCount} Soal`}
           >

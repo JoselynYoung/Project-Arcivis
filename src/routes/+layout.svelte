@@ -3,32 +3,17 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import favicon from '$lib/assets/favicon.svg';
-	import { Home, BookOpen, Layers, Newspaper, Settings, BarChart3, LayoutGrid, X, User } from '@lucide/svelte';
+	import { Home, LayoutGrid, X } from '@lucide/svelte';
+	import {
+		desktopMainNav,
+		desktopFooterNav,
+		mobileBottomNav,
+		mobileDrawerNav
+	} from '$lib/constants/navigation';
 
-	let { children } = $props();
+let { children } = $props();
 
-	// Nav Config
-	const navItems = [
-		{ href: '/',            label: 'Beranda',    icon: Home },
-		{ href: '/latihan',     label: 'Latihan',    icon: BookOpen },
-		{ href: '/materi',      label: 'Materi',     icon: Layers },
-		{ href: '/bacaan',      label: 'Bacaan',     icon: Newspaper },
-		{ href: '/statistik',   label: 'Statistik',  icon: BarChart3 },
-		{ href: '/settings',    label: 'Pengaturan', icon: Settings },
-		{ href: '/account',     label: 'Akun',       icon: User }
-	];
-
-	// Desktop Sidebar
-	const desktopFooterHrefs = ['/settings', '/account'];
-	const desktopMainNav = navItems.filter((i) => !desktopFooterHrefs.includes(i.href));
-	const desktopFooterNav = navItems.filter((i) => desktopFooterHrefs.includes(i.href));
-
-	// Mobile 
-	const mobileDrawerHrefs = ['/statistik', '/settings', '/account'];
-	const mobileBottomNav = navItems.filter((i) => !mobileDrawerHrefs.includes(i.href));
-	const mobileDrawerNav = navItems.filter((i) => mobileDrawerHrefs.includes(i.href));
-
-	// Active Route Check
+// Active Route Check
 	function isRouteActive(path: string): boolean {
 		const current = page.url.pathname;
 		return path === '/' ? current === '/' : current.startsWith(path);

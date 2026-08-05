@@ -1,10 +1,6 @@
-// Practice Module Mock Data
+import type { PracticePackage, Question, Subject } from '$lib/types/practice';
 
-export interface Subject {
-  name: string;
-  iconName: string; // Lucide icon component name
-  color: string;
-}
+// Practice Module Mock Data
 
 export const subjects: Subject[] = [
   { name: 'Matematika', iconName: 'Calculator', color: 'bg-primary-50 text-primary-700' },
@@ -15,16 +11,6 @@ export const subjects: Subject[] = [
   { name: 'B.Inggris', iconName: 'Languages', color: 'bg-indigo-50 text-indigo-700' },
   { name: 'Penalaran', iconName: 'Brain', color: 'bg-purple-50 text-purple-700' }
 ];
-
-export interface PracticePackage {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: string; // e.g., "Mudah", "Sedang", "Sulit"
-  questionCount: number;
-  duration: string; // e.g., "30 menit"
-  group: string; // grouping label
-}
 
 export const practicePackages: PracticePackage[] = [
   // Group A
@@ -40,14 +26,6 @@ export const practicePackages: PracticePackage[] = [
   { id: 8, title: 'Fisika Terapan', description: 'Mekanika dasar', difficulty: 'Sedang', questionCount: 15, duration: '25 menit', group: 'Paket Latihan Soal C' },
   { id: 9, title: 'Kimia Dasar', description: 'Stoikiometri', difficulty: 'Sulit', questionCount: 15, duration: '25 menit', group: 'Paket Latihan Soal C' }
 ];
-
-export interface Question {
-  id: number;
-  text: string;           // formerly 'pertanyaan'
-  options: string[];      // formerly 'pilihan'
-  correctIndex: number;   // formerly 'jawabanBenar'
-  explanation: string;    // formerly 'pembahasan'
-}
 
 export const questions: Record<number, Question[]> = {
   1: [
