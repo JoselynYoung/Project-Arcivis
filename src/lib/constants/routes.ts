@@ -34,3 +34,10 @@ export function getLearningDetailRoute(id: string | number) {
 export function getLearningReadRoute(id: string | number) {
 	return `/learning/${id}/read`;
 }
+
+export function getArticleDetailRoute(id: string | number) {
+	return `/articles/${id}`;
+}
+export function getArticleReadRoute(id: string | number) {
+	return `/articles/${id}/read`;
+}
