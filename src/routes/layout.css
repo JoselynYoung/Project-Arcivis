@@ -1,16 +1,16 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-600: #1e7dd4;
-  --color-primary-700: #1565b3;
-  --color-primary-800: #0f4d8a;
-  --color-primary-900: #0c3d6e;
-  --color-primary-950: #0a2540;
-  --color-accent: #0891b2;
-  --color-surface-muted: #f4f9fc;
+	--color-primary-50: #eff6ff;
+	--color-primary-100: #dbeafe;
+	--color-primary-200: #bfdbfe;
+	--color-primary-600: #1e7dd4;
+	--color-primary-700: #1565b3;
+	--color-primary-800: #0f4d8a;
+	--color-primary-900: #0c3d6e;
+	--color-primary-950: #0a2540;
+	--color-accent: #0891b2;
+	--color-surface-muted: #f4f9fc;
 }
 
 @plugin '@tailwindcss/forms';
@@ -21,5 +21,3 @@ body {
 	max-width: 100vw;
 	overflow-x: clip;
 }
-
-

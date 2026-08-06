@@ -1,26 +1,7 @@
 <script lang="ts">
-	import {
-		Search,
-		ArrowUpDown,
-		Bookmark,
-		BookOpen,
-		X,
-		Check,
-		Filter
-	} from '@lucide/svelte';
-
-	interface MateriItem {
-		id: number;
-		judul: string;
-		deskripsi: string;
-		mapel: string;
-		tanggal: string; // YYYY-MM-DD
-		dibaca: number;
-		durasi: string;
-		badgeWarna: string;
-		iconWarna: string;
-		isBookmark?: boolean;
-	}
+	import { Search, ArrowUpDown, Bookmark, BookOpen, X, Check, Filter } from '@lucide/svelte';
+	import { resolve } from '$app/paths';
+	import { learningMaterials, type LearningMaterial } from '$lib/mocks/learning';
 
 	let mapelOptions = [
 		'Semua',
@@ -46,104 +27,7 @@
 	let selectedSort = $state('terbaru');
 	let isSortDropdownOpen = $state(false);
 
-	let listMateri = $state<MateriItem[]>([
-		{
-			id: 1,
-			judul: 'Fungsi Kuadrat Lanjutan & Modifikasi Grafik',
-			deskripsi: 'Memahami pergeseran grafik, titik puncak, serta analisis diskriminan pada soal UTBK.',
-			mapel: 'Matematika',
-			tanggal: '2026-07-20',
-			dibaca: 1420,
-			durasi: '8 min baca',
-			badgeWarna: 'bg-primary-50 text-primary-700 border-primary-200',
-			iconWarna: 'bg-primary-600 text-white',
-			isBookmark: false
-		},
-		{
-			id: 2,
-			judul: 'Gerak Parabola & Hukum Kinematika 2D',
-			deskripsi: 'Penurunan rumus cepat sudut elevasi, tinggi maksimum, dan jangkauan terjauh.',
-			mapel: 'Fisika',
-			tanggal: '2026-07-18',
-			dibaca: 980,
-			durasi: '12 min baca',
-			badgeWarna: 'bg-cyan-50 text-cyan-700 border-cyan-200',
-			iconWarna: 'bg-cyan-600 text-white',
-			isBookmark: true
-		},
-		{
-			id: 3,
-			judul: 'Struktur Atom & Sistem Periodik Unsur',
-			deskripsi: 'Trik menghafal konfigurasi elektron, jari-jari atom, dan energi ionisasi.',
-			mapel: 'Kimia',
-			tanggal: '2026-07-15',
-			dibaca: 2150,
-			durasi: '10 min baca',
-			badgeWarna: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-			iconWarna: 'bg-emerald-600 text-white',
-			isBookmark: false
-		},
-		{
-			id: 4,
-			judul: 'Metabolisme Sel: Respirasi Aerob & Anaerob',
-			deskripsi: 'Tahapan glikolisis, siklus krebs, hingga transpor elektron dengan ilustrasi visual.',
-			mapel: 'Biologi',
-			tanggal: '2026-07-10',
-			dibaca: 1890,
-			durasi: '15 min baca',
-			badgeWarna: 'bg-amber-50 text-amber-700 border-amber-200',
-			iconWarna: 'bg-amber-600 text-white',
-			isBookmark: false
-		},
-		{
-			id: 5,
-			judul: 'Literasi Bacaan & Identifikasi Ide Pokok',
-			deskripsi: 'Teknik skimming & scanning untuk menemukan kalimat utama dalam paragraf panjang.',
-			mapel: 'B.Indonesia',
-			tanggal: '2026-07-22',
-			dibaca: 3100,
-			durasi: '6 min baca',
-			badgeWarna: 'bg-rose-50 text-rose-700 border-rose-200',
-			iconWarna: 'bg-rose-600 text-white',
-			isBookmark: true
-		},
-		{
-			id: 6,
-			judul: 'Reading Comprehension & Inference Questions',
-			deskripsi: 'Strategi menjawab soal inferensi dan vocabulary in context pada SNBT Bahasa Inggris.',
-			mapel: 'B.Inggris',
-			tanggal: '2026-07-12',
-			dibaca: 1250,
-			durasi: '9 min baca',
-			badgeWarna: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-			iconWarna: 'bg-indigo-600 text-white',
-			isBookmark: false
-		},
-		{
-			id: 7,
-			judul: 'Penalaran Analitis & Silogisme Logika',
-			deskripsi: 'Langkah taktis memecahkan soal urutan tempat duduk, jadwal, dan implikasi logika.',
-			mapel: 'Penalaran',
-			tanggal: '2026-07-21',
-			dibaca: 4500,
-			durasi: '11 min baca',
-			badgeWarna: 'bg-purple-50 text-purple-700 border-purple-200',
-			iconWarna: 'bg-purple-600 text-white',
-			isBookmark: true
-		},
-		{
-			id: 8,
-			judul: 'Turunan & Aplikasi Nilai Maksimum Minima',
-			deskripsi: 'Konsep dasar diferensial untuk menghitung titik belok dan masalah optimasi.',
-			mapel: 'Matematika',
-			tanggal: '2026-07-05',
-			dibaca: 870,
-			durasi: '14 min baca',
-			badgeWarna: 'bg-primary-50 text-primary-700 border-primary-200',
-			iconWarna: 'bg-primary-600 text-white',
-			isBookmark: false
-		}
-	]);
+	let listMateri = $state<LearningMaterial[]>(learningMaterials);
 
 	// Filter & Sort Logic
 	let filteredMateri = $derived(
@@ -186,25 +70,27 @@
 	}
 </script>
 
-<div class="w-full min-w-0 max-w-full box-border">
-
+<div class="box-border w-full max-w-full min-w-0">
 	<!-- Search & Sort Controls -->
-	<div class="mb-8 sm:mb-10 space-y-4">
-		<div class="flex flex-col sm:flex-row gap-3">
+	<div class="mb-8 space-y-4 sm:mb-10">
+		<div class="flex flex-col gap-3 sm:flex-row">
 			<!-- Search Input -->
-			<div class="relative flex-1 min-w-0">
-				<Search size={16} class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+			<div class="relative min-w-0 flex-1">
+				<Search
+					size={16}
+					class="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-slate-400"
+				/>
 				<input
 					type="text"
 					bind:value={searchQuery}
 					placeholder="Cari materi, topik, atau rumus..."
-					class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-600 text-sm transition-all box-border shadow-sm"
+					class="box-border w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-10 pl-10 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary-600 focus:outline-none"
 				/>
 				{#if searchQuery}
 					<button
 						type="button"
 						onclick={() => (searchQuery = '')}
-						class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+						class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-slate-600"
 					>
 						<X size={14} />
 					</button>
@@ -216,9 +102,9 @@
 				<button
 					type="button"
 					onclick={() => (isSortDropdownOpen = !isSortDropdownOpen)}
-					class="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium transition-all cursor-pointer shadow-sm"
+					class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 sm:w-auto sm:justify-start"
 				>
-					<ArrowUpDown size={14} class="text-primary-600 shrink-0" />
+					<ArrowUpDown size={14} class="shrink-0 text-primary-600" />
 					<span class="truncate">
 						{sortOptions.find((s) => s.id === selectedSort)?.label}
 					</span>
@@ -230,9 +116,11 @@
 						tabindex="-1"
 						aria-label="Tutup menu urutan"
 						onclick={() => (isSortDropdownOpen = false)}
-						class="fixed inset-0 z-30 bg-transparent cursor-default"
+						class="fixed inset-0 z-30 cursor-default bg-transparent"
 					></button>
-					<div class="absolute right-0 mt-2 w-52 bg-white border border-slate-100 rounded-xl shadow-lg z-40 p-1.5 animate-in fade-in zoom-in-95 duration-150">
+					<div
+						class="animate-in fade-in zoom-in-95 absolute right-0 z-40 mt-2 w-52 rounded-xl border border-slate-100 bg-white p-1.5 shadow-lg duration-150"
+					>
 						{#each sortOptions as option (option.id)}
 							<button
 								type="button"
@@ -240,11 +128,14 @@
 									selectedSort = option.id;
 									isSortDropdownOpen = false;
 								}}
-								class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg text-left transition-colors cursor-pointer {selectedSort === option.id ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'}"
+								class="flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors {selectedSort ===
+								option.id
+									? 'bg-primary-50 font-semibold text-primary-700'
+									: 'text-slate-600 hover:bg-slate-50'}"
 							>
 								<span>{option.label}</span>
 								{#if selectedSort === option.id}
-									<Check size={14} class="text-primary-600 shrink-0" />
+									<Check size={14} class="shrink-0 text-primary-600" />
 								{/if}
 							</button>
 						{/each}
@@ -254,15 +145,18 @@
 		</div>
 
 		<!-- Mapel Filter Pills -->
-		<div class="flex items-center gap-2 overflow-x-auto pb-1 max-w-full scrollbar-none">
-			<span class="text-xs font-semibold text-slate-400 shrink-0 mr-1 flex items-center gap-1.5">
+		<div class="flex max-w-full scrollbar-none items-center gap-2 overflow-x-auto pb-1">
+			<span class="mr-1 flex shrink-0 items-center gap-1.5 text-xs font-semibold text-slate-400">
 				<Filter size={14} /> Filter:
 			</span>
 			{#each mapelOptions as mapel (mapel)}
 				<button
 					type="button"
 					onclick={() => (selectedMapel = mapel)}
-					class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer border {selectedMapel === mapel ? 'bg-primary-600 text-white border-primary-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}"
+					class="shrink-0 cursor-pointer rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all {selectedMapel ===
+					mapel
+						? 'border-primary-600 bg-primary-600 text-white shadow-sm'
+						: 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}"
 				>
 					{mapel}
 				</button>
@@ -272,21 +166,29 @@
 
 	<!-- Active Filter Bar -->
 	{#if searchQuery || selectedMapel !== 'Semua' || selectedSort !== 'terbaru'}
-		<div class="flex flex-wrap items-center justify-between gap-3 bg-primary-50/70 border border-primary-100 rounded-xl px-4 py-2.5 mb-8">
-			<div class="flex flex-wrap items-center gap-2 text-xs text-slate-600 min-w-0">
+		<div
+			class="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary-100 bg-primary-50/70 px-4 py-2.5"
+		>
+			<div class="flex min-w-0 flex-wrap items-center gap-2 text-xs text-slate-600">
 				<span class="font-medium text-slate-700">Filter Aktif:</span>
 				{#if selectedMapel !== 'Semua'}
-					<span class="bg-white border border-primary-200 text-primary-700 px-2.5 py-0.5 rounded-md font-medium shadow-sm">
+					<span
+						class="rounded-md border border-primary-200 bg-white px-2.5 py-0.5 font-medium text-primary-700 shadow-sm"
+					>
 						Mapel: {selectedMapel}
 					</span>
 				{/if}
 				{#if searchQuery}
-					<span class="bg-white border border-primary-200 text-primary-700 px-2.5 py-0.5 rounded-md font-medium shadow-sm truncate max-w-xs">
+					<span
+						class="max-w-xs truncate rounded-md border border-primary-200 bg-white px-2.5 py-0.5 font-medium text-primary-700 shadow-sm"
+					>
 						Kata kunci: "{searchQuery}"
 					</span>
 				{/if}
 				{#if selectedSort !== 'terbaru'}
-					<span class="bg-white border border-primary-200 text-primary-700 px-2.5 py-0.5 rounded-md font-medium shadow-sm">
+					<span
+						class="rounded-md border border-primary-200 bg-white px-2.5 py-0.5 font-medium text-primary-700 shadow-sm"
+					>
 						Urutan: {sortOptions.find((s) => s.id === selectedSort)?.label}
 					</span>
 				{/if}
@@ -294,7 +196,7 @@
 			<button
 				type="button"
 				onclick={resetFilters}
-				class="text-xs text-primary-700 hover:text-primary-800 font-semibold underline underline-offset-2 cursor-pointer shrink-0"
+				class="shrink-0 cursor-pointer text-xs font-semibold text-primary-700 underline underline-offset-2 hover:text-primary-800"
 			>
 				Reset Semua
 			</button>
@@ -303,52 +205,70 @@
 
 	<!-- Materi Cards -->
 	{#if filteredMateri.length > 0}
-		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+		<div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
 			{#each filteredMateri as item (item.id)}
-				<div class="group bg-white rounded-xl shadow-sm p-3 border-2 border-primary-100 hover:border-primary-300 transition-colors cursor-pointer relative flex flex-col">
+				<a
+					href={resolve('/learning/[id]', { id: String(item.id) })}
+					class="group hover:border-primary-300 relative flex cursor-pointer flex-col rounded-xl border-2 border-primary-100 bg-white p-3 no-underline shadow-sm transition-all hover:shadow-md"
+				>
 					<!-- Top colored block placeholder -->
-					<div class="w-full rounded-lg h-28 sm:h-32 mb-3 {item.badgeWarna}"></div>
-					
+					<div
+						class="mb-3 h-28 w-full rounded-lg sm:h-32 {item.badgeWarna} flex items-center justify-center"
+					>
+						<BookOpen size={36} class="opacity-80" />
+					</div>
+
 					<!-- Card text content -->
-					<p class="text-xs text-slate-400 font-medium mb-1 line-clamp-1">{item.mapel}</p>
-					<p class="text-sm sm:text-base font-medium text-slate-800 leading-snug line-clamp-2">{item.judul}</p>						<div class="mt-auto flex justify-end pt-3">
-							<button
-								type="button"
-								class="text-primary-700 hover:text-primary-800 text-sm font-semibold"
-							>
-								Lihat &gt;
-							</button>
-						</div>					
+					<p class="mb-1 line-clamp-1 text-xs font-medium text-slate-400">{item.mapel}</p>
+					<p class="line-clamp-2 text-sm leading-snug font-medium text-slate-800 sm:text-base">
+						{item.judul}
+					</p>
+
+					<div class="mt-auto flex items-center justify-between pt-3 text-xs text-slate-500">
+						<span>{item.durasi}</span>
+						<span
+							class="font-semibold text-primary-700 transition-transform group-hover:translate-x-0.5"
+						>
+							Detail &rarr;
+						</span>
+					</div>
 					<!-- Bookmark absolute button -->
 					<button
 						type="button"
-						onclick={(e) => { e.stopPropagation(); toggleBookmark(item.id); }}
+						onclick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							toggleBookmark(item.id);
+						}}
 						aria-label="Simpan bookmark"
-						class="absolute top-5 right-5 p-1.5 rounded-lg bg-white/80 hover:bg-white text-slate-400 hover:text-slate-600 shadow-sm transition-all"
+						class="absolute top-5 right-5 z-10 rounded-lg bg-white/80 p-1.5 text-slate-400 shadow-sm transition-all hover:bg-white hover:text-slate-600"
 					>
 						<Bookmark size={16} class={item.isBookmark ? 'fill-amber-400 text-amber-500' : ''} />
 					</button>
-				</div>
+				</a>
 			{/each}
 		</div>
 	{:else}
 		<!-- Empty State -->
-		<div class="bg-white border border-dashed border-slate-200 rounded-3xl p-8 text-center max-w-md mx-auto my-12">
-			<div class="w-12 h-12 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center mx-auto mb-4">
+		<div
+			class="mx-auto my-12 max-w-md rounded-3xl border border-dashed border-slate-200 bg-white p-8 text-center"
+		>
+			<div
+				class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600"
+			>
 				<BookOpen size={24} />
 			</div>
-			<h3 class="text-base font-bold text-slate-800 mb-1.5">Materi Tidak Ditemukan</h3>
-			<p class="text-sm text-slate-500 mb-5">
+			<h3 class="mb-1.5 text-base font-bold text-slate-800">Materi Tidak Ditemukan</h3>
+			<p class="mb-5 text-sm text-slate-500">
 				Tidak ada materi yang sesuai dengan kata kunci atau filter yang Anda pilih.
 			</p>
 			<button
 				type="button"
 				onclick={resetFilters}
-				class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors cursor-pointer"
+				class="cursor-pointer rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700"
 			>
 				Reset Filter
 			</button>
 		</div>
 	{/if}
 </div>
-

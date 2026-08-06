@@ -17,47 +17,75 @@
 
 	// Contribution Data (per kategori)
 	let kontribusiBacaan: Kontribusi[] = [
-		{ id: 1, judul: 'Mengapa Kita Sulit Fokus Belajar di Era Distraksi Digital', tag: 'Sains', status: 'diverifikasi' },
-		{ id: 2, judul: 'Sastra Lisan Nusantara yang Mulai Dilupakan', tag: 'Sastra & esai', status: 'direview' }
+		{
+			id: 1,
+			judul: 'Mengapa Kita Sulit Fokus Belajar di Era Distraksi Digital',
+			tag: 'Sains',
+			status: 'diverifikasi'
+		},
+		{
+			id: 2,
+			judul: 'Sastra Lisan Nusantara yang Mulai Dilupakan',
+			tag: 'Sastra & esai',
+			status: 'direview'
+		}
 	];
 
 	let kontribusiLatihan: Kontribusi[] = [
-		{ id: 1, judul: 'Paket Penalaran Analitis Level Lanjut', tag: 'Penalaran', status: 'diverifikasi' },
+		{
+			id: 1,
+			judul: 'Paket Penalaran Analitis Level Lanjut',
+			tag: 'Penalaran',
+			status: 'diverifikasi'
+		},
 		{ id: 2, judul: 'Simulasi Kuantitatif Mingguan #3', tag: 'Matematika', status: 'draft' }
 	];
 
 	let kontribusiMateri: Kontribusi[] = [
-		{ id: 1, judul: 'Ringkasan Turunan & Integral Dasar', tag: 'Matematika', status: 'diverifikasi' }
+		{
+			id: 1,
+			judul: 'Ringkasan Turunan & Integral Dasar',
+			tag: 'Matematika',
+			status: 'diverifikasi'
+		}
 	];
 
 	// Derived: total & aktif berdasarkan tab
 	let semuaKontribusi = $derived([...kontribusiBacaan, ...kontribusiLatihan, ...kontribusiMateri]);
-	let jumlahDiverifikasi = $derived(semuaKontribusi.filter((k) => k.status === 'diverifikasi').length);
+	let jumlahDiverifikasi = $derived(
+		semuaKontribusi.filter((k) => k.status === 'diverifikasi').length
+	);
 	let jumlahDireview = $derived(semuaKontribusi.filter((k) => k.status === 'direview').length);
 
 	let daftarAktif = $derived(
-		activeTab === 'bacaan' ? kontribusiBacaan : activeTab === 'latihan' ? kontribusiLatihan : kontribusiMateri
+		activeTab === 'bacaan'
+			? kontribusiBacaan
+			: activeTab === 'latihan'
+				? kontribusiLatihan
+				: kontribusiMateri
 	);
 </script>
 
-<div class="w-full max-w-2xl mx-auto">
-
+<div class="mx-auto w-full max-w-2xl">
 	<!-- Profile Header -->
-	<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-		<div class="flex items-center gap-4 mb-5">
-			<span class="h-16 w-16 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center shrink-0">
+	<div class="mb-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+		<div class="mb-5 flex items-center gap-4">
+			<span
+				class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700"
+			>
 				<User size={28} />
 			</span>
 			<div class="min-w-0">
-				<p class="font-bold text-lg text-slate-800">{nama}</p>
-				<p class="text-sm text-slate-400 flex items-center gap-1.5">
-					<Calendar size={13} /> {bio}
+				<p class="text-lg font-bold text-slate-800">{nama}</p>
+				<p class="flex items-center gap-1.5 text-sm text-slate-400">
+					<Calendar size={13} />
+					{bio}
 				</p>
 			</div>
 		</div>
 
 		<!-- Stats Row -->
-		<div class="flex gap-6 pt-4 border-t border-slate-100">
+		<div class="flex gap-6 border-t border-slate-100 pt-4">
 			<div>
 				<p class="font-bold text-slate-800">{semuaKontribusi.length}</p>
 				<p class="text-xs text-slate-500">Kontribusi</p>
@@ -74,25 +102,34 @@
 	</div>
 
 	<!-- Tabs -->
-	<div class="flex border-b border-slate-200 mb-5">
+	<div class="mb-5 flex border-b border-slate-200">
 		<button
 			type="button"
 			onclick={() => (activeTab = 'bacaan')}
-			class="flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium border-b-2 transition-colors {activeTab === 'bacaan' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-400 hover:text-slate-600'}"
+			class="flex flex-1 items-center justify-center gap-1.5 border-b-2 py-3 text-sm font-medium transition-colors {activeTab ===
+			'bacaan'
+				? 'border-primary-600 text-primary-700'
+				: 'border-transparent text-slate-400 hover:text-slate-600'}"
 		>
 			<FileText size={15} /> Bacaan
 		</button>
 		<button
 			type="button"
 			onclick={() => (activeTab = 'latihan')}
-			class="flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium border-b-2 transition-colors {activeTab === 'latihan' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-400 hover:text-slate-600'}"
+			class="flex flex-1 items-center justify-center gap-1.5 border-b-2 py-3 text-sm font-medium transition-colors {activeTab ===
+			'latihan'
+				? 'border-primary-600 text-primary-700'
+				: 'border-transparent text-slate-400 hover:text-slate-600'}"
 		>
 			<BookOpen size={15} /> Latihan
 		</button>
 		<button
 			type="button"
 			onclick={() => (activeTab = 'materi')}
-			class="flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium border-b-2 transition-colors {activeTab === 'materi' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-400 hover:text-slate-600'}"
+			class="flex flex-1 items-center justify-center gap-1.5 border-b-2 py-3 text-sm font-medium transition-colors {activeTab ===
+			'materi'
+				? 'border-primary-600 text-primary-700'
+				: 'border-transparent text-slate-400 hover:text-slate-600'}"
 		>
 			<Layers size={15} /> Materi
 		</button>
@@ -102,9 +139,11 @@
 	{#if daftarAktif.length > 0}
 		<div class="flex flex-col gap-3">
 			{#each daftarAktif as k (k.id)}
-				<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary-50 text-primary-700 border border-primary-200">
+				<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+					<div class="mb-2 flex items-center gap-2">
+						<span
+							class="rounded-full border border-primary-200 bg-primary-50 px-2 py-0.5 text-[10px] font-medium text-primary-700"
+						>
 							{k.tag}
 						</span>
 						{#if k.status === 'diverifikasi'}
@@ -124,7 +163,6 @@
 			{/each}
 		</div>
 	{:else}
-		<p class="text-sm text-slate-500 text-center py-8">Belum ada kontribusi di kategori ini.</p>
+		<p class="py-8 text-center text-sm text-slate-500">Belum ada kontribusi di kategori ini.</p>
 	{/if}
-
 </div>

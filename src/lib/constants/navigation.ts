@@ -15,8 +15,16 @@ export const navItems = [
 export const desktopFooterHrefs: RoutePath[] = [ROUTES.settings, ROUTES.profile];
 export const mobileDrawerHrefs: RoutePath[] = [ROUTES.statistics, ROUTES.settings, ROUTES.profile];
 
-export const desktopMainNav = navItems.filter((item) => !desktopFooterHrefs.some((href) => href === item.href));
-export const desktopFooterNav = navItems.filter((item) => desktopFooterHrefs.some((href) => href === item.href));
+export const desktopMainNav = navItems.filter(
+	(item) => !desktopFooterHrefs.some((href) => href === item.href)
+);
+export const desktopFooterNav = navItems.filter((item) =>
+	desktopFooterHrefs.some((href) => href === item.href)
+);
 
-export const mobileBottomNav = navItems.filter((item) => !mobileDrawerHrefs.some((href) => href === item.href));
-export const mobileDrawerNav = navItems.filter((item) => mobileDrawerHrefs.some((href) => href === item.href));
+export const mobileBottomNav = navItems.filter(
+	(item) => !mobileDrawerHrefs.some((href) => href === item.href)
+);
+export const mobileDrawerNav = navItems.filter((item) =>
+	mobileDrawerHrefs.some((href) => href === item.href)
+);
