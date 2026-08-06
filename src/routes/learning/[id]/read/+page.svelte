@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { ArrowLeft, BookOpen, Bookmark, CheckCircle2, Clock, Share2 } from '@lucide/svelte';
+	import { ArrowLeft, BookOpen, Bookmark, CheckCircle2, Share2 } from '@lucide/svelte';
 	import { learningMaterials } from '$lib/mocks/learning';
 	import { ROUTES } from '$lib/constants/routes';
 
@@ -83,10 +83,6 @@
 				<div class="flex items-center gap-2">
 					<span class="rounded-full border px-3 py-1 text-xs font-semibold {material.badgeWarna}">
 						{material.mapel}
-					</span>
-					<span class="flex items-center gap-1 text-xs font-medium text-slate-400">
-						<Clock size={14} />
-						{material.durasi}
 					</span>
 				</div>
 

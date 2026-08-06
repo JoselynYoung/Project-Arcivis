@@ -224,8 +224,7 @@
 						{item.judul}
 					</p>
 
-					<div class="mt-auto flex items-center justify-between pt-3 text-xs text-slate-500">
-						<span>{item.durasi}</span>
+					<div class="mt-auto flex justify-end pt-3 text-xs text-slate-500">
 						<span
 							class="font-semibold text-primary-700 transition-transform group-hover:translate-x-0.5"
 						>

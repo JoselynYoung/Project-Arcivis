@@ -4,7 +4,6 @@
 	import {
 		ArrowLeft,
 		BookOpen,
-		Clock,
 		User,
 		Calendar,
 		Eye,
@@ -116,18 +115,26 @@
 								>
 									{material.mapel}
 								</span>
-								<p class="text-xs font-medium text-white/80">{material.durasi}</p>
 							</div>
 						</div>
 
 						<!-- Action CTA Button -->
-						<a
-							href={resolve('/learning/[id]/read', { id: String(material.id) })}
-							class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3.5 text-base font-bold text-white no-underline shadow-md transition-all hover:bg-primary-700 hover:shadow-lg"
-						>
-							<Sparkles size={18} />
-							<span>Mulai Belajar / Read</span>
-						</a>
+						<div class="flex flex-col gap-3">
+							<a
+								href={resolve('/learning/[id]/read', { id: String(material.id) })}
+								class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3.5 text-base font-bold text-white no-underline shadow-md transition-all hover:bg-primary-700 hover:shadow-lg"
+							>
+								<Sparkles size={18} />
+								<span>Baca</span>
+							</a>
+							<button
+								type="button"
+								onclick={() => alert('Fitur unduh PDF segera hadir')}
+								class="w-full rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+							>
+								Unduh PDF
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -139,10 +146,6 @@
 					<div class="flex items-center gap-2">
 						<span class="rounded-full border px-3 py-1 text-xs font-semibold {material.badgeWarna}">
 							{material.mapel}
-						</span>
-						<span class="flex items-center gap-1 text-xs font-medium text-slate-400">
-							<Clock size={14} />
-							{material.durasi}
 						</span>
 					</div>
 
@@ -175,20 +178,19 @@
 						<div class="col-span-2 flex items-center gap-2 text-slate-600 sm:col-span-1">
 							<Eye size={16} class="shrink-0 text-primary-600" />
 							<div>
-								<p class="text-slate-400">Pembaca</p>
+								<p class="text-slate-400">Views</p>
 								<p class="font-medium text-slate-700">
-									{material.dibaca.toLocaleString('id-ID')} orang
+									{material.dibaca.toLocaleString('id-ID')}
 								</p>
 							</div>
 						</div>
 					</div>
-				</div>
 
-				<!-- Topics & Focus Areas -->
-				{#if material.topics && material.topics.length > 0}
-					<div class="space-y-3 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-						<h2 class="text-base font-bold text-slate-800">Topik & Konsep Kunci</h2>
-						<div class="flex flex-wrap gap-2">
+					{#if material.topics && material.topics.length > 0}
+						<div class="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+							<p class="w-full text-xs font-semibold tracking-[0.2em] text-slate-400 uppercase">
+								Topik & Konsep Kunci
+							</p>
 							{#each material.topics as topic (topic)}
 								<span
 									class="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700"
@@ -197,8 +199,8 @@
 								</span>
 							{/each}
 						</div>
-					</div>
-				{/if}
+					{/if}
+				</div>
 
 				<!-- Summary Box / Reading Prep -->
 				<div class="space-y-3 rounded-3xl border border-primary-100 bg-primary-50/60 p-6 sm:p-8">
@@ -206,10 +208,25 @@
 						<BookOpen size={18} class="text-primary-600" />
 						Panduan Pembelajaran
 					</h2>
-					<ul class="list-inside list-disc space-y-2 text-sm text-primary-800/90">
-						<li>Pelajari setiap bab secara berurutan untuk pemahaman maksimal.</li>
-						<li>Catat poin-poin rumus dan konsep penting selama membaca.</li>
-						<li>Gunakan fitur bookmark jika ingin menyimpan materi untuk diulas kembali.</li>
+					<ul class="m-0 list-none space-y-3 pl-0 text-sm text-primary-800/90">
+						<li class="flex items-start gap-3">
+						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+								<BookOpen size={14} />
+							</span>
+							<span class="leading-6">Pelajari setiap bab secara berurutan untuk pemahaman maksimal.</span>
+						</li>
+						<li class="flex items-start gap-3">
+						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+								<BookOpen size={14} />
+							</span>
+							<span class="leading-6">Catat poin-poin rumus dan konsep penting selama membaca.</span>
+						</li>
+						<li class="flex items-start gap-3">
+						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+								<BookOpen size={14} />
+							</span>
+							<span class="leading-6">Gunakan fitur bookmark jika ingin menyimpan materi untuk diulas kembali.</span>
+						</li>
 					</ul>
 				</div>
 			</div>
