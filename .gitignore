@@ -1,5 +1,8 @@
 node_modules
 
+# agents
+.agents
+
 # Output
 .output
 .vercel
