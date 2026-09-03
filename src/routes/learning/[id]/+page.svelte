@@ -210,22 +210,33 @@
 					</h2>
 					<ul class="m-0 list-none space-y-3 pl-0 text-sm text-primary-800/90">
 						<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+							<span
+								class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700"
+							>
 								<BookOpen size={14} />
 							</span>
-							<span class="leading-6">Pelajari setiap bab secara berurutan untuk pemahaman maksimal.</span>
+							<span class="leading-6"
+								>Pelajari setiap bab secara berurutan untuk pemahaman maksimal.</span
+							>
 						</li>
 						<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+							<span
+								class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700"
+							>
 								<BookOpen size={14} />
 							</span>
-							<span class="leading-6">Catat poin-poin rumus dan konsep penting selama membaca.</span>
+							<span class="leading-6">Catat poin-poin rumus dan konsep penting selama membaca.</span
+							>
 						</li>
 						<li class="flex items-start gap-3">
-						<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+							<span
+								class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700"
+							>
 								<BookOpen size={14} />
 							</span>
-							<span class="leading-6">Gunakan fitur bookmark jika ingin menyimpan materi untuk diulas kembali.</span>
+							<span class="leading-6"
+								>Gunakan fitur bookmark jika ingin menyimpan materi untuk diulas kembali.</span
+							>
 						</li>
 					</ul>
 				</div>

@@ -41,3 +41,15 @@ export const practicePoster = {
 	colorFrom: 'from-emerald-700',
 	colorTo: 'to-emerald-500'
 };
+
+export const user = {
+	name: 'Pejuang'
+};
+
+export const calendar = {
+	monthLabel: 'Juli 2026',
+	dayNames: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+	leadingOffset: 3,
+	daysInMonth: 31,
+	importantDate: 22
+};

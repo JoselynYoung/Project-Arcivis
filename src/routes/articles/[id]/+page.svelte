@@ -78,7 +78,7 @@
 				<div class="sticky top-6">
 					<div class="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm">
 						<div
-							class="relative mb-5 flex aspect-3/4 w-full flex-col items-center justify-center overflow-hidden rounded-2xl p-6 text-white shadow-inner bg-linear-to-br from-primary-600 to-primary-800"
+							class="relative mb-5 flex aspect-3/4 w-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-linear-to-br from-primary-600 to-primary-800 p-6 text-white shadow-inner"
 						>
 							<div class="absolute inset-0 bg-white/10 backdrop-blur-[2px]"></div>
 							<div class="relative z-10 flex flex-col items-center">

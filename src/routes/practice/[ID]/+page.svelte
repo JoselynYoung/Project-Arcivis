@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Check, X, ArrowRight, RotateCcw } from '@lucide/svelte';
+	import { resolve } from '$app/paths';
+	import { Check, X, ArrowRight, RotateCcw, BookOpen } from '@lucide/svelte';
 	import { practicePackages, questions } from '$lib/mocks/practice';
+	import { ROUTES } from '$lib/constants/routes';
 
 	const packageId = $derived(Number(page.params.ID));
 	const pkg = $derived(practicePackages.find((p) => p.id === packageId) ?? null);
@@ -13,7 +15,7 @@
 	let correctCount = $state(0);
 
 	let currentQuestion = $derived(questionList[currentIndex] ?? null);
-	let isFinished = $derived(questionList.length === 0 || currentIndex >= questionList.length);
+	let isFinished = $derived(questionList.length > 0 && currentIndex >= questionList.length);
 
 	function selectAnswer(index: number) {
 		if (isSubmitted) return;
@@ -48,6 +50,27 @@
 	{#if !pkg}
 		<div class="py-20 text-center">
 			<p class="text-slate-500">Paket tidak ditemukan.</p>
+		</div>
+	{:else if questionList.length === 0}
+		<!-- Empty State: soal belum tersedia -->
+		<div
+			class="mx-auto my-12 max-w-md rounded-3xl border border-dashed border-slate-200 bg-white p-8 text-center"
+		>
+			<div
+				class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600"
+			>
+				<BookOpen size={24} />
+			</div>
+			<h2 class="mb-1.5 text-base font-bold text-slate-800">Soal segera hadir</h2>
+			<p class="mb-5 text-sm text-slate-500">
+				Paket {pkg.title} masih disiapkan. Nantikan pembahasannya di pembaruan berikutnya.
+			</p>
+			<a
+				href={resolve(ROUTES.practice)}
+				class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm transition-colors hover:bg-primary-700"
+			>
+				Kembali ke Daftar Latihan
+			</a>
 		</div>
 	{:else if !isFinished && currentQuestion}
 		<!-- Quiz Header -->

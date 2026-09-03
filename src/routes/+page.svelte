@@ -8,23 +8,25 @@
 		recentLearningCards,
 		recentPracticeCards,
 		learningPoster,
-		practicePoster
+		practicePoster,
+		user,
+		calendar
 	} from '$lib/mocks/home';
 
-	let userName = 'Pejuang';
+	let userName = user.name;
 
-	// Calendar – kept local (not part of the designated mock data)
-	let namaBulan = 'Juli 2026';
-	let namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-	let offsetAwal = 3;
-	let jumlahHari = 31;
+	// Calendar (static July 2026, data moved to mock file)
+	let namaBulan = calendar.monthLabel;
+	let namaHari = calendar.dayNames;
+	let offsetAwal = calendar.leadingOffset;
+	let jumlahHari = calendar.daysInMonth;
 	let tanggalGrid = [
 		...Array(offsetAwal).fill(null),
 		...Array(jumlahHari)
 			.fill(0)
 			.map((_, i) => i + 1)
 	];
-	let tanggalPenting = 22;
+	let tanggalPenting = calendar.importantDate;
 
 	// Carousel
 	let currentIndex = $state(0);

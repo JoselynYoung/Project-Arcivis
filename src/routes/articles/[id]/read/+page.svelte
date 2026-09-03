@@ -44,7 +44,7 @@
 		</div>
 
 		<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-			<div class="prose prose-slate max-w-none">
+			<div class="prose max-w-none prose-slate">
 				{#each paragraphs as paragraph, i (i)}
 					<p class="mb-4 text-base leading-relaxed text-slate-700">{paragraph}</p>
 				{/each}
