@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ChevronRight, BarChart3, Clock3, Medal, ArrowUpRight } from '@lucide/svelte';
 
-	let nama = 'Alya';
+	let nama = 'Pejuang';
 
 	let metrics = [
 		{ label: 'Jam belajar', value: '26.5', unit: 'jam', icon: Clock3, color: 'bg-primary-600' },
@@ -37,13 +37,12 @@
 					Halo, {nama}! Ini ringkasan progressmu.
 				</h1>
 			</div>
-			<button
-				type="button"
-				class="inline-flex items-center gap-2 rounded-3xl bg-primary-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-700"
+			<span
+				class="inline-flex items-center gap-2 rounded-3xl bg-primary-600 px-4 py-3 text-sm font-semibold text-white"
 			>
 				Lihat rincian
 				<ChevronRight size="18" />
-			</button>
+			</span>
 		</div>
 
 		<div class="mt-8 grid gap-4 md:grid-cols-3">
@@ -68,13 +67,12 @@
 					<p class="text-sm tracking-[0.2em] text-slate-400 uppercase">Progress Visual</p>
 					<h2 class="text-xl font-semibold text-slate-900">Performa Mapel</h2>
 				</div>
-				<button
-					type="button"
-					class="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+				<span
+					class="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700"
 				>
 					Ringkasan lengkap
 					<ArrowUpRight size="16" />
-				</button>
+				</span>
 			</div>
 
 			<div class="space-y-5">
@@ -85,10 +83,7 @@
 							<p class="text-sm font-semibold text-slate-900">{item.value}%</p>
 						</div>
 						<div class="h-3 overflow-hidden rounded-full bg-slate-200">
-							<div
-								class="h-full rounded-full {item.color}"
-								style="width: {item.value}%; background-color: var(--tw-bg-opacity,1);"
-							></div>
+							<div class="h-full rounded-full {item.color}" style="width: {item.value}%;"></div>
 						</div>
 					</div>
 				{/each}
@@ -126,13 +121,10 @@
 						<p class="text-sm tracking-[0.2em] text-slate-400 uppercase">Top Mapel</p>
 						<h2 class="text-xl font-semibold text-slate-900">Kekuatan Belajarmu</h2>
 					</div>
-					<button
-						type="button"
-						class="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-700"
-					>
+					<span class="inline-flex items-center gap-2 text-sm font-semibold text-primary-600">
 						Lainnya
 						<ChevronRight size="18" />
-					</button>
+					</span>
 				</div>
 				<div class="space-y-4">
 					{#each topMapel as item (item.subject)}
@@ -143,9 +135,8 @@
 								<p class="text-sm font-semibold text-slate-900">{item.subject}</p>
 								<p class="text-xs text-slate-500">Skor {item.score}</p>
 							</div>
-							<span
-								class="rounded-full px-3 py-1 text-xs font-semibold text-white"
-								style="background-color: {item.color};">{item.trend}</span
+							<span class="rounded-full px-3 py-1 text-xs font-semibold text-white {item.color}"
+								>{item.trend}</span
 							>
 						</div>
 					{/each}

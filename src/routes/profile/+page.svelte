@@ -15,7 +15,7 @@
 	// Tab State
 	let activeTab = $state<'bacaan' | 'latihan' | 'materi'>('bacaan');
 
-	// Contribution Data (per kategori)
+	// Contribution Data (by category)
 	let kontribusiBacaan: Kontribusi[] = [
 		{
 			id: 1,
@@ -50,7 +50,7 @@
 		}
 	];
 
-	// Derived: total & aktif berdasarkan tab
+	// Derived: Total & Active Count by Tab
 	let semuaKontribusi = $derived([...kontribusiBacaan, ...kontribusiLatihan, ...kontribusiMateri]);
 	let jumlahDiverifikasi = $derived(
 		semuaKontribusi.filter((k) => k.status === 'diverifikasi').length

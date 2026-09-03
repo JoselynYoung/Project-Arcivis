@@ -7,13 +7,14 @@
  * Explicit Module Actions:
  * - learning  : action = 'read'  -> /learning/[id]/read
  * - articles  : action = 'read'  -> /articles/[id]/read
- * - practice  : action = 'quiz'  -> /practice/[id]/quiz (locked for Stage 3 migration)
+ * - practice  : action = 'quiz'  -> /practice/[id]/quiz
  * - library   : Download/Buy trigger buttons directly on Detail Page (no separate action route)
  */
 
 export const ROUTES = {
 	home: '/',
 	practice: '/practice',
+	practiceQuizGenerator: '/practice/quiz-generator',
 	learning: '/learning',
 	articles: '/articles',
 	statistics: '/statistics',
@@ -25,6 +26,10 @@ export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
 
 export function getPracticeDetailRoute(id: string | number) {
 	return `/practice/${id}`;
+}
+
+export function getPracticeQuizRoute(id: string | number) {
+	return `/practice/${id}/quiz`;
 }
 
 export function getLearningDetailRoute(id: string | number) {

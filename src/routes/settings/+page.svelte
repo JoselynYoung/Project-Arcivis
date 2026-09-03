@@ -4,7 +4,7 @@
 	let nama = $state('Pejuang');
 	let email = 'pejuang@email.com';
 
-	// Preferensi (toggle switch)
+	// Preference Toggles
 	let isDarkMode = $state(false);
 	let isNotifAktif = $state(true);
 
@@ -20,7 +20,7 @@
 <div class="w-full max-w-2xl">
 	<h1 class="mb-8 text-2xl font-bold text-slate-800">Pengaturan</h1>
 
-	<!-- Section: Profil -->
+	<!-- Profile Section -->
 	<div class="mb-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
 		<h2 class="mb-4 text-sm font-semibold text-slate-500">Profil</h2>
 
@@ -47,7 +47,7 @@
 		/>
 	</div>
 
-	<!-- Section: Preferensi -->
+	<!-- Preference Section -->
 	<div class="mb-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
 		<h2 class="mb-4 text-sm font-semibold text-slate-500">Preferensi</h2>
 
@@ -59,6 +59,8 @@
 			<button
 				onclick={toggleDarkMode}
 				type="button"
+				role="switch"
+				aria-checked={isDarkMode}
 				aria-label="Aktifkan mode gelap"
 				class="relative h-6 w-11 rounded-full transition-colors {isDarkMode
 					? 'bg-primary-600'
@@ -80,6 +82,8 @@
 			<button
 				onclick={toggleNotif}
 				type="button"
+				role="switch"
+				aria-checked={isNotifAktif}
 				aria-label="Aktifkan pengingat belajar harian"
 				class="relative h-6 w-11 rounded-full transition-colors {isNotifAktif
 					? 'bg-primary-600'
@@ -94,7 +98,7 @@
 		</div>
 	</div>
 
-	<!-- Section: Akun -->
+	<!-- Account Section -->
 	<div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
 		<h2 class="mb-4 text-sm font-semibold text-slate-500">Akun</h2>
 
