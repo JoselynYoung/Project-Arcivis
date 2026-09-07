@@ -1,16 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import {
-		ArrowLeft,
-		BookOpen,
-		User,
-		Calendar,
-		Eye,
-		Bookmark,
-		Share2,
-		Sparkles
-	} from '@lucide/svelte';
+	import { ArrowLeft, BookOpen, User, Bookmark, Share2, Sparkles } from '@lucide/svelte';
 	import { articles } from '$lib/mocks/articles';
 	import { ROUTES } from '$lib/constants/routes';
 
@@ -128,29 +119,13 @@
 						{article.deskripsi}
 					</p>
 
-					<div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-xs sm:grid-cols-3">
-						<div class="flex items-center gap-2 text-slate-600">
-							<User size={16} class="shrink-0 text-primary-600" />
-							<div>
-								<p class="text-slate-400">Penulis</p>
-								<p class="font-medium text-slate-700">{article.author}</p>
-							</div>
-						</div>
-						<div class="flex items-center gap-2 text-slate-600">
-							<Calendar size={16} class="shrink-0 text-primary-600" />
-							<div>
-								<p class="text-slate-400">Update Terakhir</p>
-								<p class="font-medium text-slate-700">{article.updatedAt}</p>
-							</div>
-						</div>
-						<div class="col-span-2 flex items-center gap-2 text-slate-600 sm:col-span-1">
-							<Eye size={16} class="shrink-0 text-primary-600" />
-							<div>
-								<p class="text-slate-400">Views</p>
-								<p class="font-medium text-slate-700">
-									{article.dibaca.toLocaleString('id-ID')}
-								</p>
-							</div>
+					<div
+						class="flex items-center gap-2 border-t border-slate-100 pt-4 text-xs text-slate-600"
+					>
+						<User size={16} class="shrink-0 text-primary-600" />
+						<div>
+							<p class="text-slate-400">Penulis</p>
+							<p class="font-medium text-slate-700">{article.author}</p>
 						</div>
 					</div>
 

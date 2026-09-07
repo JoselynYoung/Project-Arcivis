@@ -1,16 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import {
-		ArrowLeft,
-		BookOpen,
-		User,
-		Calendar,
-		Eye,
-		Bookmark,
-		Share2,
-		Sparkles
-	} from '@lucide/svelte';
+	import { ArrowLeft, BookOpen, User, Bookmark, Share2, Sparkles } from '@lucide/svelte';
 	import { learningMaterials } from '$lib/mocks/learning';
 	import { ROUTES } from '$lib/constants/routes';
 
@@ -125,7 +116,7 @@
 								class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3.5 text-base font-bold text-white no-underline shadow-md transition-all hover:bg-primary-700 hover:shadow-lg"
 							>
 								<Sparkles size={18} />
-								<span>Baca</span>
+								<span>Pelajari</span>
 							</a>
 							<button
 								type="button"
@@ -158,31 +149,13 @@
 					</p>
 
 					<!-- Metadata bar -->
-					<div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-xs sm:grid-cols-3">
-						<div class="flex items-center gap-2 text-slate-600">
-							<User size={16} class="shrink-0 text-primary-600" />
-							<div>
-								<p class="text-slate-400">Penyusun</p>
-								<p class="font-medium text-slate-700">{material.author}</p>
-							</div>
-						</div>
-
-						<div class="flex items-center gap-2 text-slate-600">
-							<Calendar size={16} class="shrink-0 text-primary-600" />
-							<div>
-								<p class="text-slate-400">Update Terakhir</p>
-								<p class="font-medium text-slate-700">{material.updatedAt}</p>
-							</div>
-						</div>
-
-						<div class="col-span-2 flex items-center gap-2 text-slate-600 sm:col-span-1">
-							<Eye size={16} class="shrink-0 text-primary-600" />
-							<div>
-								<p class="text-slate-400">Views</p>
-								<p class="font-medium text-slate-700">
-									{material.dibaca.toLocaleString('id-ID')}
-								</p>
-							</div>
+					<div
+						class="flex items-center gap-2 border-t border-slate-100 pt-4 text-xs text-slate-600"
+					>
+						<User size={16} class="shrink-0 text-primary-600" />
+						<div>
+							<p class="text-slate-400">Penyusun</p>
+							<p class="font-medium text-slate-700">{material.author}</p>
 						</div>
 					</div>
 

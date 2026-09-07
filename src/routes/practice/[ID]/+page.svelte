@@ -5,7 +5,6 @@
 		ArrowLeft,
 		BookOpen,
 		User,
-		Clock,
 		Bookmark,
 		Share2,
 		Play,
@@ -155,7 +154,7 @@
 						{pkg.description}
 					</p>
 
-					<div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-xs sm:grid-cols-4">
+					<div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-xs sm:grid-cols-2">
 						<div class="flex items-center gap-2 text-slate-600">
 							<User size={16} class="shrink-0 text-primary-600" />
 							<div>
@@ -169,14 +168,6 @@
 							<div>
 								<p class="text-slate-400">Jumlah Soal</p>
 								<p class="font-medium text-slate-700">{pkg.questionCount} Soal</p>
-							</div>
-						</div>
-
-						<div class="col-span-2 flex items-center gap-2 text-slate-600 sm:col-span-1">
-							<Clock size={16} class="shrink-0 text-primary-600" />
-							<div>
-								<p class="text-slate-400">Durasi</p>
-								<p class="font-medium text-slate-700">{pkg.duration}</p>
 							</div>
 						</div>
 					</div>
