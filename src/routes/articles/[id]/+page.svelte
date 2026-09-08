@@ -108,7 +108,7 @@
 			<div class="space-y-6 md:col-span-7 lg:col-span-8">
 				<div class="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 					<div class="flex items-center gap-2">
-						<span class="rounded-full border px-3 py-1 text-xs font-semibold {article.badgeWarna}">
+						<span class="rounded-full px-3 py-1 text-xs font-semibold {article.badgeWarna}">
 							{article.kategori}
 						</span>
 					</div>

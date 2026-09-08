@@ -135,7 +135,7 @@
 				<!-- Header info -->
 				<div class="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 					<div class="flex items-center gap-2">
-						<span class="rounded-full border px-3 py-1 text-xs font-semibold {material.badgeWarna}">
+						<span class="rounded-full px-3 py-1 text-xs font-semibold {material.badgeWarna}">
 							{material.mapel}
 						</span>
 					</div>

@@ -90,12 +90,14 @@
 				value={searchQuery}
 				oninput={handleInput}
 				placeholder={searchPlaceholder}
+				aria-label={searchPlaceholder}
 				class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-10 pl-10 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary-600 focus:outline-none"
 			/>
 			{#if searchQuery}
 				<button
 					type="button"
 					onclick={clearSearch}
+					aria-label="Hapus pencarian"
 					class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-slate-600"
 				>
 					<X size={14} />
@@ -108,6 +110,8 @@
 			<button
 				type="button"
 				onclick={() => (isSortDropdownOpen = !isSortDropdownOpen)}
+				aria-haspopup="listbox"
+				aria-expanded={isSortDropdownOpen}
 				class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 sm:w-auto sm:justify-start"
 			>
 				<ArrowUpDown size={14} class="shrink-0 text-primary-600" />
@@ -125,11 +129,15 @@
 					class="fixed inset-0 z-30 cursor-default bg-transparent"
 				></button>
 				<div
+					role="listbox"
+					aria-label="Pilihan urutan"
 					class="absolute right-0 z-40 mt-2 w-52 rounded-xl border border-slate-100 bg-white p-1.5 shadow-lg"
 				>
 					{#each sortOptions as option (option.id)}
 						<button
 							type="button"
+							role="option"
+							aria-selected={selectedSort === option.id}
 							onclick={() => handleSortSelect(option.id)}
 							class="flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors {selectedSort ===
 							option.id
@@ -149,7 +157,11 @@
 
 	<!-- Filter Pills -->
 	{#if filterOptions.length > 0}
-		<div class="flex max-w-full scrollbar-none items-center gap-2 overflow-x-auto pb-1">
+		<div
+			class="flex max-w-full scrollbar-none items-center gap-2 overflow-x-auto pb-1"
+			role="group"
+			aria-label={filterLabel}
+		>
 			<span class="mr-1 flex shrink-0 items-center gap-1.5 text-xs font-semibold text-slate-400">
 				<Filter size={14} />
 				{filterLabel}:
@@ -158,6 +170,7 @@
 				<button
 					type="button"
 					onclick={() => handleFilterClick(option)}
+					aria-pressed={selectedFilter === option}
 					class="shrink-0 cursor-pointer rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all {selectedFilter ===
 					option
 						? 'border-primary-600 bg-primary-600 text-white shadow-sm'
@@ -174,6 +187,8 @@
 {#if hasActiveFilters}
 	<div
 		class="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary-100 bg-primary-50/70 px-4 py-2.5"
+		role="status"
+		aria-label={activeFilterLabel}
 	>
 		<div class="flex min-w-0 flex-wrap items-center gap-2 text-xs text-slate-600">
 			<span class="font-medium text-slate-700">{activeFilterLabel}:</span>
@@ -189,6 +204,7 @@
 			<button
 				type="button"
 				onclick={onReset}
+				aria-label="Reset semua filter"
 				class="shrink-0 cursor-pointer text-xs font-semibold text-primary-700 underline underline-offset-2 hover:text-primary-800"
 			>
 				Reset Semua

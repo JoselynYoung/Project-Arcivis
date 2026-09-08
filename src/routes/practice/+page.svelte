@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { BookOpen, Zap, ChevronRight, ShieldCheck, Users } from '@lucide/svelte';
+	import { Bookmark, BookOpen, Zap, ChevronRight, Users } from '@lucide/svelte';
 	import { subjects, practicePackages } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PracticePackage } from '$lib/types/practice';
@@ -48,6 +48,16 @@
 			})
 	);
 
+	function getSubjectColor(subjectName: string): string {
+		return subjects.find((s) => s.name === subjectName)?.color ?? 'bg-slate-50 text-slate-700';
+	}
+
+	function toggleBookmark(id: number) {
+		listPackages = listPackages.map((pkg) =>
+			pkg.id === id ? { ...pkg, isBookmark: !pkg.isBookmark } : pkg
+		);
+	}
+
 	function resetFilters() {
 		searchQuery = '';
 		selectedSubject = 'Semua';
@@ -56,14 +66,15 @@
 </script>
 
 <div class="box-border w-full max-w-full min-w-0">
-	<!-- Quiz Generator Feature Card -->
 	<a
 		href={resolve(ROUTES.practiceQuizGenerator)}
+		aria-label="Buka Latihan Acak - Generator"
 		class="group hover:border-primary-300 mb-8 block rounded-2xl border-2 border-primary-100 bg-linear-to-br from-primary-50 to-white p-5 shadow-sm transition-all hover:shadow-md sm:mb-10 sm:p-6"
 	>
 		<div class="flex items-start gap-4">
 			<div
 				class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-sm sm:h-14 sm:w-14"
+				aria-hidden="true"
 			>
 				<Zap size={24} />
 			</div>
@@ -98,6 +109,7 @@
 			<ChevronRight
 				size={20}
 				class="mt-1 shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-primary-600"
+				aria-hidden="true"
 			/>
 		</div>
 	</a>
@@ -118,10 +130,13 @@
 			{#each filteredPackages as pkg (pkg.id)}
 				<a
 					href={resolve('/practice/[id]', { id: String(pkg.id) })}
+					aria-label="{pkg.title}, {pkg.subject}"
 					class="group hover:border-primary-300 relative flex cursor-pointer flex-col rounded-xl border-2 border-slate-100 bg-white p-3 no-underline shadow-sm transition-all hover:shadow-md"
 				>
 					<div
-						class="mb-3 flex h-28 w-full items-center justify-center rounded-lg bg-primary-50 sm:h-32"
+						class="mb-3 h-28 w-full rounded-lg sm:h-32 {getSubjectColor(
+							pkg.subject
+						)} flex items-center justify-center"
 					>
 						<BookOpen size={28} class="opacity-40" />
 					</div>
@@ -132,32 +147,26 @@
 					</p>
 
 					<div class="mt-auto flex items-center justify-between pt-3 text-xs text-slate-500">
-						<div class="flex items-center gap-2">
-							<span>{pkg.questionCount} Soal</span>
-							<span
-								class="rounded-full px-2 py-0.5 text-[10px] font-semibold {pkg.difficulty ===
-								'Mudah'
-									? 'bg-emerald-50 text-emerald-700'
-									: pkg.difficulty === 'Sedang'
-										? 'bg-amber-50 text-amber-700'
-										: 'bg-red-50 text-red-700'}"
-							>
-								{pkg.difficulty}
-							</span>
-						</div>
+						<span>{pkg.questionCount} Soal</span>
 						<span
-							class="font-semibold text-primary-700 transition-transform group-hover:translate-x-0.5"
+							class="font-semibold text-primary-700 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100"
 						>
 							Detail &rarr;
 						</span>
 					</div>
-					{#if pkg.isVerified}
-						<span
-							class="absolute top-5 right-5 z-10 flex items-center gap-1 rounded-lg bg-white/80 px-2 py-1 text-[10px] font-semibold text-emerald-600 shadow-sm"
-						>
-							<ShieldCheck size={12} /> Terverifikasi
-						</span>
-					{/if}
+
+					<button
+						type="button"
+						onclick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							toggleBookmark(pkg.id);
+						}}
+						aria-label={pkg.isBookmark ? 'Hapus bookmark' : 'Simpan bookmark'}
+						class="absolute top-5 right-5 z-10 rounded-lg bg-white/80 p-1.5 text-slate-400 shadow-sm transition-all hover:bg-white hover:text-slate-600"
+					>
+						<Bookmark size={16} class={pkg.isBookmark ? 'fill-amber-400 text-amber-500' : ''} />
+					</button>
 				</a>
 			{/each}
 		</div>
@@ -170,10 +179,10 @@
 		/>
 	{/if}
 
-	<!-- Community Section Placeholder -->
 	<div class="mt-10 rounded-2xl border-2 border-dashed border-slate-200 p-8 text-center sm:mt-12">
 		<div
 			class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-400"
+			aria-hidden="true"
 		>
 			<Users size={20} />
 		</div>

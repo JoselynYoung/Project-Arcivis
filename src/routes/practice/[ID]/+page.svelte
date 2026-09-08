@@ -11,11 +11,15 @@
 		ShieldCheck,
 		ListChecks
 	} from '@lucide/svelte';
-	import { practicePackages } from '$lib/mocks/practice';
+	import { practicePackages, subjects } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
 
 	const packageId = $derived(Number(page.params.id));
 	const pkg = $derived(practicePackages.find((p) => p.id === packageId) ?? null);
+
+	function getSubjectBadgeColor(subjectName: string): string {
+		return subjects.find((s) => s.name === subjectName)?.color ?? 'bg-slate-50 text-slate-700';
+	}
 
 	let isBookmarked = $state(false);
 	function toggleBookmark() {
@@ -125,17 +129,12 @@
 			<div class="space-y-6 md:col-span-7 lg:col-span-8">
 				<div class="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 					<div class="flex flex-wrap items-center gap-2">
-						<span class="rounded-full border px-3 py-1 text-xs font-semibold text-slate-600">
-							{pkg.subject}
-						</span>
 						<span
-							class="rounded-full px-3 py-1 text-xs font-semibold {pkg.difficulty === 'Mudah'
-								? 'bg-emerald-50 text-emerald-700'
-								: pkg.difficulty === 'Sedang'
-									? 'bg-amber-50 text-amber-700'
-									: 'bg-red-50 text-red-700'}"
+							class="rounded-full px-3 py-1 text-xs font-semibold {getSubjectBadgeColor(
+								pkg.subject
+							)}"
 						>
-							{pkg.difficulty}
+							{pkg.subject}
 						</span>
 						{#if pkg.isVerified}
 							<span

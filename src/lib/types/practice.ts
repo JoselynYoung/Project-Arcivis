@@ -11,11 +11,10 @@ export interface PracticePackage {
 	subject: string;
 	difficulty: string;
 	questionCount: number;
-	duration: string;
-	group: string;
 	author: string;
 	topics: string[];
 	isVerified: boolean;
+	isBookmark?: boolean;
 }
 
 export interface Question {
@@ -24,13 +23,6 @@ export interface Question {
 	options: string[];
 	correctIndex: number;
 	explanation: string;
-}
-
-export type QuestionsByPackage = Record<number, Question[]>;
-
-export interface PracticePackageGroup {
-	name: string;
-	packages: PracticePackage[];
 }
 
 export interface QuizGeneratorConfig {

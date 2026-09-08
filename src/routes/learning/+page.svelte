@@ -88,6 +88,7 @@
 			{#each filteredMateri as item (item.id)}
 				<a
 					href={resolve('/learning/[id]', { id: String(item.id) })}
+					aria-label="{item.judul}, {item.mapel}"
 					class="group hover:border-primary-300 relative flex cursor-pointer flex-col rounded-xl border-2 border-slate-100 bg-white p-3 no-underline shadow-sm transition-all hover:shadow-md"
 				>
 					<div
@@ -104,11 +105,12 @@
 					<div class="mt-auto flex items-center justify-between pt-3 text-xs text-slate-500">
 						<span></span>
 						<span
-							class="font-semibold text-primary-700 transition-transform group-hover:translate-x-0.5"
+							class="font-semibold text-primary-700 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100"
 						>
 							Detail &rarr;
 						</span>
 					</div>
+
 					<button
 						type="button"
 						onclick={(e) => {
@@ -116,7 +118,7 @@
 							e.stopPropagation();
 							toggleBookmark(item.id);
 						}}
-						aria-label="Simpan bookmark"
+						aria-label={item.isBookmark ? 'Hapus bookmark' : 'Simpan bookmark'}
 						class="absolute top-5 right-5 z-10 rounded-lg bg-white/80 p-1.5 text-slate-400 shadow-sm transition-all hover:bg-white hover:text-slate-600"
 					>
 						<Bookmark size={16} class={item.isBookmark ? 'fill-amber-400 text-amber-500' : ''} />

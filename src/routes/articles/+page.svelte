@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { BookOpen } from '@lucide/svelte';
+	import { Bookmark, BookOpen } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
-	import { articles } from '$lib/mocks/articles';
+	import { articles, type Article } from '$lib/mocks/articles';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 
@@ -26,8 +26,10 @@
 	let selectedSort = $state('terbaru');
 	let isSortDropdownOpen = $state(false);
 
+	let listArticles = $state<Article[]>(articles);
+
 	const filteredArticles = $derived(
-		articles
+		listArticles
 			.filter((a) => {
 				const matchQuery =
 					searchQuery.trim() === '' ||
@@ -55,6 +57,10 @@
 			})
 	);
 
+	function toggleBookmark(id: number) {
+		listArticles = listArticles.map((a) => (a.id === id ? { ...a, isBookmark: !a.isBookmark } : a));
+	}
+
 	function resetFilters() {
 		searchQuery = '';
 		selectedKategori = 'Semua Kategori';
@@ -81,26 +87,41 @@
 			{#each filteredArticles as article (article.id)}
 				<a
 					href={resolve('/articles/[id]', { id: String(article.id) })}
-					class="group hover:border-primary-300 flex cursor-pointer flex-col rounded-xl border-2 border-slate-100 bg-white p-3 shadow-sm transition-all hover:shadow-md"
-					aria-label={`${article.judul}, ${article.kategori}`}
+					aria-label="{article.judul}, {article.kategori}"
+					class="group hover:border-primary-300 relative flex cursor-pointer flex-col rounded-xl border-2 border-slate-100 bg-white p-3 shadow-sm transition-all hover:shadow-md"
 				>
 					<div
 						class="mb-3 h-28 w-full rounded-lg sm:h-32 {article.badgeWarna} flex items-center justify-center"
 					>
 						<BookOpen size={28} class="opacity-40" />
 					</div>
+
 					<p class="mb-1 text-xs font-medium text-slate-400">{article.kategori}</p>
 					<p class="line-clamp-2 text-sm leading-snug font-medium text-slate-800">
 						{article.judul}
 					</p>
+
 					<div class="mt-auto flex items-center justify-between pt-3 text-xs text-slate-500">
 						<span>{article.author}</span>
 						<span
-							class="font-semibold text-primary-700 transition-transform group-hover:translate-x-0.5"
+							class="font-semibold text-primary-700 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100"
 						>
 							Detail &rarr;
 						</span>
 					</div>
+
+					<button
+						type="button"
+						onclick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							toggleBookmark(article.id);
+						}}
+						aria-label={article.isBookmark ? 'Hapus bookmark' : 'Simpan bookmark'}
+						class="absolute top-5 right-5 z-10 rounded-lg bg-white/80 p-1.5 text-slate-400 shadow-sm transition-all hover:bg-white hover:text-slate-600"
+					>
+						<Bookmark size={16} class={article.isBookmark ? 'fill-amber-400 text-amber-500' : ''} />
+					</button>
 				</a>
 			{/each}
 		</div>

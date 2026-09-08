@@ -18,11 +18,10 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'Penalaran',
 		difficulty: 'Sedang',
 		questionCount: 20,
-		duration: '25 menit',
-		group: 'Paket Latihan Soal A',
 		author: 'Tim Arcivis',
 		topics: ['Pola Bilangan', 'Logika Formal', 'Analisis Korelasi'],
-		isVerified: true
+		isVerified: true,
+		isBookmark: true
 	},
 	{
 		id: 2,
@@ -31,8 +30,6 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'Matematika',
 		difficulty: 'Mudah',
 		questionCount: 15,
-		duration: '20 menit',
-		group: 'Paket Latihan Soal A',
 		author: 'Tim Arcivis',
 		topics: ['Persen', 'Rata-rata', 'Perbandingan'],
 		isVerified: true
@@ -44,11 +41,10 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'Matematika',
 		difficulty: 'Sulit',
 		questionCount: 20,
-		duration: '30 menit',
-		group: 'Paket Latihan Soal A',
 		author: 'Tim Arcivis',
 		topics: ['Aljabar', 'Barisan & Deret', 'Peluang'],
-		isVerified: true
+		isVerified: true,
+		isBookmark: true
 	},
 	{
 		id: 4,
@@ -57,8 +53,6 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'B.Indonesia',
 		difficulty: 'Sedang',
 		questionCount: 15,
-		duration: '25 menit',
-		group: 'Paket Latihan Soal B',
 		author: 'Tim Arcivis',
 		topics: ['Teks Eksposisi', 'Argumen', 'Kosakala'],
 		isVerified: true
@@ -70,8 +64,6 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'B.Inggris',
 		difficulty: 'Sedang',
 		questionCount: 15,
-		duration: '25 menit',
-		group: 'Paket Latihan Soal B',
 		author: 'Tim Arcivis',
 		topics: ['Reading Comprehension', 'Vocabulary', 'Inference'],
 		isVerified: false
@@ -83,8 +75,6 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'B.Indonesia',
 		difficulty: 'Sulit',
 		questionCount: 10,
-		duration: '20 menit',
-		group: 'Paket Latihan Soal B',
 		author: 'Kontributor: Budi Santoso',
 		topics: ['Teks Ilmiah', 'Reduksi Informasi', 'Sintesis'],
 		isVerified: false
@@ -96,11 +86,10 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'Matematika',
 		difficulty: 'Mudah',
 		questionCount: 20,
-		duration: '30 menit',
-		group: 'Paket Latihan Soal C',
 		author: 'Tim Arcivis',
 		topics: ['Aritmatika', 'Aljabar Dasar', 'Geometri'],
-		isVerified: true
+		isVerified: true,
+		isBookmark: false
 	},
 	{
 		id: 8,
@@ -109,8 +98,6 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'Fisika',
 		difficulty: 'Sedang',
 		questionCount: 15,
-		duration: '25 menit',
-		group: 'Paket Latihan Soal C',
 		author: 'Tim Arcivis',
 		topics: ['Kinematika', 'Hukum Newton', 'Gaya & Gerak'],
 		isVerified: true
@@ -122,8 +109,6 @@ export const practicePackages: PracticePackage[] = [
 		subject: 'Kimia',
 		difficulty: 'Sulit',
 		questionCount: 15,
-		duration: '25 menit',
-		group: 'Paket Latihan Soal C',
 		author: 'Kontributor: Siti Aminah',
 		topics: ['Stoikiometri', 'Ikatan Kimia', 'Termokimia'],
 		isVerified: false

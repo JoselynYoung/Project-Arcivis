@@ -1,14 +1,13 @@
 /**
- * ROUTING CONVENTIONS:
- * /{module}              -> Collection Page (grid / list)
- * /{module}/[id]          -> Detail Page (metadata, overview, action buttons)
- * /{module}/[id]/{action}  -> Action Page (dedicated reader / quiz execution flow)
+ * Routing Conventions:
+ * /{module}                -> Collection Page
+ * /{module}/[id]           -> Detail Page
+ * /{module}/[id]/{action}  -> Action Page
  *
  * Explicit Module Actions:
- * - learning  : action = 'read'  -> /learning/[id]/read
- * - articles  : action = 'read'  -> /articles/[id]/read
- * - practice  : action = 'quiz'  -> /practice/[id]/quiz
- * - library   : Download/Buy trigger buttons directly on Detail Page (no separate action route)
+ * - learning  : action = 'read'
+ * - articles  : action = 'read'
+ * - practice  : action = 'quiz'
  */
 
 export const ROUTES = {
@@ -23,26 +22,3 @@ export const ROUTES = {
 } as const;
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
-
-export function getPracticeDetailRoute(id: string | number) {
-	return `/practice/${id}`;
-}
-
-export function getPracticeQuizRoute(id: string | number) {
-	return `/practice/${id}/quiz`;
-}
-
-export function getLearningDetailRoute(id: string | number) {
-	return `/learning/${id}`;
-}
-
-export function getLearningReadRoute(id: string | number) {
-	return `/learning/${id}/read`;
-}
-
-export function getArticleDetailRoute(id: string | number) {
-	return `/articles/${id}`;
-}
-export function getArticleReadRoute(id: string | number) {
-	return `/articles/${id}/read`;
-}

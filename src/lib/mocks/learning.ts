@@ -3,13 +3,11 @@ export interface LearningMaterial {
 	judul: string;
 	deskripsi: string;
 	mapel: string;
-	tanggal: string; // YYYY-MM-DD
+	tanggal: string;
 	updatedAt: string;
 	author: string;
 	dibaca: number;
-	durasi: string;
 	badgeWarna: string;
-	iconWarna: string;
 	isBookmark?: boolean;
 	topics?: string[];
 	content: string;
@@ -26,9 +24,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '20 Juli 2026',
 		author: 'Tim Matematika Acivis',
 		dibaca: 1420,
-		durasi: '8 min baca',
 		badgeWarna: 'bg-primary-50 text-primary-700 border-primary-200',
-		iconWarna: 'bg-primary-600 text-white',
 		isBookmark: false,
 		topics: ['Fungsi Kuadrat', 'Diskriminan', 'Titik Puncak', 'Transformasi Grafik'],
 		content: `
@@ -68,9 +64,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '18 Juli 2026',
 		author: 'Drs. Supriyanto, M.Si.',
 		dibaca: 980,
-		durasi: '12 min baca',
 		badgeWarna: 'bg-cyan-50 text-cyan-700 border-cyan-200',
-		iconWarna: 'bg-cyan-600 text-white',
 		isBookmark: true,
 		topics: ['Kinematika 2D', 'Sudut Elevasi', 'Tinggi Maksimum', 'Jangkauan Terjauh'],
 		content: `
@@ -102,9 +96,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '15 Juli 2026',
 		author: 'Dr. Anita Rahmawati',
 		dibaca: 2150,
-		durasi: '10 min baca',
 		badgeWarna: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-		iconWarna: 'bg-emerald-600 text-white',
 		isBookmark: false,
 		topics: ['Konfigurasi Elektron', 'Bilangan Kuantum', 'Sistem Periodik', 'Jari-Jari Atom'],
 		content: `
@@ -132,9 +124,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '10 Juli 2026',
 		author: 'Tim Biologi Acivis',
 		dibaca: 1890,
-		durasi: '15 min baca',
 		badgeWarna: 'bg-amber-50 text-amber-700 border-amber-200',
-		iconWarna: 'bg-amber-600 text-white',
 		isBookmark: false,
 		topics: ['Respirasi Aerob', 'Glikolisis', 'Siklus Krebs', 'Transpor Elektron'],
 		content: `
@@ -158,9 +148,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '22 Juli 2026',
 		author: 'Nabila Putri, M.Pd.',
 		dibaca: 3100,
-		durasi: '6 min baca',
 		badgeWarna: 'bg-rose-50 text-rose-700 border-rose-200',
-		iconWarna: 'bg-rose-600 text-white',
 		isBookmark: true,
 		topics: ['Literasi', 'Ide Pokok', 'Skimming', 'Scanning'],
 		content: `
@@ -181,9 +169,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '12 Juli 2026',
 		author: 'Sarah Johnson, M.A.',
 		dibaca: 1250,
-		durasi: '9 min baca',
 		badgeWarna: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-		iconWarna: 'bg-indigo-600 text-white',
 		isBookmark: false,
 		topics: ['Inference', 'Vocabulary in Context', 'Main Idea', 'Author Perspective'],
 		content: `
@@ -204,9 +190,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '21 Juli 2026',
 		author: 'Tim Penalaran Acivis',
 		dibaca: 4500,
-		durasi: '11 min baca',
 		badgeWarna: 'bg-purple-50 text-purple-700 border-purple-200',
-		iconWarna: 'bg-purple-600 text-white',
 		isBookmark: true,
 		topics: ['Silogisme', 'Modus Ponens', 'Modus Tollens', 'Penalaran Analitis'],
 		content: `
@@ -230,9 +214,7 @@ export const learningMaterials: LearningMaterial[] = [
 		updatedAt: '05 Juli 2026',
 		author: 'Tim Matematika Acivis',
 		dibaca: 870,
-		durasi: '14 min baca',
 		badgeWarna: 'bg-primary-50 text-primary-700 border-primary-200',
-		iconWarna: 'bg-primary-600 text-white',
 		isBookmark: false,
 		topics: ['Turunan', 'Optimasi', 'Maksimum Minima', 'Diferensial'],
 		content: `
