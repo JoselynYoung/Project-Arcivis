@@ -69,7 +69,6 @@
 </script>
 
 <div class="box-border w-full max-w-full">
-	<h1 class="mb-6 text-2xl font-bold text-slate-800">Artikel</h1>
 
 	<FilterBar
 		searchPlaceholder="Cari artikel, topik, atau kategori..."

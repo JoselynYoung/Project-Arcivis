@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { Bookmark, BookOpen, Zap, ChevronRight, Users } from '@lucide/svelte';
+	import { Bookmark, BookOpen, Zap, ChevronRight} from '@lucide/svelte';
 	import { subjects, practicePackages } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PracticePackage } from '$lib/types/practice';
@@ -179,16 +179,4 @@
 		/>
 	{/if}
 
-	<div class="mt-10 rounded-2xl border-2 border-dashed border-slate-200 p-8 text-center sm:mt-12">
-		<div
-			class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-400"
-			aria-hidden="true"
-		>
-			<Users size={20} />
-		</div>
-		<h3 class="mb-1 text-sm font-bold text-slate-700">Latihan Komunitas</h3>
-		<p class="text-xs text-slate-400">
-			Berkontribusi dan berbagi soal latihan dengan komunitas Arcivis. Segera hadir.
-		</p>
-	</div>
 </div>
