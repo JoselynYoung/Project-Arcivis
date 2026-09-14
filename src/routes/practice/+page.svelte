@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { Bookmark, BookOpen, Zap, ChevronRight} from '@lucide/svelte';
-	import { subjects, practicePackages } from '$lib/mocks/practice';
+	import { Bookmark, BookOpen, Zap, ChevronRight } from '@lucide/svelte';
+	import { practicePackages } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PracticePackage } from '$lib/types/practice';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+	const subjects = $derived(data.subjects ?? []);
 
 	let searchQuery = $state('');
 	let selectedSubject = $state('Semua');
@@ -19,7 +23,7 @@
 		{ id: 'terbanyak', label: 'Paling Banyak Soal' }
 	];
 
-	const subjectFilterOptions = ['Semua', ...subjects.map((s) => s.name)];
+	const subjectFilterOptions = $derived(['Semua', ...subjects.map((s) => s.name)]);
 
 	let listPackages = $state<PracticePackage[]>(practicePackages);
 
@@ -178,5 +182,4 @@
 			onReset={resetFilters}
 		/>
 	{/if}
-
 </div>

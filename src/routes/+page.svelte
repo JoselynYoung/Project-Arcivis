@@ -3,7 +3,6 @@
 	import { fade } from 'svelte/transition';
 	import {
 		banners,
-		schedules,
 		statistics,
 		recentLearningCards,
 		recentPracticeCards,
@@ -12,11 +11,15 @@
 		user,
 		calendar
 	} from '$lib/mocks/home';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+	const schedules = $derived(data.schedules ?? []);
 
 	let userName = user.name;
 
 	// Calendar (static July 2026, data moved to mock file)
-	let namaBulan = calendar.monthLabel;
+	let namaBulan = $derived(schedules[0]?.calendarLabel ?? calendar.monthLabel);
 	let namaHari = calendar.dayNames;
 	let offsetAwal = calendar.leadingOffset;
 	let jumlahHari = calendar.daysInMonth;
@@ -242,7 +245,7 @@
 					<div class="flex items-center gap-3" role="listitem">
 						<span class="h-2 w-2 rounded-full {j.warna} shrink-0"></span>
 						<p class="text-sm text-slate-600">{j.label}</p>
-						<p class="ml-auto text-xs text-slate-400">Juli {j.tanggal}</p>
+						<p class="ml-auto text-xs text-slate-400">{j.monthLabel} {j.tanggal}</p>
 					</div>
 				{/each}
 			</div>

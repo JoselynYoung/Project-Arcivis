@@ -11,8 +11,12 @@
 		ShieldCheck,
 		ListChecks
 	} from '@lucide/svelte';
-	import { practicePackages, subjects } from '$lib/mocks/practice';
+	import { practicePackages } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+	const subjects = $derived(data.subjects ?? []);
 
 	const packageId = $derived(Number(page.params.id));
 	const pkg = $derived(practicePackages.find((p) => p.id === packageId) ?? null);

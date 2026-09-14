@@ -2,9 +2,12 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, Zap, Play, Check } from '@lucide/svelte';
-	import { subjects } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
 	import { setQuizGeneratorConfig } from '$lib/utils/quizGeneratorState.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+	const subjects = $derived(data.subjects ?? []);
 
 	const topicOptions: Record<string, string[]> = {
 		Matematika: ['Aljabar', 'Geometri', 'Barisan & Deret', 'Peluang', 'Trigonometri'],
@@ -23,8 +26,8 @@
 	];
 	const amountOptions = [5, 10, 15, 20, 30];
 
-	let selectedSubject = $state(subjects[0].name);
-	let selectedTopic = $state(topicOptions[subjects[0].name][0]);
+	let selectedSubject = $state('');
+	let selectedTopic = $state('');
 	let selectedDifficulty = $state(difficultyOptions[1]);
 	let selectedMode = $state(modeOptions[0].id);
 	let selectedAmount = $state(amountOptions[1]);
@@ -32,12 +35,18 @@
 	const topics = $derived(topicOptions[selectedSubject] ?? []);
 
 	$effect(() => {
+		if (!selectedSubject && subjects[0]) {
+			selectedSubject = subjects[0].name;
+		}
+
 		if (!topics.includes(selectedTopic)) {
 			selectedTopic = topics[0] ?? '';
 		}
 	});
 
 	function startSession() {
+		if (!selectedSubject) return;
+
 		setQuizGeneratorConfig({
 			subject: selectedSubject,
 			topic: selectedTopic,
