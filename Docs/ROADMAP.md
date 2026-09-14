@@ -77,13 +77,16 @@ ERD, schema, relationships, and constraints. Carried out only after the UI was s
 - `questions.difficulty` and `questions.topic` are included now (not deferred), since the Quiz Generator UI already exists and filters on both.
 - **Explicitly deferred, not part of this schema**: `collections`/`collection_items` (thematic curation for the homepage, e.g. future brand collaborations), `organizations` (partner metadata), and the Community-feature tables `comments`/`reviews`/`verifications`/`reports` — all deferred to Stage 7, as none currently have a corresponding UI. Rationale and revisit conditions are recorded in `SCHEMA.md` Section 5.
 
-## Stage 5 — Supabase Implementation 🚧 **CURRENT STATUS**
+## Stage 5 — Supabase Implementation ✅ Complete (v0.5.0)
 
-Auth, database tables, storage, RLS policies.
+**Verified against the live Supabase project:**
 
-This is the point at which the "no backend" hard rule that has applied since Stage 2 is lifted. The Contribution UI feature (form for submitting Practice/Learning/Article content) was deliberately not built as a disposable mock/localStorage feature; it is to be implemented directly against the real schema starting in this stage, using the field requirements already established.
+- **Migration `0001_initial_schema.sql`** — 11 tables, verified live via `pg_class.relrowsecurity` query and Table Editor.
+- **Migration `0002_profile_on_signup.sql`** — `handle_new_user()` trigger, verified end-to-end via `/dev/auth-test` (signup → matching `profiles` row with correct `auth.uid()`).
+- **Migration `0003_rls_policies.sql`** — RLS enabled and policies applied on all 11 tables, including a trigger (`prevent_role_self_escalation`) blocking users from changing their own `role`. Verified live: all 7 spot-checked tables show `relrowsecurity = true`. Self-role-escalation blocked with a clear error, confirmed via `/dev/rls-test`. Cross-user data isolation (bookmarks/attempts) was **not** verified with real fixture data — this is a known open verification gap, not a known failure.
+- **Migration `0004_storage_covers.sql`** — `content-covers` bucket (public read, 2MB limit, image types only), owner-scoped write via folder-based policy. Verified via `/dev/storage-test`: upload, public-URL render, delete (confirmed via Storage dashboard, not just app-side), and anonymous-upload rejection all behaved correctly. Deleted files may remain briefly reachable via their public URL due to Supabase's Smart CDN cache (up to ~60s propagation) — this is expected platform behavior, not a bug.
 
-## Stage 6 — Backend Integration (not started)
+## Stage 6 — Backend Integration 🚧 **CURRENT STATUS**
 
 Replace mock data with Supabase. The UI must not change — only the data source.
 
@@ -134,6 +137,7 @@ These apply throughout the project unless a specific stage explicitly overrides 
 - Making the Home calendar dynamic.
 - Cover image upload workflow for contributors (the `content.cover_image` field exists in the schema; the upload UI itself is not yet built).
 - Final domain name.
+- Cross-user RLS isolation (bookmarks, attempts) verified by policy design and code review, not by live fixture-data testing. Revisit if any data-leak symptom appears after Stage 6 goes live.
 
 ---
 

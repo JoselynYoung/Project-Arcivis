@@ -4,6 +4,31 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
+## [v0.5.0] — Stage 5: Supabase Implementation
+
+### Added
+
+- Supabase project provisioned; schema (`0001`), auth trigger (`0002`), RLS policies (`0003`), and Storage bucket (`0004`) migrations applied and verified against the live project.
+- Email/password authentication via Supabase Auth.
+- `handle_new_user()` trigger auto-creates a `profiles` row on signup.
+- Row Level Security enabled on all 11 tables. Ownership-scoped read/write policies per `SCHEMA.md`; verifiers/admins may change `content.status` to `diverifikasi`, authors may not self-publish.
+- `prevent_role_self_escalation` trigger — blocks any user from changing their own `role`, including admins editing their own row (role changes require a different admin's action).
+- `content-covers` Storage bucket: public read, 2MB/image-only limit, folder-scoped write access (`{auth.uid()}/...`).
+- Isolated dev-only verification routes: `/dev/auth-test`, `/dev/rls-test`, `/dev/storage-test` (not linked in navigation; retained for now as working references, not yet scheduled for removal).
+
+### Verified
+
+- Auth flow end-to-end (signup, profile creation, login, logout) against the live database.
+- RLS active on all tables (`relrowsecurity = true`, confirmed via direct query, not application-level inference).
+- Storage upload/public-read/delete cycle, including confirmation via the Supabase dashboard that deleted files are actually removed (not just app-reported).
+
+### Known gaps
+
+- Cross-user RLS isolation for `bookmarks`/`attempts` verified by policy design, not by live two-account fixture testing.
+- No existing page (Home/Learning/Articles/Practice/etc.) is yet connected to Supabase — all still read mock data. That's Stage 6.
+
+---
+
 ## [v0.4.0] — Stage 4: Database Design
 
 ### Added
