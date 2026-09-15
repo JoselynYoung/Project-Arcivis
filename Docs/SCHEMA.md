@@ -1,6 +1,6 @@
 # Arcivis Database Schema
 
-**Stage:** Stage 4 — Database Design
+**Stage:** Stage 6 — Phase 2 Schema Decision
 
 ---
 
@@ -30,18 +30,20 @@ Represents a platform user.
 
 The central entity. All Learning, Article, and Practice records are stored here.
 
-| Column      | Type             | Description                                                                                                                                     |
-| ----------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| id          | uuid             | Primary key                                                                                                                                     |
-| type        | string           | Content category. Stored as free text rather than an enumerated type, allowing new categories to be introduced without a schema migration.      |
-| title       | string           |                                                                                                                                                 |
-| description | string           |                                                                                                                                                 |
-| status      | string           | `draft` \| `direview` \| `diverifikasi`                                                                                                         |
-| cover_image | string, nullable | Contributor-supplied cover image. When absent, the interface applies a default gradient-and-icon treatment.                                     |
-| author_id   | uuid             | Foreign key → `profiles.id`. The display label ("Penulis", "Penyusun", "Kontributor") is determined by `type` at render time and is not stored. |
-| subject_id  | uuid, nullable   | Foreign key → `subjects.id`. Nullable, as not all content maps to a defined school subject.                                                     |
-| created_at  | timestamp        |                                                                                                                                                 |
-| updated_at  | timestamp        |                                                                                                                                                 |
+| Column                | Type             | Description                                                                                                                                             |
+| --------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id                    | uuid             | Primary key                                                                                                                                             |
+| type                  | string           | Content category. Stored as free text rather than an enumerated type, allowing new categories to be introduced without a schema migration.              |
+| title                 | string           |                                                                                                                                                         |
+| description           | string           |                                                                                                                                                         |
+| status                | string           | `draft` \| `direview` \| `diverifikasi`                                                                                                                 |
+| cover_image           | string, nullable | Contributor-supplied cover image. When absent, the interface applies a default gradient-and-icon treatment.                                             |
+| author_id             | uuid             | Foreign key → `profiles.id`. The display label ("Penulis", "Penyusun", "Kontributor") is determined by `type` at render time and is not stored.         |
+| subject_id            | uuid, nullable   | Foreign key → `subjects.id`. Nullable, as not all content maps to a defined school subject.                                                             |
+| body                  | jsonb, nullable  | Tiptap/ProseMirror-compatible document using editor schema version 1. Required for Learning and Article records in `direview` or `diverifikasi` status. |
+| editor_schema_version | integer          | Editor document contract version. Version `1` is currently supported.                                                                                   |
+| created_at            | timestamp        |                                                                                                                                                         |
+| updated_at            | timestamp        |                                                                                                                                                         |
 
 ### 3.3 `content_resources`
 
@@ -70,10 +72,11 @@ Free-form keyword classification, associated with content in a many-to-many rela
 
 **`tags`**
 
-| Column | Type   | Description |
-| ------ | ------ | ----------- |
-| id     | uuid   | Primary key |
-| name   | string |             |
+| Column | Type   | Description                                            |
+| ------ | ------ | ------------------------------------------------------ |
+| id     | uuid   | Primary key                                            |
+| name   | string | Human-readable display name                            |
+| slug   | string | Canonical lowercase ASCII identity, unique across tags |
 
 **`content_tags`**
 
@@ -137,6 +140,19 @@ Aggregate statistics (session count, accuracy, total questions completed) are de
 | title      | string |             |
 | event_date | date   |             |
 
+### 3.11 `content_view_events`
+
+Raw private view events for future Popular and Statistics features. This is
+an event source, not a precomputed counter.
+
+| Column     | Type             | Description                                                                       |
+| ---------- | ---------------- | --------------------------------------------------------------------------------- |
+| id         | uuid             | Primary key                                                                       |
+| content_id | uuid             | Foreign key → `content.id`                                                        |
+| user_id    | uuid, nullable   | Authenticated viewer, when available                                              |
+| session_id | string, nullable | Opaque anonymous session identifier, not an IP, fingerprint, or device identifier |
+| created_at | timestamp        | Server-generated event time                                                       |
+
 ## 4. Design Decisions
 
 **4.1 Unified content table.** A single `content` table was chosen over separate tables per content type. This avoids requiring every cross-content feature (bookmarking, contribution history, moderation status) to query and merge results across multiple tables, and keeps the schema consistent with the platform's content model. Fields specific to a single content type (such as question data) are stored in attached tables rather than as additional nullable columns on `content`.
@@ -146,6 +162,28 @@ Aggregate statistics (session count, accuracy, total questions completed) are de
 **4.3 Nullable subject reference.** `content.subject_id` is nullable to accommodate content that does not correspond to a defined academic subject. Such content is classified through `tags` instead.
 
 **4.4 No dedicated statistics table.** Aggregate metrics are computed from `attempts` on demand rather than maintained as separate running totals, avoiding a class of data-synchronization issues at a scale where computed aggregation is not a performance concern.
+
+**4.5 Structured content bodies.** Learning and Article bodies are stored in
+`content.body` as nullable JSONB using Tiptap/ProseMirror document schema
+version 1. The root is `doc`; supported nodes are `paragraph`, `heading`,
+`orderedList`, `bulletList`, `listItem`, `image`, `math`, and text. Supported
+marks are `bold`, `italic`, `underline`, `fontFamily`, and `fontSize`.
+Images store a path in the private `content-body-assets` Storage bucket, and
+math stores canonical LaTeX in `attrs.latex`. Body writes are validated by a
+database trigger. Learning and Article records in `direview` or `diverifikasi`
+must have a valid body. Practice bodies remain nullable.
+
+**4.6 Tag identity and semantics.** Tags remain reusable many-to-many
+classification through `content_tags`. `tags.slug` is a unique canonical
+lowercase ASCII identity generated from `tags.name`. Article categories are
+ordinary tags and may be multiple; there is no primary-category constraint.
+
+**4.7 Private view events.** A view is recorded only for published
+(`diverifikasi`) content through the controlled `record_content_view` RPC. A
+viewer is counted at most once per content per 24-hour window, by authenticated
+`user_id` or opaque anonymous `session_id`. Raw events are not publicly
+readable, and no IP, fingerprint, user-agent, or precomputed `view_count` is
+stored. Aggregate Popular/Statistics queries are deferred.
 
 ## 5. Scope Excluded from Stage 4
 
