@@ -69,13 +69,13 @@ ERD, schema, relationships, and constraints. Carried out only after the UI was s
 
 **Result:**
 
-- Full schema documented in `SCHEMA.md`; entity-relationship diagram in `arcivis-erd.html`.
+- Full schema documented in `Docs/SCHEMA.md`; entity-relationship diagram in `arcivis-erd.html`.
 - Ten entities approved: `profiles`, `content`, `content_resources`, `subjects`, `tags` + `content_tags`, `bookmarks`, `questions`, `attempts`, `announcements`, `schedules`.
 - **Key decision**: a single unified `content` table represents Learning, Articles, and Practice, distinguished by a `type` field, consistent with the platform's one-content-model philosophy. Type-specific fields (e.g. question data) live in attached tables, not as extra nullable columns on `content`.
 - `content.type` is stored as free text, not a database enum, so new content categories can be added without a migration.
 - `content.subject_id` is nullable, to support content without a defined school subject (classified via `tags` instead).
 - `questions.difficulty` and `questions.topic` are included now (not deferred), since the Quiz Generator UI already exists and filters on both.
-- **Explicitly deferred, not part of this schema**: `collections`/`collection_items` (thematic curation for the homepage, e.g. future brand collaborations), `organizations` (partner metadata), and the Community-feature tables `comments`/`reviews`/`verifications`/`reports` — all deferred to Stage 7, as none currently have a corresponding UI. Rationale and revisit conditions are recorded in `SCHEMA.md` Section 5.
+- **Explicitly deferred, not part of this schema**: `collections`/`collection_items` (thematic curation for the homepage, e.g. future brand collaborations), `organizations` (partner metadata), and the Community-feature tables `comments`/`reviews`/`verifications`/`reports` — all deferred to Stage 7, as none currently have a corresponding UI. Rationale and revisit conditions are recorded in `Docs/SCHEMA.md` Section 5.
 
 ## Stage 5 — Supabase Implementation ✅ Complete (v0.5.0)
 
@@ -126,8 +126,8 @@ These apply throughout the project unless a specific stage explicitly overrides 
 7. **Deliberate placeholders** (do not "fix" without being asked): the "Unduh PDF" button (`alert()`), the dark mode toggle (cosmetic only), the Community section placeholder (inside Practice).
 8. **`AGENTS.md`** may contain technical detail and implementation gotchas, but must not unilaterally decide new roadmap or architecture direction — decisions at that level must trace back to project-owner-approved instructions, recorded in this file.
 9. **Do not invent new stages or sub-stages** (e.g. "Stage 3.5," "Final Polish Phase") for small work items. Minor or cosmetic findings that surface after a stage has closed are recorded as a single backlog line, not treated as grounds for opening a new process or holding up the transition to the next stage. When in doubt whether something is blocking, the default is: **proceed**, record it, ask the project owner later.
-10. **`SCHEMA.md`** is the authoritative source for database structure once Stage 4 begins. Schema changes must trace back to a project-owner-approved decision, recorded there — not introduced unilaterally during implementation.
-11. **Documentation language**: all project documentation (`ROADMAP.md`, `ARCHITECTURE.md`, `DESIGN_GUIDELINES.md`, `AGENTS.md`, `SCHEMA.md`, `CHANGELOG.md`, code comments) is written in English. UI copy (labels, button text, mock data content) remains in Indonesian — this is a product decision, not a documentation one. Indonesian domain terms or literal data values quoted in documentation are not translated.
+10. **`Docs/SCHEMA.md`** is the authoritative source for database structure once Stage 4 begins. Schema changes must trace back to a project-owner-approved decision, recorded there — not introduced unilaterally during implementation.
+11. **Documentation language**: all project documentation (`Docs/ROADMAP.md`, `Docs/agents/ARCHITECTURE.md`, `Docs/agents/DESIGN_GUIDELINES.md`, `AGENTS.md`, `Docs/SCHEMA.md`, `Docs/CHANGELOG.md`, code comments) is written in English. UI copy (labels, button text, mock data content) remains in Indonesian — this is a product decision, not a documentation one. Indonesian domain terms or literal data values quoted in documentation are not translated.
 
 ---
 

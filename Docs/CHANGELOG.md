@@ -11,7 +11,7 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 - Supabase project provisioned; schema (`0001`), auth trigger (`0002`), RLS policies (`0003`), and Storage bucket (`0004`) migrations applied and verified against the live project.
 - Email/password authentication via Supabase Auth.
 - `handle_new_user()` trigger auto-creates a `profiles` row on signup.
-- Row Level Security enabled on all 11 tables. Ownership-scoped read/write policies per `SCHEMA.md`; verifiers/admins may change `content.status` to `diverifikasi`, authors may not self-publish.
+- Row Level Security enabled on all 11 tables. Ownership-scoped read/write policies per `Docs/SCHEMA.md`; verifiers/admins may change `content.status` to `diverifikasi`, authors may not self-publish.
 - `prevent_role_self_escalation` trigger — blocks any user from changing their own `role`, including admins editing their own row (role changes require a different admin's action).
 - `content-covers` Storage bucket: public read, 2MB/image-only limit, folder-scoped write access (`{auth.uid()}/...`).
 - Isolated dev-only verification routes: `/dev/auth-test`, `/dev/rls-test`, `/dev/storage-test` (not linked in navigation; retained for now as working references, not yet scheduled for removal).
@@ -33,7 +33,7 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ### Added
 
-- `SCHEMA.md` — full database schema documentation: ten entities, field definitions, design rationale, and explicitly excluded scope.
+- `Docs/SCHEMA.md` — full database schema documentation: ten entities, field definitions, design rationale, and explicitly excluded scope.
 - `arcivis-erd.html` — entity-relationship diagram (interactive, zoomable, self-contained).
 - Ten approved entities: `profiles`, `content`, `content_resources`, `subjects`, `tags`, `content_tags`, `bookmarks`, `questions`, `attempts`, `announcements`, `schedules`.
 
