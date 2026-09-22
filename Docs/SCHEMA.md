@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-This document defines the database schema for Arcivis. It describes each entity, its fields, the relationships between entities, the rationale behind key design decisions, and the scope explicitly excluded from this stage.
+This document defines the database schema for Arcivis. It describes each entity, its fields, the relationships between entities, the rationale behind key design decisions, and the scope explicitly excluded from the current schema.
 
 A visual entity-relationship diagram accompanies this document (`arcivis-erd.html`).
 
@@ -68,7 +68,7 @@ Reference table for academic subjects.
 
 ### 3.5 `tags` and `content_tags`
 
-Free-form keyword classification, associated with content in a many-to-many relationship. Used for content that does not map cleanly to a `subject`.
+Free-form keyword classification, associated with content in a many-to-many relationship. Used for content that does not map cleanly to a `subject`, and also used for Article categories (see §4.6).
 
 **`tags`**
 
@@ -76,12 +76,12 @@ Free-form keyword classification, associated with content in a many-to-many rela
 | ------ | ------ | ------------------------------------------------------ |
 | id     | uuid   | Primary key                                            |
 | name   | string | Human-readable display name                            |
-| slug   | string | Canonical lowercase ASCII identity, unique across tags |
+| slug   | string | Canonical lowercase ASCII identity, unique across tags. Provisioned ahead of a UI consumer — see §4.6 for the reasoning and its current status. |
 
 **`content_tags`**
 
 | Column     | Type | Description                |
-| ---------- | ---- | -------------------------- |
+| ---------- | ---- | --------------------------- |
 | content_id | uuid | Foreign key → `content.id` |
 | tag_id     | uuid | Foreign key → `tags.id`    |
 
@@ -99,7 +99,7 @@ Records a user's saved content, applicable uniformly across all content types.
 Questions associated with a content record of type `practice`.
 
 | Column        | Type   | Description                |
-| ------------- | ------ | -------------------------- |
+| ------------- | ------ | --------------------------- |
 | id            | uuid   | Primary key                |
 | content_id    | uuid   | Foreign key → `content.id` |
 | text          | string |                            |
@@ -114,20 +114,20 @@ Questions associated with a content record of type `practice`.
 Records a completed practice or quiz session.
 
 | Column           | Type           | Description                                                                                                         |
-| ---------------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| ---------------- | -------------- | --------------------------------------------------------------------------------------------------------------------- |
 | id               | uuid           | Primary key                                                                                                         |
 | user_id          | uuid           | Foreign key → `profiles.id`                                                                                         |
 | content_id       | uuid, nullable | Foreign key → `content.id`. Null when the session originates from the Quiz Generator rather than a curated package. |
 | generator_config | json, nullable | Stores the selected subject, topic, difficulty, and mode when `content_id` is null.                                 |
-| score            | int            |                                                                                                                     |
-| completed_at     | timestamp      |                                                                                                                     |
+| score            | int            |                                                                                                                       |
+| completed_at     | timestamp      |                                                                                                                       |
 
 Aggregate statistics (session count, accuracy, total questions completed) are derived from this table at query time rather than stored redundantly.
 
 ### 3.9 `announcements`
 
 | Column | Type   | Description |
-| ------ | ------ | ----------- |
+| ------ | ------ | ------------ |
 | id     | uuid   | Primary key |
 | title  | string |             |
 | body   | string |             |
@@ -135,18 +135,17 @@ Aggregate statistics (session count, accuracy, total questions completed) are de
 ### 3.10 `schedules`
 
 | Column     | Type   | Description |
-| ---------- | ------ | ----------- |
+| ---------- | ------ | ------------ |
 | id         | uuid   | Primary key |
 | title      | string |             |
 | event_date | date   |             |
 
 ### 3.11 `content_view_events`
 
-Raw private view events for future Popular and Statistics features. This is
-an event source, not a precomputed counter.
+Raw private view events, used as the source of truth for the Popular/Statistics aggregate reads described in §4.7. This is an event source, not a precomputed counter — no `view_count` column exists anywhere in the schema.
 
 | Column     | Type             | Description                                                                       |
-| ---------- | ---------------- | --------------------------------------------------------------------------------- |
+| ---------- | ---------------- | ----------------------------------------------------------------------------------- |
 | id         | uuid             | Primary key                                                                       |
 | content_id | uuid             | Foreign key → `content.id`                                                        |
 | user_id    | uuid, nullable   | Authenticated viewer, when available                                              |
@@ -161,7 +160,7 @@ an event source, not a precomputed counter.
 
 **4.3 Nullable subject reference.** `content.subject_id` is nullable to accommodate content that does not correspond to a defined academic subject. Such content is classified through `tags` instead.
 
-**4.4 No dedicated statistics table.** Aggregate metrics are computed from `attempts` on demand rather than maintained as separate running totals, avoiding a class of data-synchronization issues at a scale where computed aggregation is not a performance concern.
+**4.4 No dedicated statistics table.** Aggregate metrics for practice/quiz activity are computed from `attempts` on demand rather than maintained as separate running totals, avoiding a class of data-synchronization issues at a scale where computed aggregation is not a performance concern. (Content view counts follow the same on-demand principle; see §4.7.)
 
 **4.5 Structured content bodies.** Learning and Article bodies are stored in
 `content.body` as nullable JSONB using Tiptap/ProseMirror document schema
@@ -173,19 +172,44 @@ math stores canonical LaTeX in `attrs.latex`. Body writes are validated by a
 database trigger. Learning and Article records in `direview` or `diverifikasi`
 must have a valid body. Practice bodies remain nullable.
 
-**4.6 Tag identity and semantics.** Tags remain reusable many-to-many
-classification through `content_tags`. `tags.slug` is a unique canonical
-lowercase ASCII identity generated from `tags.name`. Article categories are
+**4.6 Tag identity, semantics, and the `slug` exception.** Tags remain reusable many-to-many
+classification through `content_tags`. Article categories are
 ordinary tags and may be multiple; there is no primary-category constraint.
+A `tags.kind` field (to distinguish e.g. `category` from `topic`) was considered
+and deliberately rejected — a single flat tag system was judged sufficient, and
+adding that distinction now would build taxonomy structure ahead of a concrete
+need.
 
-**4.7 Private view events.** A view is recorded only for published
+`tags.slug` is the one deliberate exception to that same ahead-of-need
+principle. It is a unique canonical lowercase ASCII identity generated from
+`tags.name`, intended as a stable identifier for future use in URLs or
+filtering. **As of Phase 2, `slug` has no UI consumer** — no route, filter, or
+component reads it. It was provisioned now, rather than added later, because
+retrofitting a stable identifier onto existing tag rows after they accumulate
+real data was judged more costly than carrying one unused column today. This
+is a recorded exception, not a precedent: new columns are still expected to
+trace to a concrete UI need unless a similarly explicit exception is argued
+and approved.
+
+**4.7 Private view events and Popular/Statistics aggregation.** A view is recorded only for published
 (`diverifikasi`) content through the controlled `record_content_view` RPC. A
 viewer is counted at most once per content per 24-hour window, by authenticated
-`user_id` or opaque anonymous `session_id`. Raw events are not publicly
-readable, and no IP, fingerprint, user-agent, or precomputed `view_count` is
-stored. Aggregate Popular/Statistics queries are deferred.
+`user_id` or opaque anonymous `session_id`. Raw events in `content_view_events`
+are not publicly readable, and no IP, fingerprint, user-agent, or precomputed
+`view_count` is stored.
 
-## 5. Scope Excluded from Stage 4
+Aggregate counts are exposed through two read-only RPCs, one per content type
+domain: `get_learning_view_counts` and `get_article_view_counts`, each
+accepting an optional content-id filter and returning `(content_id, count)`
+pairs computed on demand from `content_view_events` — consistent with the
+no-precomputed-totals principle in §4.4. These back the existing "Paling
+Populer" UI sorting, which predates Stage 6 and was not introduced by this
+schema. Both RPCs are live and verified against the project's Supabase
+instance as of Phase 2. Only these two aggregate-read RPCs are in scope for
+Phase 2; a general-purpose Statistics dashboard beyond this sorting use case
+remains unbuilt and is not implied by this section.
+
+## 5. Scope Excluded from the Current Schema
 
 The following entities were considered and are explicitly excluded from the current schema.
 
@@ -195,11 +219,13 @@ The following entities were considered and are explicitly excluded from the curr
 | `organizations`                                   | Would store partner metadata for collaborative content initiatives. No management interface exists.                                                                                                                                          | Alongside `collections`                                             |
 | `comments`, `reviews`, `verifications`, `reports` | Belong to the Community Features stage. No corresponding interface elements exist. The `content.status` field already supports the required draft/review/verification states for contribution tracking; detailed audit records are excluded. | Stage 7 — Community Features                                        |
 | `material` (as a distinct entity)                 | Functionally redundant with `content_resources`.                                                                                                                                                                                             | Not planned                                                         |
+| `tags.kind`                                       | Would distinguish tag sub-types (e.g. `category` vs `topic`). Rejected for now — see §4.6 — in favor of a single flat tag system.                                                                                                            | Reassess only if a concrete UI need for tag sub-typing emerges       |
 
 ## 6. Validation Summary
 
-This schema was validated against the following criteria prior to approval:
+This schema was validated against the following criteria, most recently as of the Stage 6 Phase 2 update:
 
-1. All interface pages defined through Stage 2 have corresponding data support in this schema.
+1. All interface pages defined through Stage 2, plus the Learning/Article body-rendering and view-tracking behavior introduced in Stage 6 Phase 2, have corresponding data support in this schema.
 2. Migration from mock data to this schema does not require interface changes, as mock data structures were designed to approximate the eventual data model.
-3. No entity included in this schema lacks a defined, current use case.
+3. No entity or column included in this schema lacks a defined, current use case, **with one recorded exception**: `tags.slug` (§4.6), which is provisioned ahead of a UI consumer as a deliberate, explicitly justified exception rather than an oversight.
+4. The `content_view_events` table and its two read-only aggregate RPCs (`get_learning_view_counts`, `get_article_view_counts`) support the pre-existing "Paling Populer" sorting behavior without introducing a precomputed, redundantly-stored view count.
