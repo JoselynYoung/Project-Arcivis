@@ -1,16 +1,18 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, BookOpen, User, Bookmark, Share2, Sparkles } from '@lucide/svelte';
-	import { articles } from '$lib/mocks/articles';
 	import { ROUTES } from '$lib/constants/routes';
+	import type { PageData } from './$types';
 
-	const articleId = $derived(Number(page.params.id));
-	const article = $derived(articles.find((a) => a.id === articleId) ?? null);
+	let { data }: { data: PageData } = $props();
+
+	const article = $derived(data.article);
 
 	let isBookmarked = $state(false);
 	$effect(() => {
-		if (article) isBookmarked = !!article.isBookmark;
+		if (article) {
+			isBookmarked = !!article.isBookmark;
+		}
 	});
 	function toggleBookmark() {
 		isBookmarked = !isBookmarked;
@@ -45,7 +47,25 @@
 		</div>
 	</div>
 
-	{#if !article}
+	{#if data.articlesError}
+		<div class="rounded-3xl border border-slate-200 bg-white p-12 text-center">
+			<div
+				class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500"
+			>
+				<BookOpen size={28} />
+			</div>
+			<h2 class="mb-2 text-xl font-bold text-slate-800">Artikel Tidak Dapat Dimuat</h2>
+			<p class="mb-6 text-sm text-slate-500">
+				Terjadi masalah saat memuat artikel. Coba lagi nanti.
+			</p>
+			<a
+				href={resolve(ROUTES.articles)}
+				class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700"
+			>
+				Lihat Semua Artikel
+			</a>
+		</div>
+	{:else if !article}
 		<div class="rounded-3xl border border-slate-200 bg-white p-12 text-center">
 			<div
 				class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500"

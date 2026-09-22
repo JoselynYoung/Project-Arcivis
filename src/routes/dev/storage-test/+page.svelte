@@ -4,11 +4,12 @@
 	import { resolve } from '$app/paths';
 
 	let session = $state<import('@supabase/supabase-js').Session | null>(null);
-	let currentUserId = $state<string | null>(null);
-	let isLoading = $state(false);
-	let message = $state<string | null>(null);
 	let uploadedFile = $state<{ path: string; publicUrl: string; name: string } | null>(null);
 	let selectedFile = $state<File | null>(null);
+
+	function errorMessage(error: unknown): string {
+		return error instanceof Error ? error.message : String(error);
+	}
 
 	async function loadSession() {
 		const { data } = await supabase.auth.getSession();
@@ -32,15 +33,12 @@
 
 	async function handleUpload() {
 		if (!session?.user) {
-			message = 'Please log in first.';
 			return;
 		}
 		if (!selectedFile) {
-			message = 'Please select a file first.';
 			return;
 		}
 
-		message = null;
 		const file = selectedFile;
 		const timestamp = Date.now();
 		const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
@@ -66,8 +64,8 @@
 				name: file.name
 			};
 			selectedFile = null;
-		} catch (e: any) {
-			message = `Upload failed: ${e.message}`;
+		} catch {
+			return;
 		}
 	}
 
@@ -82,8 +80,8 @@
 			}
 
 			uploadedFile = null;
-		} catch (e: any) {
-			message = `Delete failed: ${e.message}`;
+		} catch {
+			return;
 		}
 	}
 
@@ -95,8 +93,8 @@
 			const path = `anonymous/test.png`;
 			const { error } = await supabase.storage.from('content-covers').upload(path, testFile);
 			return { error: error?.message ?? null };
-		} catch (e: any) {
-			return { error: e.message };
+		} catch (e: unknown) {
+			return { error: errorMessage(e) };
 		}
 	}
 </script>
@@ -107,7 +105,9 @@
 	{#if !session}
 		<div class="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
 			<p class="mb-4 text-amber-800">
-				Please log in first at <a href="/dev/auth-test" class="underline">/dev/auth-test</a>
+				Please log in first at <a href={resolve('/dev/auth-test')} class="underline"
+					>/dev/auth-test</a
+				>
 			</p>
 			<button
 				onclick={testAnonymousUpload}
@@ -190,8 +190,8 @@
 							} else {
 								alert('ERROR: Anonymous upload succeeded (should fail)');
 							}
-						} catch (e: any) {
-							alert('Expected error (anonymous): ' + e.message);
+						} catch (e: unknown) {
+							alert('Expected error (anonymous): ' + errorMessage(e));
 						}
 					}}
 					class="rounded-xl bg-slate-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"

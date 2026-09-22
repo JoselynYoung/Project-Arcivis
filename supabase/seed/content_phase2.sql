@@ -26,7 +26,7 @@ begin
   )
   values
     (
-      '30000000-0000-0000-0000-000000000001',
+      '1517476c-8dd8-4684-ad34-2a4a00b0d1bd',
       'learning',
       'Fungsi Kuadrat Lanjutan & Modifikasi Grafik',
       'Memahami pergeseran grafik, titik puncak, serta analisis diskriminan pada soal-soal tingkat lanjut UTBK SNBT.',
@@ -36,7 +36,7 @@ begin
       '{"type":"doc","content":[{"type":"heading","attrs":{"level":2},"content":[{"type":"text","text":"Pendahuluan Fungsi Kuadrat"}]},{"type":"paragraph","content":[{"type":"text","text":"Fungsi kuadrat merupakan topik penting dalam Penalaran Matematika."}]}]}'::jsonb
     ),
     (
-      '30000000-0000-0000-0000-000000000002',
+      'c9326e19-61ad-4429-82af-669680e78500',
       'learning',
       'Literasi Bacaan & Identifikasi Ide Pokok',
       'Teknik skimming dan scanning untuk menemukan gagasan utama dalam bacaan panjang.',
@@ -46,7 +46,7 @@ begin
       '{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Gagasan utama dapat ditemukan dengan membaca struktur paragraf secara cermat."}]}]}'::jsonb
     ),
     (
-      '30000000-0000-0000-0000-000000000003',
+      'a5708238-c781-4f66-8589-45a75aea853f',
       'article',
       'Mengapa Kita Sulit Fokus Belajar di Era Distraksi Digital',
       'Ulasan singkat soal dopamin, notifikasi, dan cara otak memproses gangguan saat belajar.',
@@ -56,7 +56,7 @@ begin
       '{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Fokus bukan hanya soal kemauan, tetapi juga tentang mengatur gangguan di sekitar kita."}]}]}'::jsonb
     ),
     (
-      '30000000-0000-0000-0000-000000000004',
+      '9cc71d91-b157-4c2b-9f06-b7134c8f5e73',
       'article',
       'Tips Ampuh Menghadapi UTBK 2026',
       'Kumpulan strategi belajar efektif dari para pejuang PTN.',
@@ -77,13 +77,13 @@ begin
   insert into public.content_tags (content_id, tag_id)
   select c.id, t.id
   from (values
-    ('30000000-0000-0000-0000-000000000001'::uuid, 'fungsi-kuadrat'),
-    ('30000000-0000-0000-0000-000000000001'::uuid, 'materi'),
-    ('30000000-0000-0000-0000-000000000002'::uuid, 'literasi-digital'),
-    ('30000000-0000-0000-0000-000000000002'::uuid, 'materi'),
-    ('30000000-0000-0000-0000-000000000003'::uuid, 'opini'),
-    ('30000000-0000-0000-0000-000000000004'::uuid, 'tips-belajar'),
-    ('30000000-0000-0000-0000-000000000004'::uuid, 'panduan')
+    ('1517476c-8dd8-4684-ad34-2a4a00b0d1bd'::uuid, 'fungsi-kuadrat'),
+    ('1517476c-8dd8-4684-ad34-2a4a00b0d1bd'::uuid, 'materi'),
+    ('c9326e19-61ad-4429-82af-669680e78500'::uuid, 'literasi-digital'),
+    ('c9326e19-61ad-4429-82af-669680e78500'::uuid, 'materi'),
+    ('a5708238-c781-4f66-8589-45a75aea853f'::uuid, 'opini'),
+    ('9cc71d91-b157-4c2b-9f06-b7134c8f5e73'::uuid, 'tips-belajar'),
+    ('9cc71d91-b157-4c2b-9f06-b7134c8f5e73'::uuid, 'panduan')
   ) as seed(content_id, tag_slug)
   join public.content c on c.id = seed.content_id
   join public.tags t on t.slug = seed.tag_slug

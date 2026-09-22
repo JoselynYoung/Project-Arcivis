@@ -1,15 +1,26 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, BookOpen, Bookmark, CheckCircle2, Share2 } from '@lucide/svelte';
-	import { learningMaterials } from '$lib/mocks/learning';
+	import { recordLearningView } from '$lib/services/learning';
 	import { ROUTES } from '$lib/constants/routes';
+	import type { PageData } from './$types';
+	import ContentBody from '$lib/components/ContentBody.svelte';
 
-	const materialId = $derived(Number(page.params.id));
-	const material = $derived(learningMaterials.find((m) => m.id === materialId) ?? null);
+	let { data }: { data: PageData } = $props();
+	const material = $derived(data.material);
 
 	let isCompleted = $state(false);
 	let isBookmarked = $state(false);
+
+	onMount(() => {
+		if (!material) return;
+
+		const key = 'arcivis:view-session';
+		const sessionId = sessionStorage.getItem(key) ?? crypto.randomUUID().replaceAll('-', '');
+		sessionStorage.setItem(key, sessionId);
+		void recordLearningView(material.id, sessionId);
+	});
 
 	$effect(() => {
 		if (material) {
@@ -27,7 +38,25 @@
 </script>
 
 <div class="mx-auto w-full max-w-3xl pb-16">
-	{#if !material}
+	{#if data.learningError}
+		<div class="my-8 rounded-3xl border border-slate-200 bg-white p-12 text-center">
+			<div
+				class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500"
+			>
+				<BookOpen size={28} />
+			</div>
+			<h2 class="mb-2 text-xl font-bold text-slate-800">Materi Tidak Dapat Dimuat</h2>
+			<p class="mb-6 text-sm text-slate-500">
+				Terjadi masalah saat memuat materi. Coba lagi nanti.
+			</p>
+			<a
+				href={resolve(ROUTES.learning)}
+				class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700"
+			>
+				Kembali ke Modul Learning
+			</a>
+		</div>
+	{:else if !material}
 		<div class="my-8 rounded-3xl border border-slate-200 bg-white p-12 text-center">
 			<div
 				class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500"
@@ -100,8 +129,7 @@
 			<div
 				class="prose max-w-none space-y-6 text-base leading-relaxed text-slate-700 prose-slate [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-slate-900 [&_ol]:list-decimal [&_ol]:space-y-1.5 [&_ol]:pl-5 [&_strong]:text-slate-900 [&_ul]:list-disc [&_ul]:space-y-1.5 [&_ul]:pl-5"
 			>
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html material.content}
+				<ContentBody body={material.body} editorSchemaVersion={material.editorSchemaVersion} />
 			</div>
 
 			<!-- Completion Footer Action -->

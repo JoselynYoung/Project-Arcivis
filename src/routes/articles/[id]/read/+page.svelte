@@ -1,20 +1,35 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, User, Calendar } from '@lucide/svelte';
-	import { articles } from '$lib/mocks/articles';
 	import { ROUTES } from '$lib/constants/routes';
+	import type { PageData } from './$types';
+	import ContentBody from '$lib/components/ContentBody.svelte';
+	import { recordArticleView } from '$lib/services/articles';
 
-	const articleId = $derived(Number(page.params.id));
-	const article = $derived(articles.find((a) => a.id === articleId) ?? null);
+	let { data }: { data: PageData } = $props();
 
-	const paragraphs = $derived(
-		article ? article.konten.split('\n\n').filter((p) => p.trim() !== '') : []
-	);
+	const article = $derived(data.article);
+
+	onMount(() => {
+		if (!article) return;
+
+		const key = 'arcivis:view-session';
+		const sessionId = sessionStorage.getItem(key) ?? crypto.randomUUID().replaceAll('-', '');
+		sessionStorage.setItem(key, sessionId);
+		void recordArticleView(article.id, sessionId);
+	});
 </script>
 
 <div class="mx-auto w-full max-w-4xl pb-12">
-	{#if !article}
+	{#if data.articlesError}
+		<div class="rounded-3xl border border-slate-200 bg-white p-12 text-center">
+			<h2 class="text-xl font-bold text-slate-800">Artikel Tidak Dapat Dimuat</h2>
+			<a href={resolve(ROUTES.articles)} class="mt-4 inline-block text-primary-600 hover:underline">
+				Kembali ke Artikel
+			</a>
+		</div>
+	{:else if !article}
 		<div class="rounded-3xl border border-slate-200 bg-white p-12 text-center">
 			<h2 class="text-xl font-bold text-slate-800">Artikel Tidak Ditemukan</h2>
 			<a href={resolve(ROUTES.articles)} class="mt-4 inline-block text-primary-600 hover:underline">
@@ -45,9 +60,7 @@
 
 		<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 			<div class="prose max-w-none prose-slate">
-				{#each paragraphs as paragraph, i (i)}
-					<p class="mb-4 text-base leading-relaxed text-slate-700">{paragraph}</p>
-				{/each}
+				<ContentBody body={article.body} editorSchemaVersion={article.editorSchemaVersion} />
 			</div>
 		</article>
 	{/if}

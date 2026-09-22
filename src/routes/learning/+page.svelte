@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Bookmark, BookOpen } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
-	import { learningMaterials, type LearningMaterial } from '$lib/mocks/learning';
+	import type { LearningMaterial } from '$lib/services/learning';
+	import type { PageData } from './$types';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 
@@ -29,7 +30,14 @@
 	let selectedSort = $state('terbaru');
 	let isSortDropdownOpen = $state(false);
 
-	let listMateri = $state<LearningMaterial[]>(learningMaterials);
+	let { data }: { data: PageData } = $props();
+	let listMateri = $state<LearningMaterial[]>([]);
+
+	$effect(() => {
+		if (listMateri.length === 0 && data.materials.length > 0) {
+			listMateri = data.materials;
+		}
+	});
 
 	let filteredMateri = $derived(
 		listMateri
@@ -60,7 +68,7 @@
 			})
 	);
 
-	function toggleBookmark(id: number) {
+	function toggleBookmark(id: string) {
 		listMateri = listMateri.map((m) => (m.id === id ? { ...m, isBookmark: !m.isBookmark } : m));
 	}
 
@@ -83,7 +91,14 @@
 		onReset={resetFilters}
 	/>
 
-	{#if filteredMateri.length > 0}
+	{#if data.learningError}
+		<EmptyState
+			icon={BookOpen}
+			title="Materi Tidak Dapat Dimuat"
+			description="Terjadi masalah saat memuat materi. Coba lagi nanti."
+			onReset={resetFilters}
+		/>
+	{:else if filteredMateri.length > 0}
 		<div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
 			{#each filteredMateri as item (item.id)}
 				<a

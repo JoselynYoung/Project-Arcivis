@@ -17,16 +17,16 @@ Defined in `src/routes/layout.css` through Tailwind CSS v4 `@theme`.
 
 ### Primary Blue
 
-| Token | Hex | Usage |
-| :--- | :--- | :--- |
-| `primary-50` | `#eff6ff` | Active/hover item background, pill badge |
-| `primary-100` | `#dbeafe` | Subtle border (`border-primary-100/60`) |
-| `primary-200` | `#bfdbfe` | Radial dot pattern background |
-| `primary-600` | `#1e7dd4` | Brand accent, primary icon, active link |
-| `primary-700` | `#1565b3` | Hover text state, gradient target |
+| Token         | Hex       | Usage                                                     |
+| :------------ | :-------- | :-------------------------------------------------------- |
+| `primary-50`  | `#eff6ff` | Active/hover item background, pill badge                  |
+| `primary-100` | `#dbeafe` | Subtle border (`border-primary-100/60`)                   |
+| `primary-200` | `#bfdbfe` | Radial dot pattern background                             |
+| `primary-600` | `#1e7dd4` | Brand accent, primary icon, active link                   |
+| `primary-700` | `#1565b3` | Hover text state, gradient target                         |
 | `primary-800` | `#0f4d8a` | Active-state gradient (`from-primary-800 to-primary-700`) |
-| `primary-900` | `#0c3d6e` | High-contrast text |
-| `primary-950` | `#0a2540` | Deepest brand text |
+| `primary-900` | `#0c3d6e` | High-contrast text                                        |
+| `primary-950` | `#0a2540` | Deepest brand text                                        |
 
 **Note**: `primary-300` does not exist; do not assume it does.
 
@@ -50,12 +50,12 @@ Defined in `src/routes/layout.css` through Tailwind CSS v4 `@theme`.
 
 ```html
 <main
- class="relative min-w-0 flex-1 bg-white bg-[radial-gradient(var(--color-primary-200)_1px,transparent_1px)] bg-size-[24px_24px]"
+	class="relative min-w-0 flex-1 bg-white bg-[radial-gradient(var(--color-primary-200)_1px,transparent_1px)] bg-size-[24px_24px]"
 >
- <div class="absolute inset-0 bg-linear-to-r from-primary-50/60 to-transparent"></div>
- <div class="relative z-10 p-4 sm:p-6 md:p-8">
-  <!-- Page Content -->
- </div>
+	<div class="absolute inset-0 bg-linear-to-r from-primary-50/60 to-transparent"></div>
+	<div class="relative z-10 p-4 sm:p-6 md:p-8">
+		<!-- Page Content -->
+	</div>
 </main>
 ```
 

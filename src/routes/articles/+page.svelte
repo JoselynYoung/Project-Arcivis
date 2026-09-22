@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Bookmark, BookOpen } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
-	import { articles, type Article } from '$lib/mocks/articles';
+	import type { Article } from '$lib/services/articles';
+	import type { PageData } from './$types';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 
@@ -26,7 +27,14 @@
 	let selectedSort = $state('terbaru');
 	let isSortDropdownOpen = $state(false);
 
-	let listArticles = $state<Article[]>(articles);
+	let { data }: { data: PageData } = $props();
+	let listArticles = $state<Article[]>([]);
+
+	$effect(() => {
+		if (listArticles.length === 0 && data.articles.length > 0) {
+			listArticles = data.articles;
+		}
+	});
 
 	const filteredArticles = $derived(
 		listArticles
@@ -57,7 +65,7 @@
 			})
 	);
 
-	function toggleBookmark(id: number) {
+	function toggleBookmark(id: string) {
 		listArticles = listArticles.map((a) => (a.id === id ? { ...a, isBookmark: !a.isBookmark } : a));
 	}
 
@@ -69,7 +77,6 @@
 </script>
 
 <div class="box-border w-full max-w-full">
-
 	<FilterBar
 		searchPlaceholder="Cari artikel, topik, atau kategori..."
 		filterOptions={kategoriOptions}
@@ -81,7 +88,14 @@
 		onReset={resetFilters}
 	/>
 
-	{#if filteredArticles.length > 0}
+	{#if data.articlesError}
+		<EmptyState
+			icon={BookOpen}
+			title="Artikel Tidak Dapat Dimuat"
+			description="Terjadi masalah saat memuat artikel. Coba lagi nanti."
+			onReset={resetFilters}
+		/>
+	{:else if filteredArticles.length > 0}
 		<div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
 			{#each filteredArticles as article (article.id)}
 				<a

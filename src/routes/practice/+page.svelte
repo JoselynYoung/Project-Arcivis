@@ -98,7 +98,7 @@
 				<div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
 					<span class="flex items-center gap-1">
 						<span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-						7 Mapel
+						{subjects.length} Mapel
 					</span>
 					<span class="flex items-center gap-1">
 						<span class="bg-primary-400 inline-block h-1.5 w-1.5 rounded-full"></span>

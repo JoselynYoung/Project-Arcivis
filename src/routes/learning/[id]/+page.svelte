@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, BookOpen, User, Bookmark, Share2, Sparkles } from '@lucide/svelte';
-	import { learningMaterials } from '$lib/mocks/learning';
 	import { ROUTES } from '$lib/constants/routes';
+	import type { PageData } from './$types';
 
-	const materialId = $derived(Number(page.params.id));
-	const material = $derived(learningMaterials.find((m) => m.id === materialId) ?? null);
+	let { data }: { data: PageData } = $props();
+	const material = $derived(data.material);
 
 	let isBookmarked = $state(false);
 
@@ -58,9 +57,13 @@
 			>
 				<BookOpen size={28} />
 			</div>
-			<h2 class="mb-2 text-xl font-bold text-slate-800">Materi Tidak Ditemukan</h2>
+			<h2 class="mb-2 text-xl font-bold text-slate-800">
+				{data.learningError ? 'Materi Tidak Dapat Dimuat' : 'Materi Tidak Ditemukan'}
+			</h2>
 			<p class="mb-6 text-sm text-slate-500">
-				Materi pelajaran yang Anda cari tidak tersedia atau telah dipindahkan.
+				{data.learningError
+					? 'Terjadi masalah saat memuat materi. Coba lagi nanti.'
+					: 'Materi pelajaran yang Anda cari tidak tersedia atau telah dipindahkan.'}
 			</p>
 			<a
 				href={resolve(ROUTES.learning)}
