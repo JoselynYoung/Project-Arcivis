@@ -1,26 +1,39 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { untrack } from 'svelte';
 	import { Check, X, ArrowRight, RotateCcw, BookOpen } from '@lucide/svelte';
 	import type { Question } from '$lib/types/practice';
 
-	let { questions, title, description, difficulty, backRoute, backParams, backLabel } = $props<{
-		questions: Question[];
-		title: string;
-		description: string;
-		difficulty?: string;
-		backRoute: string;
-		backParams?: Record<string, string>;
-		backLabel: string;
-	}>();
+	let { questions, title, description, difficulty, backRoute, backParams, backLabel, onComplete } =
+		$props<{
+			questions: Question[];
+			title: string;
+			description: string;
+			difficulty?: string;
+			backRoute: string;
+			backParams?: Record<string, string>;
+			backLabel: string;
+			onComplete?: (result: { correctCount: number; totalQuestions: number }) => void;
+		}>();
 
 	let currentIndex = $state(0);
 	let selectedAnswer = $state<number | null>(null);
 	let isSubmitted = $state(false);
 	let correctCount = $state(0);
+	let completedOnce = $state(false);
 
 	let currentQuestion = $derived(questions[currentIndex] ?? null);
 	let isFinished = $derived(questions.length > 0 && currentIndex >= questions.length);
 	let totalDots = $derived(questions.length);
+
+	$effect(() => {
+		if (isFinished && questions.length > 0 && onComplete && !completedOnce) {
+			completedOnce = true;
+			untrack(() => {
+				onComplete({ correctCount, totalQuestions: questions.length });
+			});
+		}
+	});
 
 	function selectAnswer(index: number) {
 		if (isSubmitted) return;
@@ -46,6 +59,7 @@
 		selectedAnswer = null;
 		isSubmitted = false;
 		correctCount = 0;
+		completedOnce = false;
 	}
 </script>
 

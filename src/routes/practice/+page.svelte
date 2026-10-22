@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { Bookmark, BookOpen, Zap, ChevronRight } from '@lucide/svelte';
-	import { practicePackages } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
-	import type { PracticePackage } from '$lib/types/practice';
+	import type { PracticePackage } from '$lib/services/practice';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import type { PageData } from './$types';
@@ -25,7 +25,7 @@
 
 	const subjectFilterOptions = $derived(['Semua', ...subjects.map((s) => s.name)]);
 
-	let listPackages = $state<PracticePackage[]>(practicePackages);
+	let listPackages = $state<PracticePackage[]>(untrack(() => data.packages ?? []));
 
 	const filteredPackages = $derived(
 		listPackages
@@ -47,7 +47,7 @@
 					case 'terbanyak':
 						return b.questionCount - a.questionCount;
 					default:
-						return b.id - a.id;
+						return 0;
 				}
 			})
 	);
@@ -56,7 +56,7 @@
 		return subjects.find((s) => s.name === subjectName)?.color ?? 'bg-slate-50 text-slate-700';
 	}
 
-	function toggleBookmark(id: number) {
+	function toggleBookmark(id: string) {
 		listPackages = listPackages.map((pkg) =>
 			pkg.id === id ? { ...pkg, isBookmark: !pkg.isBookmark } : pkg
 		);

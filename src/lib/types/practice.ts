@@ -18,7 +18,7 @@ export interface PracticePackage {
 }
 
 export interface Question {
-	id: number;
+	id: number | string;
 	text: string;
 	options: string[];
 	correctIndex: number;
