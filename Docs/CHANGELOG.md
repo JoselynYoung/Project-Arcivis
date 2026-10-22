@@ -6,7 +6,7 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ## [v0.6.0] — Stage 6: Backend Integration (Phases 0-3)
 
-Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 1-3 are implemented and committed; **Phase 3 closure is not yet ratified** — a live smoke test with seeded practice data is pending.
+Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 0-3 are implemented, committed, and **Phase 3 closure was ratified by the owner on 2026-10-22** after the live smoke test passed (`/practice` collection and detail, one curated quiz, one generated session, one logged-in `attempts` write).
 
 ### Added
 
@@ -26,6 +26,7 @@ Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 1-
 
 - `npm run check` 0 errors, `npx eslint .` clean, `npm run build` clean, `npm run test:unit` 21/21.
 - Live smoke test run against seeded practice data (`supabase/seed/practice_phase3.sql`): collection and detail render verified content, quiz completion scores correctly (4/4 in an anonymous run), `questions` read and `attempts` insert pass RLS, and a logged-in run wrote an `attempts` row with `generator_config` null. Anonymous sessions are deliberately not saved (D-019).
+- Logged-in scoring verified live: a partially correct run (2/4) wrote `attempts.score = 50`, matching `round(correctCount / totalQuestions * 100)`.
 - Migrations `0001`-`0008` present in `supabase/migrations/`.
 
 ### Known gaps
