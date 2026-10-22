@@ -4,9 +4,21 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
-## [v0.6.0] — Stage 6: Backend Integration (Phases 0-3)
+## [v0.6.1] — Stage 6: Phase 4 (Profil, Bookmark, RLS)
 
-Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 0-3 are implemented, committed, and **Phase 3 closure was ratified by the owner on 2026-10-22** after the live smoke test passed (`/practice` collection and detail, one curated quiz, one generated session, one logged-in `attempts` write).
+Phase 4 goal: make profile identity, bookmarks, and the anonymous-quiz notice run on real data, then verify cross-user isolation with two real accounts. Statistics stays deferred (see ROADMAP).
+
+### Added
+
+- `src/lib/services/bookmarks.ts` — reads the signed-in user's bookmarked content ids and toggles rows (insert/delete). Wired into Learning list/detail, Articles list/detail, and Practice list/detail: initial state comes from the database and the icon only changes when the write succeeds. Signed-out clicks log "Not signed in" and change nothing.
+- `src/lib/services/profile.ts` and a data-driven profile page — name and role from `profiles`, the three contribution tabs from `content` where `author_id = auth.uid()`, with real `status`. Signed-out visitors see "Pengunjung" with empty lists.
+- Anonymous-quiz notice (D-019 approved): the shared `PracticeQuizSession` finished screen shows "Hasil tidak tersimpan. Masuk untuk menyimpan skor latihan." only for signed-out users.
+
+### Known gaps
+
+- `profiles` has no bio or join-date column, so the profile bio line shows the role label ("Kontributor Arcivis") and the join date is gone; adding a `bio`/`joined` display needs a schema decision.
+- Content rows without a subject show the tag "Umum" on the profile page.
+- Two-account RLS verification (bookmarks/attempts) is the Phase 4 closure runbook, executed by the owner.
 
 ### Added
 
@@ -28,6 +40,9 @@ Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 0-
 - Live smoke test run against seeded practice data (`supabase/seed/practice_phase3.sql`): collection and detail render verified content, quiz completion scores correctly (4/4 in an anonymous run), `questions` read and `attempts` insert pass RLS, and a logged-in run wrote an `attempts` row with `generator_config` null. Anonymous sessions are deliberately not saved (D-019).
 - Logged-in scoring verified live: a partially correct run (2/4) wrote `attempts.score = 50`, matching `round(correctCount / totalQuestions * 100)`.
 - Migrations `0001`-`0008` present in `supabase/migrations/`.
+
+- `npm run check` 0 errors, `npm run test:unit` 21/21, `npx eslint` clean, `npm run build` clean after each Phase 4 task.
+- Anonymous smoke test: bookmark click without a session leaves the icon unchanged and logs "Not signed in"; an anonymous curated quiz run reaches the finished screen with the not-saved notice.
 
 ### Known gaps
 
