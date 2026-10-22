@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import {
 		ArrowLeft,
@@ -11,15 +10,13 @@
 		ShieldCheck,
 		ListChecks
 	} from '@lucide/svelte';
-	import { practicePackages } from '$lib/mocks/practice';
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	const subjects = $derived(data.subjects ?? []);
 
-	const packageId = $derived(Number(page.params.id));
-	const pkg = $derived(practicePackages.find((p) => p.id === packageId) ?? null);
+	const pkg = $derived(data.pkg ?? null);
 
 	function getSubjectBadgeColor(subjectName: string): string {
 		return subjects.find((s) => s.name === subjectName)?.color ?? 'bg-slate-50 text-slate-700';

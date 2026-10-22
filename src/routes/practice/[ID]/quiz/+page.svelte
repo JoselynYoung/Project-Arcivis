@@ -1,12 +1,19 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { practicePackages, questions } from '$lib/mocks/practice';
 	import PracticeQuizSession from '$lib/components/PracticeQuizSession.svelte';
+	import { recordCuratedAttempt } from '$lib/services/attempts';
+	import type { PageData } from './$types';
 
-	const packageId = $derived(Number(page.params.id));
-	const pkg = $derived(practicePackages.find((p) => p.id === packageId));
-	const questionList = $derived(pkg ? (questions[pkg.id] ?? []) : []);
+	let { data }: { data: PageData } = $props();
+
+	const pkg = $derived(data.pkg ?? null);
+	const questionList = $derived(data.questionList ?? []);
 	const backParams = $derived<Record<string, string>>(pkg ? { id: String(pkg.id) } : {});
+
+	function handleComplete(result: { correctCount: number; totalQuestions: number }) {
+		if (!pkg || result.totalQuestions === 0) return;
+		const score = Math.round((result.correctCount / result.totalQuestions) * 100);
+		recordCuratedAttempt({ contentId: pkg.id, score });
+	}
 </script>
 
 {#if pkg}
@@ -18,5 +25,6 @@
 		backRoute="/practice/[id]"
 		{backParams}
 		backLabel="Kembali ke Detail Paket"
+		onComplete={handleComplete}
 	/>
 {/if}
