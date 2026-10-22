@@ -2,7 +2,8 @@ import type { QuizGeneratorConfig } from '$lib/types/practice';
 
 export const quizGeneratorConfig = $state<QuizGeneratorConfig>({
 	subject: 'Matematika',
-	topic: 'Aljabar',
+	subjectId: '',
+	topic: '',
 	difficulty: 'Sedang',
 	mode: 'latihan',
 	questionCount: 10
@@ -10,6 +11,7 @@ export const quizGeneratorConfig = $state<QuizGeneratorConfig>({
 
 export function setQuizGeneratorConfig(config: QuizGeneratorConfig) {
 	quizGeneratorConfig.subject = config.subject;
+	quizGeneratorConfig.subjectId = config.subjectId;
 	quizGeneratorConfig.topic = config.topic;
 	quizGeneratorConfig.difficulty = config.difficulty;
 	quizGeneratorConfig.mode = config.mode;

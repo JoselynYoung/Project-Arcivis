@@ -27,6 +27,7 @@ export interface Question {
 
 export interface QuizGeneratorConfig {
 	subject: string;
+	subjectId: string;
 	topic: string;
 	difficulty: string;
 	mode: string;

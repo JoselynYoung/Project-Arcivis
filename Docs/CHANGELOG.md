@@ -13,6 +13,7 @@ Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 1-
 - Phase 1 — `src/lib/services/subjects.ts`, `src/lib/services/schedules.ts`, and `supabase/seed/public_data.sql` (7 subjects + schedules). `announcements` deliberately skipped (no UI consumer). Subject/schedule colors are frontend constants (`src/lib/constants/publicData.ts`), not database columns.
 - Phase 2 — `src/lib/services/learning.ts`, `src/lib/services/articles.ts` (strict UUID validation), `src/lib/components/ContentBody.svelte` for rendering version-controlled JSONB bodies, view tracking integration (`content_view_events` + the two read-only aggregate RPCs), and migrations `0005` through `0008` (content contract, JSONB validator fix, learning/article view-count RPCs).
 - Phase 3 — `src/lib/services/practice.ts`, `questions.ts`, `attempts.ts` (+ unit tests). Practice packages and questions now read from `content`/`questions`; quiz completion writes to `attempts` for both curated packages and the Quiz Generator. `PracticeQuizSession` gained an optional `onComplete` callback.
+- Quiz Generator reads the question pool directly (`getPracticeQuestions` with subject/topic/difficulty filters over published practice content) instead of finding one matching package first. Topic options are now derived from live question rows (`getPracticeTopics`), with "Semua Topik" meaning no topic filter. This replaces the leftover hardcoded mock topic list.
 
 ### Changed
 
@@ -24,12 +25,13 @@ Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 1-
 ### Verified
 
 - `npm run check` 0 errors, `npx eslint .` clean, `npm run build` clean, `npm run test:unit` 21/21.
+- Live smoke test run against seeded practice data (`supabase/seed/practice_phase3.sql`): collection and detail render verified content, quiz completion scores correctly (4/4 in an anonymous run), `questions` read and `attempts` insert pass RLS, and a logged-in run wrote an `attempts` row with `generator_config` null. Anonymous sessions are deliberately not saved (D-019).
 - Migrations `0001`-`0008` present in `supabase/migrations/`.
 
 ### Known gaps
 
-- **Phase 3 live smoke test not done**: no `content type='practice'` rows or `questions` rows seeded in the live database yet, so the real shape of `questions.options`, read RLS on `questions`, and `attempts` inserts have not been exercised with real data.
-- Cross-user RLS isolation for `bookmarks`/`attempts` still unverified with real two-account fixtures.
+- **Two-account RLS check not done**: cross-user isolation for `bookmarks`/`attempts` still unverified with real two-account fixtures.
+- Quiz-Generator sessions are verified only with a single subject/topic combination; selecting an option set that has no matching questions still shows the graceful "Soal segera hadir" empty state.
 - `src/routes/+page.svelte` (Home) still imports `$lib/mocks/home` for banners/statistics/cards; its schedules section already reads live data. Home migration is the remaining Stage 6 work after Phase 3 closure.
 - Unauthenticated quiz sessions are not saved (no `attempts` row, no user-visible notice) — pending product decision, see `Docs/DECISIONS.md` D-019.
 

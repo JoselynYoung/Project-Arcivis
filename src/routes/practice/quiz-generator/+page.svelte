@@ -5,20 +5,10 @@
 	import { ROUTES } from '$lib/constants/routes';
 	import { setQuizGeneratorConfig } from '$lib/utils/quizGeneratorState.svelte';
 	import type { PageData } from './$types';
+	const ALL_TOPICS = '';
 
 	let { data }: { data: PageData } = $props();
 	const subjects = $derived(data.subjects ?? []);
-
-	const topicOptions: Record<string, string[]> = {
-		Matematika: ['Aljabar', 'Geometri', 'Barisan & Deret', 'Peluang', 'Trigonometri'],
-		Fisika: ['Kinematika', 'Hukum Newton', 'Termodinamika', 'Listrik'],
-		Kimia: ['Stoikiometri', 'Ikatan Kimia', 'Termokimia', 'Larutan'],
-		Biologi: ['Sel', 'Genetika', 'Ekosistem', 'Evolusi'],
-		'B.Indonesia': ['Teks Eksposisi', 'Teks Narasi', 'Kosakata', 'Ejaan'],
-		'B.Inggris': ['Reading', 'Vocabulary', 'Grammar', 'Inference'],
-		Penalaran: ['Logika', 'Pola Bilangan', 'Analisis Korelasi', 'Silogisme']
-	};
-
 	const difficultyOptions = ['Mudah', 'Sedang', 'Sulit'];
 	const modeOptions = [
 		{ id: 'latihan', label: 'Latihan', description: 'Pembahasan langsung setelah setiap jawaban' },
@@ -27,20 +17,20 @@
 	const amountOptions = [5, 10, 15, 20, 30];
 
 	let selectedSubject = $state('');
-	let selectedTopic = $state('');
+	let selectedTopic = $state(ALL_TOPICS);
 	let selectedDifficulty = $state(difficultyOptions[1]);
 	let selectedMode = $state(modeOptions[0].id);
 	let selectedAmount = $state(amountOptions[1]);
 
-	const topics = $derived(topicOptions[selectedSubject] ?? []);
+	const topics = $derived(data.topicsBySubject[selectedSubject] ?? []);
 
 	$effect(() => {
 		if (!selectedSubject && subjects[0]) {
 			selectedSubject = subjects[0].name;
 		}
 
-		if (!topics.includes(selectedTopic)) {
-			selectedTopic = topics[0] ?? '';
+		if (selectedTopic !== ALL_TOPICS && !topics.includes(selectedTopic)) {
+			selectedTopic = ALL_TOPICS;
 		}
 	});
 
@@ -49,6 +39,7 @@
 
 		setQuizGeneratorConfig({
 			subject: selectedSubject,
+			subjectId: subjects.find((s) => s.name === selectedSubject)?.id ?? '',
 			topic: selectedTopic,
 			difficulty: selectedDifficulty,
 			mode: selectedMode,
@@ -107,7 +98,7 @@
 	<div class="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 		<p class="mb-4 text-sm font-bold text-slate-800">Pilih Topik</p>
 		<div class="flex max-w-full flex-wrap gap-2">
-			{#each topics as topic (topic)}
+			{#each [ALL_TOPICS, ...topics] as topic (topic || 'all')}
 				<button
 					type="button"
 					onclick={() => (selectedTopic = topic)}
@@ -116,7 +107,7 @@
 						? 'border-primary-600 bg-primary-600 text-white shadow-sm'
 						: 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}"
 				>
-					{topic}
+					{topic === ALL_TOPICS ? 'Semua Topik' : topic}
 				</button>
 			{/each}
 		</div>

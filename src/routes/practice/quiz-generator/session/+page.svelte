@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { quizGeneratorConfig } from '$lib/utils/quizGeneratorState.svelte';
-	import { getPracticePackages } from '$lib/services/practice';
-	import { getQuestionsByContentId } from '$lib/services/questions';
+	import { getPracticeQuestions } from '$lib/services/questions';
 	import { recordGeneratorAttempt } from '$lib/services/attempts';
 	import PracticeQuizSession from '$lib/components/PracticeQuizSession.svelte';
 	import type { Question } from '$lib/types/practice';
@@ -13,29 +12,17 @@
 	$effect(() => {
 		let cancelled = false;
 		async function load() {
-			const { data: packages } = await getPracticePackages();
+			const { data: pool, error } = await getPracticeQuestions({
+				subjectId: config.subjectId,
+				topic: config.topic,
+				difficulty: config.difficulty,
+				limit: config.questionCount
+			});
 
 			if (cancelled) return;
 
-			const matched = packages.find(
-				(p) =>
-					(config.subject === 'Semua' || p.subject === config.subject) &&
-					(config.topic === '' ||
-						p.topics.some((t) => t.toLowerCase().includes(config.topic.toLowerCase()))) &&
-					(config.difficulty === 'Semua' || p.difficulty === config.difficulty)
-			);
-
-			if (!matched) {
-				sessionQuestions = [];
-				return;
-			}
-
-			const { data: pool } = await getQuestionsByContentId(matched.id);
-
-			if (cancelled) return;
-
-			sessionQuestions =
-				pool.length > 0 ? [...pool].slice(0, Math.min(config.questionCount, pool.length)) : [];
+			if (error) console.error('Failed to load question pool:', error);
+			sessionQuestions = pool;
 		}
 
 		load();
