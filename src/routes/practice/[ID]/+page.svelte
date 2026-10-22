@@ -11,6 +11,7 @@
 		ListChecks
 	} from '@lucide/svelte';
 	import { ROUTES } from '$lib/constants/routes';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -23,8 +24,31 @@
 	}
 
 	let isBookmarked = $state(false);
-	function toggleBookmark() {
-		isBookmarked = !isBookmarked;
+
+	$effect(() => {
+		let cancelled = false;
+		const id = pkg?.id;
+		getBookmarkIds().then(({ data: ids, error }) => {
+			if (error) console.error('Failed to load bookmarks:', error);
+			if (cancelled || !id) return;
+			isBookmarked = ids.has(id);
+		});
+		return () => {
+			cancelled = true;
+		};
+	});
+
+	async function toggleBookmark() {
+		if (!pkg) return;
+
+		const { saved, error } = await toggleBookmarkRequest(pkg.id);
+
+		if (error) {
+			console.error('Failed to toggle bookmark:', error);
+			return;
+		}
+
+		isBookmarked = saved;
 	}
 </script>
 
