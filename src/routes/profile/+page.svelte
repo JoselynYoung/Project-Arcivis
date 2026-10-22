@@ -1,54 +1,51 @@
 <script lang="ts">
 	import { User, ShieldCheck, Clock3, FileText, BookOpen, Layers, Calendar } from '@lucide/svelte';
+	import { getProfil, type ContributionItem } from '$lib/services/profile';
 
 	// Profile Data
-	let nama = 'Pejuang';
-	let bio = 'Kontributor Arcivis · Bergabung sejak Juli 2026';
-
-	interface Kontribusi {
-		id: number;
-		judul: string;
-		tag: string;
-		status: 'diverifikasi' | 'direview' | 'draft';
-	}
+	let nama = $state('');
+	let bio = $state('');
 
 	// Tab State
 	let activeTab = $state<'bacaan' | 'latihan' | 'materi'>('bacaan');
 
 	// Contribution Data (by category)
-	let kontribusiBacaan: Kontribusi[] = [
-		{
-			id: 1,
-			judul: 'Mengapa Kita Sulit Fokus Belajar di Era Distraksi Digital',
-			tag: 'Sains',
-			status: 'diverifikasi'
-		},
-		{
-			id: 2,
-			judul: 'Sastra Lisan Nusantara yang Mulai Dilupakan',
-			tag: 'Sastra & esai',
-			status: 'direview'
-		}
-	];
+	let kontribusiBacaan = $state<ContributionItem[]>([]);
+	let kontribusiLatihan = $state<ContributionItem[]>([]);
+	let kontribusiMateri = $state<ContributionItem[]>([]);
 
-	let kontribusiLatihan: Kontribusi[] = [
-		{
-			id: 1,
-			judul: 'Paket Penalaran Analitis Level Lanjut',
-			tag: 'Penalaran',
-			status: 'diverifikasi'
-		},
-		{ id: 2, judul: 'Simulasi Kuantitatif Mingguan #3', tag: 'Matematika', status: 'draft' }
-	];
+	$effect(() => {
+		let cancelled = false;
+		getProfil().then(({ data, error }) => {
+			if (error) console.error('Failed to load profile:', error);
+			if (cancelled) return;
 
-	let kontribusiMateri: Kontribusi[] = [
-		{
-			id: 1,
-			judul: 'Ringkasan Turunan & Integral Dasar',
-			tag: 'Matematika',
-			status: 'diverifikasi'
-		}
-	];
+			if (!data) {
+				nama = 'Pengunjung';
+				return;
+			}
+
+			nama = data.nama;
+			bio = roleLabel(data.role);
+			kontribusiBacaan = data.bacaan;
+			kontribusiLatihan = data.latihan;
+			kontribusiMateri = data.materi;
+		});
+		return () => {
+			cancelled = true;
+		};
+	});
+
+	function roleLabel(role: string): string {
+		const labels: Record<string, string> = {
+			guest: 'Pengunjung',
+			member: 'Kontributor',
+			reviewer: 'Reviewer',
+			verifier: 'Verifier',
+			admin: 'Admin'
+		};
+		return `${labels[role] ?? 'Kontributor'} Arcivis`;
+	}
 
 	// Derived: Total & Active Count by Tab
 	let semuaKontribusi = $derived([...kontribusiBacaan, ...kontribusiLatihan, ...kontribusiMateri]);
