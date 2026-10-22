@@ -72,16 +72,16 @@ Free-form keyword classification, associated with content in a many-to-many rela
 
 **`tags`**
 
-| Column | Type   | Description                                            |
-| ------ | ------ | ------------------------------------------------------ |
-| id     | uuid   | Primary key                                            |
-| name   | string | Human-readable display name                            |
+| Column | Type   | Description                                                                                                                                     |
+| ------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| id     | uuid   | Primary key                                                                                                                                     |
+| name   | string | Human-readable display name                                                                                                                     |
 | slug   | string | Canonical lowercase ASCII identity, unique across tags. Provisioned ahead of a UI consumer — see §4.6 for the reasoning and its current status. |
 
 **`content_tags`**
 
 | Column     | Type | Description                |
-| ---------- | ---- | --------------------------- |
+| ---------- | ---- | -------------------------- |
 | content_id | uuid | Foreign key → `content.id` |
 | tag_id     | uuid | Foreign key → `tags.id`    |
 
@@ -99,7 +99,7 @@ Records a user's saved content, applicable uniformly across all content types.
 Questions associated with a content record of type `practice`.
 
 | Column        | Type   | Description                |
-| ------------- | ------ | --------------------------- |
+| ------------- | ------ | -------------------------- |
 | id            | uuid   | Primary key                |
 | content_id    | uuid   | Foreign key → `content.id` |
 | text          | string |                            |
@@ -114,20 +114,20 @@ Questions associated with a content record of type `practice`.
 Records a completed practice or quiz session.
 
 | Column           | Type           | Description                                                                                                         |
-| ---------------- | -------------- | --------------------------------------------------------------------------------------------------------------------- |
+| ---------------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
 | id               | uuid           | Primary key                                                                                                         |
 | user_id          | uuid           | Foreign key → `profiles.id`                                                                                         |
 | content_id       | uuid, nullable | Foreign key → `content.id`. Null when the session originates from the Quiz Generator rather than a curated package. |
 | generator_config | json, nullable | Stores the selected subject, topic, difficulty, and mode when `content_id` is null.                                 |
-| score            | int            |                                                                                                                       |
-| completed_at     | timestamp      |                                                                                                                       |
+| score            | int            |                                                                                                                     |
+| completed_at     | timestamp      |                                                                                                                     |
 
 Aggregate statistics (session count, accuracy, total questions completed) are derived from this table at query time rather than stored redundantly.
 
 ### 3.9 `announcements`
 
 | Column | Type   | Description |
-| ------ | ------ | ------------ |
+| ------ | ------ | ----------- |
 | id     | uuid   | Primary key |
 | title  | string |             |
 | body   | string |             |
@@ -135,7 +135,7 @@ Aggregate statistics (session count, accuracy, total questions completed) are de
 ### 3.10 `schedules`
 
 | Column     | Type   | Description |
-| ---------- | ------ | ------------ |
+| ---------- | ------ | ----------- |
 | id         | uuid   | Primary key |
 | title      | string |             |
 | event_date | date   |             |
@@ -145,7 +145,7 @@ Aggregate statistics (session count, accuracy, total questions completed) are de
 Raw private view events, used as the source of truth for the Popular/Statistics aggregate reads described in §4.7. This is an event source, not a precomputed counter — no `view_count` column exists anywhere in the schema.
 
 | Column     | Type             | Description                                                                       |
-| ---------- | ---------------- | ----------------------------------------------------------------------------------- |
+| ---------- | ---------------- | --------------------------------------------------------------------------------- |
 | id         | uuid             | Primary key                                                                       |
 | content_id | uuid             | Foreign key → `content.id`                                                        |
 | user_id    | uuid, nullable   | Authenticated viewer, when available                                              |
@@ -219,7 +219,7 @@ The following entities were considered and are explicitly excluded from the curr
 | `organizations`                                   | Would store partner metadata for collaborative content initiatives. No management interface exists.                                                                                                                                          | Alongside `collections`                                             |
 | `comments`, `reviews`, `verifications`, `reports` | Belong to the Community Features stage. No corresponding interface elements exist. The `content.status` field already supports the required draft/review/verification states for contribution tracking; detailed audit records are excluded. | Stage 7 — Community Features                                        |
 | `material` (as a distinct entity)                 | Functionally redundant with `content_resources`.                                                                                                                                                                                             | Not planned                                                         |
-| `tags.kind`                                       | Would distinguish tag sub-types (e.g. `category` vs `topic`). Rejected for now — see §4.6 — in favor of a single flat tag system.                                                                                                            | Reassess only if a concrete UI need for tag sub-typing emerges       |
+| `tags.kind`                                       | Would distinguish tag sub-types (e.g. `category` vs `topic`). Rejected for now — see §4.6 — in favor of a single flat tag system.                                                                                                            | Reassess only if a concrete UI need for tag sub-typing emerges      |
 
 ## 6. Validation Summary
 
