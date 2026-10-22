@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { untrack } from 'svelte';
-	import { Check, X, ArrowRight, RotateCcw, BookOpen } from '@lucide/svelte';
+	import { Check, X, ArrowRight, RotateCcw, BookOpen, Info } from '@lucide/svelte';
 	import type { Question } from '$lib/types/practice';
+	import { supabase } from '$lib/services/supabaseClient';
 
 	let { questions, title, description, difficulty, backRoute, backParams, backLabel, onComplete } =
 		$props<{
@@ -21,6 +22,7 @@
 	let isSubmitted = $state(false);
 	let correctCount = $state(0);
 	let completedOnce = $state(false);
+	let isAnonymous = $state(false);
 
 	let currentQuestion = $derived(questions[currentIndex] ?? null);
 	let isFinished = $derived(questions.length > 0 && currentIndex >= questions.length);
@@ -33,6 +35,16 @@
 				onComplete({ correctCount, totalQuestions: questions.length });
 			});
 		}
+	});
+	$effect(() => {
+		let cancelled = false;
+		supabase.auth.getSession().then(({ data }) => {
+			if (cancelled) return;
+			isAnonymous = !data.session;
+		});
+		return () => {
+			cancelled = true;
+		};
 	});
 
 	function selectAnswer(index: number) {
@@ -198,6 +210,12 @@
 				{correctCount} / {questions.length}
 			</p>
 			<p class="mb-6 text-sm text-slate-500">Jawaban benar</p>
+
+			{#if isAnonymous}
+				<p class="mb-6 flex items-center justify-center gap-1.5 text-xs text-amber-600">
+					<Info size={13} /> Hasil tidak tersimpan. Masuk untuk menyimpan skor latihan.
+				</p>
+			{/if}
 
 			<button
 				type="button"
