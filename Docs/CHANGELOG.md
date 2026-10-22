@@ -14,11 +14,23 @@ Phase 4 goal: make profile identity, bookmarks, and the anonymous-quiz notice ru
 - `src/lib/services/profile.ts` and a data-driven profile page — name and role from `profiles`, the three contribution tabs from `content` where `author_id = auth.uid()`, with real `status`. Signed-out visitors see "Pengunjung" with empty lists.
 - Anonymous-quiz notice (D-019 approved): the shared `PracticeQuizSession` finished screen shows "Hasil tidak tersimpan. Masuk untuk menyimpan skor latihan." only for signed-out users.
 
+### Verified
+
+- `npm run check` 0 errors, `npm run test:unit` 21/21, `npx eslint` clean, `npm run build` clean after each Phase 4 task.
+- Anonymous smoke test: bookmark click without a session leaves the icon unchanged and logs "Not signed in"; an anonymous curated quiz run reaches the finished screen with the not-saved notice.
+- Cross-user RLS isolation verified with two real accounts (`uji-akun-a@arcivis.dev`, `uji-akun-b@arcivis.dev`) through the Supabase REST API as the signed-in user, not as an admin: each reads only its own rows, a write under the other user's id fails with `42501`, and a delete aimed at the other user's rows deletes nothing. The signup trigger created both `profiles` rows automatically.
+- Logged-in UI verified live as test account A: the learning list shows exactly its own bookmark after a reload, the detail-page toggle and the list delete both write through to the database, and `/profile` renders the account's own name and role from `profiles`.
+
 ### Known gaps
 
 - `profiles` has no bio or join-date column, so the profile bio line shows the role label ("Kontributor Arcivis") and the join date is gone; adding a `bio`/`joined` display needs a schema decision.
 - Content rows without a subject show the tag "Umum" on the profile page.
-- Two-account RLS verification (bookmarks/attempts) is the Phase 4 closure runbook, executed by the owner.
+
+---
+
+## [v0.6.0] — Stage 6: Backend Integration (Phases 0-3)
+
+Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 0-3 are implemented, committed, and **Phase 3 closure was ratified by the owner on 2026-10-22** after the live smoke test passed (`/practice` collection and detail, one curated quiz, one generated session, one logged-in `attempts` write).
 
 ### Added
 
@@ -41,15 +53,11 @@ Phase 4 goal: make profile identity, bookmarks, and the anonymous-quiz notice ru
 - Logged-in scoring verified live: a partially correct run (2/4) wrote `attempts.score = 50`, matching `round(correctCount / totalQuestions * 100)`.
 - Migrations `0001`-`0008` present in `supabase/migrations/`.
 
-- `npm run check` 0 errors, `npm run test:unit` 21/21, `npx eslint` clean, `npm run build` clean after each Phase 4 task.
-- Anonymous smoke test: bookmark click without a session leaves the icon unchanged and logs "Not signed in"; an anonymous curated quiz run reaches the finished screen with the not-saved notice.
-
 ### Known gaps
 
-- **Two-account RLS check not done**: cross-user isolation for `bookmarks`/`attempts` still unverified with real two-account fixtures.
 - Quiz-Generator sessions are verified only with a single subject/topic combination; selecting an option set that has no matching questions still shows the graceful "Soal segera hadir" empty state.
 - `src/routes/+page.svelte` (Home) still imports `$lib/mocks/home` for banners/statistics/cards; its schedules section already reads live data. Home migration is the remaining Stage 6 work after Phase 3 closure.
-- Unauthenticated quiz sessions are not saved (no `attempts` row, no user-visible notice) — pending product decision, see `Docs/DECISIONS.md` D-019.
+- Unauthenticated quiz sessions are not saved; the user is now told on the result screen (D-019 resolved in Phase 4, see v0.6.1).
 
 ### New process artifact
 
