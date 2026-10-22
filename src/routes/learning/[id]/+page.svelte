@@ -3,6 +3,7 @@
 	import { ArrowLeft, BookOpen, User, Bookmark, Share2, Sparkles } from '@lucide/svelte';
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PageData } from './$types';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 
 	let { data }: { data: PageData } = $props();
 	const material = $derived(data.material);
@@ -10,13 +11,29 @@
 	let isBookmarked = $state(false);
 
 	$effect(() => {
-		if (material) {
-			isBookmarked = !!material.isBookmark;
-		}
+		let cancelled = false;
+		const id = material?.id;
+		getBookmarkIds().then(({ data: ids, error }) => {
+			if (error) console.error('Failed to load bookmarks:', error);
+			if (cancelled || !id) return;
+			isBookmarked = ids.has(id);
+		});
+		return () => {
+			cancelled = true;
+		};
 	});
 
-	function toggleBookmark() {
-		isBookmarked = !isBookmarked;
+	async function toggleBookmark() {
+		if (!material) return;
+
+		const { saved, error } = await toggleBookmarkRequest(material.id);
+
+		if (error) {
+			console.error('Failed to toggle bookmark:', error);
+			return;
+		}
+
+		isBookmarked = saved;
 	}
 </script>
 

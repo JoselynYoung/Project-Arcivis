@@ -2,6 +2,7 @@
 	import { Bookmark, BookOpen } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import type { Article } from '$lib/services/articles';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import type { PageData } from './$types';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
@@ -36,6 +37,20 @@
 		}
 	});
 
+	$effect(() => {
+		let cancelled = false;
+		getBookmarkIds().then(({ data: ids, error }) => {
+			if (error) console.error('Failed to load bookmarks:', error);
+			if (cancelled || ids.size === 0) return;
+			listArticles = listArticles.map((article) =>
+				ids.has(article.id) ? { ...article, isBookmark: true } : article
+			);
+		});
+		return () => {
+			cancelled = true;
+		};
+	});
+
 	const filteredArticles = $derived(
 		listArticles
 			.filter((a) => {
@@ -65,8 +80,17 @@
 			})
 	);
 
-	function toggleBookmark(id: string) {
-		listArticles = listArticles.map((a) => (a.id === id ? { ...a, isBookmark: !a.isBookmark } : a));
+	async function toggleBookmark(id: string) {
+		const { saved, error } = await toggleBookmarkRequest(id);
+
+		if (error) {
+			console.error('Failed to toggle bookmark:', error);
+			return;
+		}
+
+		listArticles = listArticles.map((article) =>
+			article.id === id ? { ...article, isBookmark: saved } : article
+		);
 	}
 
 	function resetFilters() {

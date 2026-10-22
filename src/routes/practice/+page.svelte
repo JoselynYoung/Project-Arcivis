@@ -4,6 +4,7 @@
 	import { Bookmark, BookOpen, Zap, ChevronRight } from '@lucide/svelte';
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PracticePackage } from '$lib/services/practice';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import type { PageData } from './$types';
@@ -56,10 +57,29 @@
 		return subjects.find((s) => s.name === subjectName)?.color ?? 'bg-slate-50 text-slate-700';
 	}
 
-	function toggleBookmark(id: string) {
-		listPackages = listPackages.map((pkg) =>
-			pkg.id === id ? { ...pkg, isBookmark: !pkg.isBookmark } : pkg
-		);
+	$effect(() => {
+		let cancelled = false;
+		getBookmarkIds().then(({ data: ids, error }) => {
+			if (error) console.error('Failed to load bookmarks:', error);
+			if (cancelled || ids.size === 0) return;
+			listPackages = listPackages.map((pkg) =>
+				ids.has(pkg.id) ? { ...pkg, isBookmark: true } : pkg
+			);
+		});
+		return () => {
+			cancelled = true;
+		};
+	});
+
+	async function toggleBookmark(id: string) {
+		const { saved, error } = await toggleBookmarkRequest(id);
+
+		if (error) {
+			console.error('Failed to toggle bookmark:', error);
+			return;
+		}
+
+		listPackages = listPackages.map((pkg) => (pkg.id === id ? { ...pkg, isBookmark: saved } : pkg));
 	}
 
 	function resetFilters() {
