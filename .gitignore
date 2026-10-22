@@ -2,6 +2,7 @@ node_modules
 .vscode
 .zed
 .opencode
+/Docs/DECISIONS.md
 
 # Output
 .output
