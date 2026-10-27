@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import { ROUTES } from '$lib/constants/routes';
 	import {
 		User,
 		ShieldCheck,
@@ -9,7 +11,8 @@
 		Calendar,
 		Pencil,
 		Check,
-		X
+		X,
+		PenLine
 	} from '@lucide/svelte';
 	import { supabase } from '$lib/services/supabaseClient';
 	import { getProfil, type ContributionItem } from '$lib/services/profile';
@@ -196,6 +199,18 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Contribute Entry -->
+	{#if nama !== 'Pengunjung'}
+		<div class="mb-5">
+			<a
+				href={resolve(ROUTES.contribute)}
+				class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-primary-700"
+			>
+				<PenLine size={16} /> Tulis kontribusi
+			</a>
+		</div>
+	{/if}
 
 	<!-- Tabs -->
 	<div class="mb-5 flex border-b border-slate-200">
