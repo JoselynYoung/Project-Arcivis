@@ -8,7 +8,7 @@ If an instruction from the project owner appears to conflict with the sequence b
 
 ## Approach: UI-First
 
-**Product → Pages → Reusable Components → Refactoring → Database → Supabase → Backend Integration → Community → Optimization**
+**Product → Pages → Reusable Components → Refactoring → Database → Supabase → Backend Integration → Community → UI-UX Improvement → Optimization**
 
 Philosophy: build and validate the UI with mock data across all modules first, then design the database based on a stable UI shape — not the other way around.
 
@@ -111,9 +111,15 @@ Replace mock data with Supabase. The UI must not change — only the data source
 - Fase 6 — Bank soal komunitas: separate `question_bank` pool with verified list (`/bank`) and member submission (subject, difficulty, options, key, explanation).
 - Fase 7 — Aktivitas: `Aktivitas` tab on profiles showing the signed-in user's own comments and reports, newest first.
 
-**Deferred to later (not part of v0.7.0):** wiring the question bank into the Quiz Generator as a pool source; a moderation dashboard for reports.
+**Deferred to Stage 8:** wiring the question bank into the Quiz Generator as a pool source; a moderation dashboard for reports.
 
-## Stage 8 — Enhancement (not started)
+## Stage 8 — UI-UX Improvement (not started)
+
+Smaller than Stage 7 by design: adjustments, additions, and changes to UI/UX only, no new backend modules.
+
+Initial queue (grows as requests come in): wiring the question bank into the Quiz Generator as a pool source; a moderation dashboard for reports triage; consistency pass on empty/loading/error states and responsive layouts.
+
+## Stage 9 — Enhancement (not started)
 
 Notifications, recommendations, improved search, analytics, performance optimization, SEO, offline support. Plus the hardening backlog from the technical audit: author-account deletion without content loss, tighter RLS (profiles/tags/content_tags visibility), and server-side attempts validation.
 
