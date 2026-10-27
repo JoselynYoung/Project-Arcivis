@@ -1,12 +1,18 @@
 <script lang="ts">
-	import { User, Bell, Moon, LogOut, KeyRound } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { Bell, Moon, LogOut, KeyRound } from '@lucide/svelte';
+	import { signOut } from '$lib/services/auth';
 
-	let nama = $state('Pejuang');
-	let email = 'pejuang@email.com';
-
-	// Preference Toggles
+	// Preference Toggles (local-only by design: dark mode is cosmetic,
+	// reminders have no backend yet)
 	let isDarkMode = $state(false);
 	let isNotifAktif = $state(true);
+
+	async function logout() {
+		await signOut();
+		await goto(resolve('/'));
+	}
 
 	function toggleDarkMode() {
 		isDarkMode = !isDarkMode;
@@ -19,33 +25,6 @@
 
 <div class="w-full max-w-2xl">
 	<h1 class="mb-8 text-2xl font-bold text-slate-800">Pengaturan</h1>
-
-	<!-- Profile Section -->
-	<div class="mb-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-		<h2 class="mb-4 text-sm font-semibold text-slate-500">Profil</h2>
-
-		<div class="mb-5 flex items-center gap-4">
-			<span
-				class="flex h-16 w-16 items-center justify-center rounded-full bg-primary-100 text-primary-700"
-			>
-				<User size={28} />
-			</span>
-			<div>
-				<p class="font-semibold text-slate-800">{nama}</p>
-				<p class="text-sm text-slate-400">{email}</p>
-			</div>
-		</div>
-
-		<label for="namaInput" class="mb-1.5 block text-xs font-medium text-slate-500"
-			>Nama Tampilan</label
-		>
-		<input
-			id="namaInput"
-			type="text"
-			bind:value={nama}
-			class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary-600 focus:outline-none"
-		/>
-	</div>
 
 	<!-- Preference Section -->
 	<div class="mb-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -104,6 +83,7 @@
 
 		<button
 			type="button"
+			onclick={() => goto(resolve('/login/reset'))}
 			class="flex w-full items-center gap-3 border-b border-slate-100 py-3 text-sm text-slate-700 hover:text-primary-700"
 		>
 			<KeyRound size={18} class="text-slate-400" />
@@ -112,6 +92,7 @@
 
 		<button
 			type="button"
+			onclick={logout}
 			class="flex w-full items-center gap-3 py-3 text-sm text-red-600 hover:text-red-700"
 		>
 			<LogOut size={18} />

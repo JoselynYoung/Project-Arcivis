@@ -34,17 +34,14 @@
 		isMobileMenuOpen = !isMobileMenuOpen;
 	}
 
-	// Signed-out visitors get a login entry point
+	// Signed-out visitors use the Profile slot as their login entry point
 	let signedIn = $state(false);
-	let accountEmail = $state<string | null>(null);
 
 	$effect(() => {
 		supabase.auth.getSession().then(({ data }) => {
-			accountEmail = data.session?.user.email ?? null;
 			signedIn = !!data.session;
 		});
 		const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-			accountEmail = session?.user.email ?? null;
 			signedIn = !!session;
 		});
 		return () => {
@@ -120,11 +117,7 @@
 						<item.icon size={20} class="shrink-0" />
 					{/if}
 					{#if sideBar}<span class="truncate"
-							>{isAccount && !signedIn
-								? 'Masuk'
-								: isAccount && accountEmail
-									? accountEmail
-									: item.label}</span
+							>{!isAccount ? item.label : !signedIn ? 'Masuk' : 'Account'}</span
 						>{/if}
 				</a>
 			{/each}
@@ -162,7 +155,7 @@
 							{/if}
 						</span>
 						<span class="text-center text-xs text-slate-600"
-							>{isAccount && !signedIn ? 'Masuk' : item.label}</span
+							>{!isAccount ? item.label : !signedIn ? 'Masuk' : 'Account'}</span
 						>
 					</a>
 				{/each}

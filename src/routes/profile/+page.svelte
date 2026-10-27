@@ -1,5 +1,17 @@
 <script lang="ts">
-	import { User, ShieldCheck, Clock3, FileText, BookOpen, Layers, Calendar } from '@lucide/svelte';
+	import {
+		User,
+		ShieldCheck,
+		Clock3,
+		FileText,
+		BookOpen,
+		Layers,
+		Calendar,
+		Pencil,
+		Check,
+		X
+	} from '@lucide/svelte';
+	import { supabase } from '$lib/services/supabaseClient';
 	import { getProfil, type ContributionItem } from '$lib/services/profile';
 
 	// Profile Data
@@ -7,6 +19,8 @@
 	let bio = $state('');
 	let peran = $state('');
 	let bergabung = $state('');
+	let editingName = $state(false);
+	let savingName = $state(false);
 
 	// Tab State
 	let activeTab = $state<'bacaan' | 'latihan' | 'materi'>('bacaan');
@@ -39,6 +53,35 @@
 			cancelled = true;
 		};
 	});
+	async function saveName() {
+		const value = nama.trim();
+		if (!value || savingName) {
+			editingName = false;
+			return;
+		}
+		savingName = true;
+
+		const {
+			data: { user }
+		} = await supabase.auth.getUser();
+
+		if (!user) {
+			savingName = false;
+			editingName = false;
+			return;
+		}
+
+		const { error } = await supabase.from('profiles').update({ name: value }).eq('id', user.id);
+
+		savingName = false;
+		if (error) {
+			console.error('Failed to save name:', error.message);
+			return;
+		}
+
+		nama = value;
+		editingName = false;
+	}
 
 	function roleLabel(role: string): string {
 		const labels: Record<string, string> = {
@@ -84,8 +127,49 @@
 			>
 				<User size={28} />
 			</span>
-			<div class="min-w-0">
-				<p class="text-lg font-bold text-slate-800">{nama}</p>
+			<div class="min-w-0 flex-1">
+				{#if editingName}
+					<div class="flex items-center gap-2">
+						<input
+							type="text"
+							bind:value={nama}
+							maxlength={80}
+							aria-label="Nama tampilan"
+							class="focus:border-primary-500 w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-lg font-bold text-slate-800 focus:outline-none"
+						/>
+						<button
+							type="button"
+							onclick={saveName}
+							disabled={savingName}
+							aria-label="Simpan nama"
+							class="rounded-lg bg-primary-600 p-2 text-white transition-colors hover:bg-primary-700 disabled:bg-slate-200"
+						>
+							<Check size={16} />
+						</button>
+						<button
+							type="button"
+							onclick={() => (editingName = false)}
+							aria-label="Batal"
+							class="rounded-lg bg-slate-100 p-2 text-slate-600 transition-colors hover:bg-slate-200"
+						>
+							<X size={16} />
+						</button>
+					</div>
+				{:else}
+					<div class="flex items-center gap-2">
+						<p class="text-lg font-bold text-slate-800">{nama}</p>
+						{#if nama !== 'Pengunjung'}
+							<button
+								type="button"
+								onclick={() => (editingName = true)}
+								aria-label="Ubah nama tampilan"
+								class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+							>
+								<Pencil size={14} />
+							</button>
+						{/if}
+					</div>
+				{/if}
 				<p class="text-sm text-slate-500">{bio || peran}</p>
 				{#if bergabung}
 					<p class="flex items-center gap-1.5 text-sm text-slate-400">
