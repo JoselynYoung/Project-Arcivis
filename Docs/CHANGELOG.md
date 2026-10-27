@@ -4,6 +4,17 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
+## [v0.7.0] — Stage 7: Comments
+
+Opens Stage 7 with per-content discussion. Requires migration `0012_comments.sql` on the live database.
+
+### Added
+
+- `comments` table with RLS: visible wherever the parent content is visible, signed-in-only posts, owner-only deletes.
+- `CommentSection` on Learning, Articles, and Practice detail pages: plain-text rendering, 2000-character limit, empty state, and a sign-in notice for visitors.
+
+---
+
 ## [v0.6.5] — Audit Findings (Minor)
 
 Clears the minor backlog from the technical audit. No migration required.
