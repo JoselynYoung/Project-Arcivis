@@ -86,13 +86,20 @@ ERD, schema, relationships, and constraints. Carried out only after the UI was s
 - **Migration `0003_rls_policies.sql`** — RLS enabled and policies applied on all 11 tables, including a trigger (`prevent_role_self_escalation`) blocking users from changing their own `role`. All 7 spot-checked tables show `relrowsecurity = true`. Cross-user data isolation (bookmarks/attempts) verified with two real accounts in Phase 4.
 - **Migration `0004_storage_covers.sql`** — `content-covers` bucket (public read, 2MB limit, image types only), owner-scoped write via folder-based policy. Verified via `/dev/storage-test`: upload, public-URL render, delete (confirmed via the Storage dashboard), and anonymous-upload rejection. Deleted files may remain briefly reachable via their public URL due to Supabase's Smart CDN cache (up to ~60s propagation).
 
-## Stage 6 — Backend Integration 🚧 **CURRENT STATUS**
+## Stage 6 — Backend Integration ✅ Complete (v0.6.5)
 
 Replace mock data with Supabase. The UI must not change — only the data source.
 
-## Stage 7 — Community Features (not started)
+- Phases 0-3: subjects, schedules, Learning, Articles, Practice, Quiz Generator, attempts, view counts.
+- Phase 4: profile from `profiles` + contributions, bookmark persistence, anonymous-session notices.
+- Phase 5: Home cards and greeting from live data (banners, statistics, posters, calendar stay static).
+- Security patch A: bookmark queries scoped per user, server-side quiz grading (`grade_answer`), column-locked answer keys, `/dev` routes dev-only.
+- Pending decisions: author survival (`SET NULL`), profile bio + join date, `.env.example`.
+- Minor audit findings cleared.
 
-Contribution, review, verification, revision history, comments, reports, activity feed.
+## Stage 7 — Community Features 🚧 **CURRENT STATUS**
+
+Build order: comments → reports → draft contribution → review queue → revision history → community question bank → activity feed.
 
 ## Stage 8 — Enhancement (not started)
 
