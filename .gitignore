@@ -2,8 +2,7 @@ node_modules
 .vscode
 .zed
 .opencode
-/Docs/DECISIONS.md
-
+/agents/
 # Output
 .output
 .vercel

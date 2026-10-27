@@ -17,6 +17,8 @@ Before starting, ask the user when antislop applies: during the work, or after i
 
 ## Start here
 
+> Agent support files (decision log, multi-task plans, local skills) live in the gitignored `agents/` folder at the repo root.
+
 This repo has six reference documents under `Docs/` and `Docs/agents/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
 
 - **`Docs/ROADMAP.md`** — current stage, what's in scope, what's deliberately deferred, and hard rules. Source of truth for roadmap and architecture decisions.
