@@ -1,22 +1,23 @@
 <script lang="ts">
 	import { ChevronRight } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
-	import {
-		banners,
-		statistics,
-		recentLearningCards,
-		recentPracticeCards,
-		learningPoster,
-		practicePoster,
-		user,
-		calendar
-	} from '$lib/mocks/home';
+	import { banners, statistics, learningPoster, practicePoster, calendar } from '$lib/mocks/home';
+	import { getProfil } from '$lib/services/profile';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	const schedules = $derived(data.schedules ?? []);
+	const recentLearning = $derived(data.recentLearning ?? []);
+	const recentPractice = $derived(data.recentPractice ?? []);
 
-	let userName = user.name;
+	let userName = $state('Pejuang');
+
+	$effect(() => {
+		getProfil().then(({ data: profil, error }) => {
+			if (error) console.error('Failed to load profile:', error);
+			if (profil) userName = profil.nama;
+		});
+	});
 
 	// Calendar (static July 2026, data moved to mock file)
 	let namaBulan = $derived(schedules[0]?.calendarLabel ?? calendar.monthLabel);
@@ -142,7 +143,7 @@
 					<p class="relative z-10 leading-snug font-bold">{learningPoster.title}</p>
 				</div>
 
-				{#each recentLearningCards as card (card.subject)}
+				{#each recentLearning as card (card.id)}
 					<div class="w-40 shrink-0 rounded-xl border-2 border-cyan-100 bg-white p-3 shadow-sm">
 						<div class="mb-3 h-24 rounded-lg bg-cyan-50"></div>
 						<p class="mb-0.5 text-xs text-slate-400">{card.subject}</p>
@@ -175,7 +176,7 @@
 					<p class="relative z-10 leading-snug font-bold">{practicePoster.title}</p>
 				</div>
 
-				{#each recentPracticeCards as card (card.subject)}
+				{#each recentPractice as card (card.id)}
 					<div class="w-40 shrink-0 rounded-xl border-2 border-emerald-100 bg-white p-3 shadow-sm">
 						<div class="mb-3 h-24 rounded-lg bg-emerald-50"></div>
 						<p class="mb-0.5 text-xs text-slate-400">{card.subject}</p>

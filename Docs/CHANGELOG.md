@@ -4,6 +4,17 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
+## [v0.6.2] — Stage 6: Phase 5 (Home)
+
+Home cards and greeting now run on real data; banners, statistics, posters, and the calendar stay static by prior decision (see D-019 scope and the deferred list).
+
+### Added
+
+- Home loader fetches the three newest verified learning materials and practice packages alongside schedules; the "Materi Fresh" and "Paket Latihan Soal" cards render live titles and subject names.
+- Home greeting reads the signed-in account's name from `profiles` (falls back to "Pejuang" for visitors).
+
+---
+
 ## [v0.6.1] — Stage 6: Phase 4 (Profil, Bookmark, RLS)
 
 Profile identity, bookmarks, and the anonymous-session notice now run on real data. Statistics stays deferred (see ROADMAP). **Phase 4 closed 2026-10-27.**
