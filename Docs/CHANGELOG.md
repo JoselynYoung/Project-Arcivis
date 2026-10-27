@@ -21,9 +21,9 @@ Profile identity, bookmarks, and the anonymous-session notice run on real data.
 
 ### Added
 
-- `src/lib/services/bookmarks.ts` — reads the signed-in user's bookmarked content ids and toggles rows (insert/delete). Wired into Learning list/detail, Articles list/detail, and Practice list/detail: initial state comes from the database and the icon only changes when the write succeeds. Signed-out clicks change nothing and show the shared notice line (D-019).
+- `src/lib/services/bookmarks.ts` — reads the signed-in user's bookmarked content ids and toggles rows (insert/delete). Wired into Learning list/detail, Articles list/detail, and Practice list/detail: initial state comes from the database and the icon only changes when the write succeeds. Signed-out clicks change nothing and show the shared notice line.
 - `src/lib/services/profile.ts` and a data-driven profile page — name and role from `profiles`, the three contribution tabs from `content` where `author_id = auth.uid()`, with real `status`. Signed-out visitors see "Pengunjung" with empty lists.
-- Sign-in prompts for anonymous users (D-019): the shared `PracticeQuizSession` finished screen shows "Hasil tidak tersimpan. Masuk untuk menyimpan skor latihan." and a signed-out bookmark click shows "Bookmark belum tersimpan. Masuk untuk menyimpannya." Both render through the new `src/lib/components/AuthNotice.svelte`, visible only to signed-out users.
+- Sign-in prompts for anonymous users: the shared `PracticeQuizSession` finished screen shows "Hasil tidak tersimpan. Masuk untuk menyimpan skor latihan." and a signed-out bookmark click shows "Bookmark belum tersimpan. Masuk untuk menyimpannya." Both render through the new `src/lib/components/AuthNotice.svelte`, visible only to signed-out users.
 
 ---
 
@@ -37,7 +37,6 @@ Replace mock data with Supabase without changing the UI.
 - Phase 2 — `src/lib/services/learning.ts`, `src/lib/services/articles.ts` (strict UUID validation), `src/lib/components/ContentBody.svelte` for rendering version-controlled JSONB bodies, view tracking integration (`content_view_events` + the two read-only aggregate RPCs), and migrations `0005` through `0008` (content contract, JSONB validator fix, learning/article view-count RPCs).
 - Phase 3 — `src/lib/services/practice.ts`, `questions.ts`, `attempts.ts` (+ unit tests). Practice packages and questions now read from `content`/`questions`; quiz completion writes to `attempts` for both curated packages and the Quiz Generator. `PracticeQuizSession` gained an optional `onComplete` callback.
 - Quiz Generator reads the question pool directly (`getPracticeQuestions` with subject/topic/difficulty filters over published practice content) instead of finding one matching package first. Topic options are now derived from live question rows (`getPracticeTopics`), with "Semua Topik" meaning no topic filter. This replaces the hardcoded mock topic list.
-- `Docs/DECISIONS.md` — decision log (decision, rationale, status/approver).
 
 ### Changed
 
@@ -48,7 +47,7 @@ Replace mock data with Supabase without changing the UI.
 
 ### Fixed
 
-- Unauthenticated quiz sessions are not saved; the user is now told on the result screen (D-019, see v0.6.1).
+- Unauthenticated quiz sessions are not saved; the user is now told on the result screen (see v0.6.1).
 
 ---
 
