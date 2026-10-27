@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mapCommentRow } from './comments';
+import { mapCommentRow, mapOwnComment } from './comments';
 
 function row(overrides = {}) {
 	return {
@@ -31,5 +31,37 @@ describe('mapCommentRow', () => {
 
 	it('throws on empty body', () => {
 		expect(() => mapCommentRow(row({ body: '' }))).toThrow('BLOCKER');
+	});
+});
+
+describe('mapOwnComment', () => {
+	it('maps a row with content title', () => {
+		expect(
+			mapOwnComment({
+				id: 'c1',
+				body: 'Bagus',
+				created_at: '2026-10-28T00:00:00.000Z',
+				content_id: 'k1',
+				content: { title: 'Fungsi Kuadrat' }
+			})
+		).toEqual({
+			id: 'c1',
+			body: 'Bagus',
+			createdAt: '2026-10-28T00:00:00.000Z',
+			contentId: 'k1',
+			contentTitle: 'Fungsi Kuadrat'
+		});
+	});
+
+	it('falls back without content', () => {
+		expect(
+			mapOwnComment({
+				id: 'c2',
+				body: 'Ok',
+				created_at: '2026-10-28T00:00:00.000Z',
+				content_id: 'k2',
+				content: null
+			}).contentTitle
+		).toBe('Konten');
 	});
 });

@@ -37,3 +37,52 @@ export async function submitReport(
 
 	return { error: null };
 }
+
+export interface OwnReport {
+	id: string;
+	reason: string;
+	createdAt: string;
+	contentId: string;
+	contentTitle: string;
+}
+
+interface OwnReportRow {
+	id: string;
+	reason: string;
+	created_at: string;
+	content_id: string;
+	content: { title: string } | null;
+}
+
+export function mapOwnReport(row: OwnReportRow): OwnReport {
+	return {
+		id: row.id,
+		reason: row.reason,
+		createdAt: row.created_at,
+		contentId: row.content_id,
+		contentTitle: row.content?.title ?? 'Konten'
+	};
+}
+
+export async function getOwnReports(): Promise<{
+	data: OwnReport[];
+	error: string | null;
+}> {
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return { data: [], error: null };
+
+	const { data, error } = await supabase
+		.from('reports')
+		.select('id, reason, created_at, content_id, content:content!inner(title)')
+		.eq('user_id', user.id)
+		.order('created_at', { ascending: false })
+		.limit(20);
+
+	if (error) {
+		return { data: [], error: error.message };
+	}
+
+	return { data: ((data ?? []) as unknown as OwnReportRow[]).map(mapOwnReport), error: null };
+}

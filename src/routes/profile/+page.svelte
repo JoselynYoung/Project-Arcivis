@@ -12,10 +12,15 @@
 		Pencil,
 		Check,
 		X,
-		PenLine
+		PenLine,
+		MessageCircle,
+		Flag,
+		Activity
 	} from '@lucide/svelte';
 	import { supabase } from '$lib/services/supabaseClient';
 	import { getProfil, type ContributionItem } from '$lib/services/profile';
+	import { getOwnComments, type OwnComment } from '$lib/services/comments';
+	import { getOwnReports, type OwnReport } from '$lib/services/reports';
 
 	// Profile Data
 	let nama = $state('');
@@ -28,12 +33,14 @@
 	let submittingId = $state<string | null>(null);
 
 	// Tab State
-	let activeTab = $state<'bacaan' | 'latihan' | 'materi'>('bacaan');
+	let activeTab = $state<'bacaan' | 'latihan' | 'materi' | 'aktivitas'>('bacaan');
 
 	// Contribution Data (by category)
 	let kontribusiBacaan = $state<ContributionItem[]>([]);
 	let kontribusiLatihan = $state<ContributionItem[]>([]);
 	let kontribusiMateri = $state<ContributionItem[]>([]);
+	let komentarSaya = $state<OwnComment[]>([]);
+	let laporanSaya = $state<OwnReport[]>([]);
 
 	$effect(() => {
 		let cancelled = false;
@@ -53,13 +60,27 @@
 			kontribusiBacaan = data.bacaan;
 			kontribusiLatihan = data.latihan;
 			kontribusiMateri = data.materi;
+			getOwnActivity(cancelled);
 		});
 		return () => {
 			cancelled = true;
 		};
 	});
+
+	async function getOwnActivity(cancelled: boolean) {
+		const [{ data: comments }, { data: reports }] = await Promise.all([
+			getOwnComments(),
+			getOwnReports()
+		]);
+		if (!cancelled) {
+			komentarSaya = comments;
+			laporanSaya = reports;
+		}
+	}
+
 	async function saveName() {
 		const value = nama.trim();
+
 		if (!value || savingName) {
 			editingName = false;
 			return;
@@ -142,6 +163,40 @@
 				? kontribusiLatihan
 				: kontribusiMateri
 	);
+
+	type ActivityItem = {
+		id: string;
+		kind: 'komentar' | 'laporan';
+		title: string;
+		detail: string;
+		createdAt: string;
+	};
+
+	// Activity feed: own comments and reports, newest first.
+	let aktivitas = $derived<ActivityItem[]>(
+		[
+			...komentarSaya.map((comment) => ({
+				id: `komentar-${comment.id}`,
+				kind: 'komentar' as const,
+				title: comment.body,
+				detail: `pada ${comment.contentTitle}`,
+				createdAt: comment.createdAt
+			})),
+			...laporanSaya.map((report) => ({
+				id: `laporan-${report.id}`,
+				kind: 'laporan' as const,
+				title: report.reason,
+				detail: `pada ${report.contentTitle}`,
+				createdAt: report.createdAt
+			}))
+		].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+	);
+
+	const activityDate = new Intl.DateTimeFormat('id-ID', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric'
+	});
 </script>
 
 <div class="mx-auto w-full max-w-2xl">
@@ -277,10 +332,51 @@
 		>
 			<Layers size={15} /> Materi
 		</button>
+		<button
+			type="button"
+			onclick={() => (activeTab = 'aktivitas')}
+			class="flex flex-1 items-center justify-center gap-1.5 border-b-2 py-3 text-sm font-medium transition-colors {activeTab ===
+			'aktivitas'
+				? 'border-primary-600 text-primary-700'
+				: 'border-transparent text-slate-400 hover:text-slate-600'}"
+		>
+			<Activity size={15} /> Aktivitas
+		</button>
 	</div>
 
-	<!-- Contribution List -->
-	{#if daftarAktif.length > 0}
+	{#if activeTab === 'aktivitas'}
+		{#if aktivitas.length > 0}
+			<div class="flex flex-col gap-3">
+				{#each aktivitas as item (item.id)}
+					<div
+						class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+					>
+						<span class="mt-0.5 shrink-0 text-slate-400">
+							{#if item.kind === 'komentar'}
+								<MessageCircle size={16} />
+							{:else}
+								<Flag size={16} />
+							{/if}
+						</span>
+						<div class="min-w-0">
+							<p class="text-sm font-medium text-slate-800">
+								{item.kind === 'komentar' ? 'Mengomentari' : 'Melaporkan'}
+								{item.detail}
+							</p>
+							<p class="line-clamp-2 text-sm text-slate-600">“{item.title}”</p>
+							<p class="mt-1 text-xs text-slate-400">
+								{activityDate.format(new Date(item.createdAt))}
+							</p>
+						</div>
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<p class="py-8 text-center text-sm text-slate-500">
+				Belum ada aktivitas. Komentar dan laporanmu akan tercatat di sini.
+			</p>
+		{/if}
+	{:else if daftarAktif.length > 0}
 		<div class="flex flex-col gap-3">
 			{#each daftarAktif as k (k.id)}
 				<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">

@@ -103,3 +103,52 @@ export async function deleteComment(id: string): Promise<{ error: string | null 
 
 	return { error: error?.message ?? null };
 }
+
+export interface OwnComment {
+	id: string;
+	body: string;
+	createdAt: string;
+	contentId: string;
+	contentTitle: string;
+}
+
+interface OwnCommentRow {
+	id: string;
+	body: string;
+	created_at: string;
+	content_id: string;
+	content: { title: string } | null;
+}
+
+export function mapOwnComment(row: OwnCommentRow): OwnComment {
+	return {
+		id: row.id,
+		body: row.body,
+		createdAt: row.created_at,
+		contentId: row.content_id,
+		contentTitle: row.content?.title ?? 'Konten'
+	};
+}
+
+export async function getOwnComments(): Promise<{
+	data: OwnComment[];
+	error: string | null;
+}> {
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return { data: [], error: null };
+
+	const { data, error } = await supabase
+		.from('comments')
+		.select('id, body, created_at, content_id, content:content!inner(title)')
+		.eq('user_id', user.id)
+		.order('created_at', { ascending: false })
+		.limit(20);
+
+	if (error) {
+		return { data: [], error: error.message };
+	}
+
+	return { data: ((data ?? []) as unknown as OwnCommentRow[]).map(mapOwnComment), error: null };
+}
