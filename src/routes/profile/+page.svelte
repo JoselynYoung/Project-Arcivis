@@ -22,8 +22,10 @@
 	let bio = $state('');
 	let peran = $state('');
 	let bergabung = $state('');
+	let rawRole = $state('member');
 	let editingName = $state(false);
 	let savingName = $state(false);
+	let submittingId = $state<string | null>(null);
 
 	// Tab State
 	let activeTab = $state<'bacaan' | 'latihan' | 'materi'>('bacaan');
@@ -45,7 +47,7 @@
 			}
 
 			nama = data.nama;
-			bio = data.bio;
+			rawRole = data.role;
 			peran = roleLabel(data.role);
 			bergabung = formatJoined(data.createdAt);
 			kontribusiBacaan = data.bacaan;
@@ -103,6 +105,27 @@
 			new Date(iso)
 		);
 		return `Bergabung ${label}`;
+	}
+
+	async function submitDraft(id: string) {
+		if (submittingId) return;
+		submittingId = id;
+
+		const { submitForReview } = await import('$lib/services/review');
+		const { error } = await submitForReview(id);
+
+		submittingId = null;
+
+		if (error) {
+			console.error('Failed to submit for review:', error);
+			return;
+		}
+
+		const bump = (list: ContributionItem[]) =>
+			list.map((item) => (item.id === id ? { ...item, status: 'direview' as const } : item));
+		kontribusiBacaan = bump(kontribusiBacaan);
+		kontribusiLatihan = bump(kontribusiLatihan);
+		kontribusiMateri = bump(kontribusiMateri);
 	}
 
 	// Derived: Total & Active Count by Tab
@@ -211,6 +234,16 @@
 			</a>
 		</div>
 	{/if}
+	{#if rawRole === 'reviewer' || rawRole === 'verifier' || rawRole === 'admin'}
+		<div class="mb-5">
+			<a
+				href={resolve(ROUTES.review)}
+				class="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-6 py-3 text-sm font-bold text-primary-700 transition-colors hover:bg-primary-100"
+			>
+				<ShieldCheck size={16} /> Antrian Review
+			</a>
+		</div>
+	{/if}
 
 	<!-- Tabs -->
 	<div class="mb-5 flex border-b border-slate-200">
@@ -269,7 +302,19 @@
 							<span class="text-[10px] font-medium text-slate-400">Draft</span>
 						{/if}
 					</div>
-					<p class="text-sm font-medium text-slate-800">{k.judul}</p>
+					<div class="mt-2 flex items-center justify-between gap-2">
+						<p class="text-sm font-medium text-slate-800">{k.judul}</p>
+						{#if k.status === 'draft'}
+							<button
+								type="button"
+								onclick={() => submitDraft(k.id)}
+								disabled={submittingId === k.id}
+								class="shrink-0 rounded-lg bg-primary-50 px-3 py-1.5 text-xs font-semibold text-primary-700 transition-colors hover:bg-primary-100 disabled:text-slate-400"
+							>
+								{submittingId === k.id ? '...' : 'Ajukan review'}
+							</button>
+						{/if}
+					</div>
 				</div>
 			{/each}
 		</div>
