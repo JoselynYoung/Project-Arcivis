@@ -97,9 +97,21 @@ Replace mock data with Supabase. The UI must not change — only the data source
 - Pending decisions: author survival (`SET NULL`), profile bio + join date, `.env.example`.
 - Minor audit findings cleared.
 
-## Stage 7 — Community Features ✅ Complete (v0.7.0)
+## Stage 7 — Community Features ✅ Complete (v0.7.0, 2026-10-28)
 
-All seven phases live: comments, reports, draft contributions, review queue, revision history, community question bank, and personal activity feed. Follow-up (unscheduled): wiring the bank into the Quiz Generator.
+**Goal:** let users participate, not just read — discuss, report, contribute, and get reviewed, with full history.
+
+**Result:**
+
+- Fase 1 — Komentar: `comments` table + RLS, `CommentSection` on all three detail page types, plain-text rendering, signed-in posting with anonymous notice.
+- Fase 2 — Lapor konten: `reports` table + RLS, `ReportButton` with preset reasons on all three detail page types. Reports are intake-only; triage is manual until a moderation dashboard exists.
+- Fase 3 — Kontribusi draft: `/contribute` page (article/learning, subject picker, plain paragraphs become Tiptap v1), drafts visible in the author's own profile.
+- Fase 4 — Antrian review: `/review` queue for reviewer/verifier/admin with approve (→ `diverifikasi`) and send-back (→ `draft`); authors submit from their profile contributions.
+- Fase 5 — Revisi: `revisions` snapshots on every content update (security-definer trigger), author edit flow (`/contribute/[id]`), expandable history viewer on detail pages.
+- Fase 6 — Bank soal komunitas: separate `question_bank` pool with verified list (`/bank`) and member submission (subject, difficulty, options, key, explanation).
+- Fase 7 — Aktivitas: `Aktivitas` tab on profiles showing the signed-in user's own comments and reports, newest first.
+
+**Deferred to later (not part of v0.7.0):** wiring the question bank into the Quiz Generator as a pool source; a moderation dashboard for reports.
 
 ## Stage 8 — Enhancement (not started)
 

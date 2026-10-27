@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Arcivis are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/).
+All notable changes to Arcivis are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/): each release lists what changed under `Added` / `Changed` / `Fixed` / `Removed`. A release line names the stage it belongs to and the migration files the live database needs, if any.
 
 ---
 
