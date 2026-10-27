@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import type { Json } from '$lib/types/database.types';
 
 export type ContributionType = 'article' | 'learning';
 
@@ -12,7 +13,7 @@ export interface ContributionDraft {
 
 // Minimal Tiptap v1 document built from plain paragraphs (blank line = break).
 // The editor-schema validator (0005) accepts doc → paragraph → text.
-export function buildDraftBody(text: string): Record<string, unknown> {
+export function buildDraftBody(text: string): Json {
 	const paragraphs = text
 		.split(/\n\s*\n/)
 		.map((block) => block.trim())
@@ -44,7 +45,7 @@ export async function submitContribution(
 		return { data: null, error: 'Judul terlalu panjang (maksimal 200 karakter).' };
 	}
 
-	let body: Record<string, unknown>;
+	let body: Json;
 	try {
 		body = buildDraftBody(draft.bodyText);
 	} catch (err) {
@@ -66,7 +67,7 @@ export async function submitContribution(
 			title,
 			subject_id: draft.subjectId,
 			description: draft.description.trim() || null,
-			body,
+			body: body as Json,
 			editor_schema_version: 1,
 			status: 'draft',
 			author_id: user.id
