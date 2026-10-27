@@ -1,6 +1,6 @@
 # Backlog — Not in Active Roadmap
 
-Ideas discussed and roughly scoped, but deliberately not scheduled into any current Stage. No timeline, no commitment. Revisit when Stage 7 (Community Features) actually starts, or sooner if it becomes relevant.
+Ideas scoped but not scheduled into any current stage. No timeline, no commitment.
 
 ## Learning — Multi-format resource
 
@@ -78,4 +78,4 @@ Ideas discussed and roughly scoped, but deliberately not scheduled into any curr
 
 - A dedicated writing/editor tool — rich text (bold, etc.), math formula support, export to plain PDF, DOCX, and LaTeX-rendered PDF. Originally conceived to avoid manually formatting Word templates for practice questions.
 - **Architecture direction agreed**: semi-separate. Built and maintained as its own codebase/app (so its heavier editor/export dependencies never load for regular Arcivis visitors who are just reading), but shares the same Supabase backend/auth — a user logs in once with their Arcivis account, and publishing from the tool writes directly into the same `content`/`questions` tables. Not a fully standalone tool requiring manual export-then-upload.
-- Scope (which content types it covers — Practice only vs. also Article/Learning) not yet decided; the shared-backend approach means adding more content types later doesn't require rebuilding the pipeline, just the type-specific form.
+- Scope (which content types it covers) not yet decided.

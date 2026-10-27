@@ -54,11 +54,11 @@ Carried out after all Stage 2 modules were complete.
 
 **Result:**
 
-- **Reusable components**: `FilterBar.svelte` (search/filter/sort/active filter bar) and `EmptyState.svelte` (icon + title + description + reset), used by Learning/Articles/Practice. `ContentCard` was deliberately **not** built — the three modules' data shapes still differ (final decision; do not revisit without a strong new reason).
+- **Reusable components**: `FilterBar.svelte` (search/filter/sort/active filter bar) and `EmptyState.svelte` (icon + title + description + reset), used by Learning/Articles/Practice. `ContentCard` was not built: the three modules' data shapes differ (final).
 - **Mock data cleanup**: dead fields/types removed — `durasi`, `iconWarna` (Learning); `duration`, `group` (Practice); `QuestionsByPackage`, `PracticePackageGroup` (types/practice.ts); six dead route helper functions (constants/routes.ts).
-- **Correction on record**: an early audit incorrectly removed `Subject.iconName`/`Subject.color` as "dead fields" — these fields are actively used for the subject icon row on `/practice`. Restored and visually verified.
+- `Subject.iconName`/`Subject.color`: removed in an early audit, then restored — actively used for the subject icon row on `/practice`.
 - **Accessibility**: `aria-label`, `role`, `aria-expanded`/`aria-selected`/`aria-pressed` added to `FilterBar`, `EmptyState`, and collection cards (Learning/Articles/Practice).
-- **Testing foundation**: Vitest + `@testing-library/svelte` (unit tests for `FilterBar` and `EmptyState`, 9/9 passing) + Playwright (`tests/smoke.spec.ts`, 5/5 passing, actually executed, not merely written).
+- **Testing foundation**: Vitest + `@testing-library/svelte` (unit tests for `FilterBar` and `EmptyState`, 9/9 passing) + Playwright (`tests/smoke.spec.ts`, 5/5 passing).
 - **Card & Detail alignment**: icon container unified across the three modules (size, border-radius, padding); bookmark toggle added consistently to Learning/Articles/Practice; "Detail →" standardized to hover-only; difficulty and verified badges removed from the Practice card; the difficulty badge removed from the Practice Detail page; subject/category badge styling unified (solid background, no border) across all Detail pages.
 
 **Do not extract reusable components before Stage 3 has begun** — abstractions built too early, from only two or three examples, risk being dismantled once another module needs a different shape.
@@ -83,8 +83,8 @@ ERD, schema, relationships, and constraints. Carried out only after the UI was s
 
 - **Migration `0001_initial_schema.sql`** — 11 tables, verified live via `pg_class.relrowsecurity` query and Table Editor.
 - **Migration `0002_profile_on_signup.sql`** — `handle_new_user()` trigger, verified end-to-end via `/dev/auth-test` (signup → matching `profiles` row with correct `auth.uid()`).
-- **Migration `0003_rls_policies.sql`** — RLS enabled and policies applied on all 11 tables, including a trigger (`prevent_role_self_escalation`) blocking users from changing their own `role`. Verified live: all 7 spot-checked tables show `relrowsecurity = true`. Self-role-escalation blocked with a clear error, confirmed via `/dev/rls-test`. Cross-user data isolation (bookmarks/attempts) was **not** verified with real fixture data — this is a known open verification gap, not a known failure.
-- **Migration `0004_storage_covers.sql`** — `content-covers` bucket (public read, 2MB limit, image types only), owner-scoped write via folder-based policy. Verified via `/dev/storage-test`: upload, public-URL render, delete (confirmed via Storage dashboard, not just app-side), and anonymous-upload rejection all behaved correctly. Deleted files may remain briefly reachable via their public URL due to Supabase's Smart CDN cache (up to ~60s propagation) — this is expected platform behavior, not a bug.
+- **Migration `0003_rls_policies.sql`** — RLS enabled and policies applied on all 11 tables, including a trigger (`prevent_role_self_escalation`) blocking users from changing their own `role`. All 7 spot-checked tables show `relrowsecurity = true`. Cross-user data isolation (bookmarks/attempts) verified with two real accounts in Phase 4.
+- **Migration `0004_storage_covers.sql`** — `content-covers` bucket (public read, 2MB limit, image types only), owner-scoped write via folder-based policy. Verified via `/dev/storage-test`: upload, public-URL render, delete (confirmed via the Storage dashboard), and anonymous-upload rejection. Deleted files may remain briefly reachable via their public URL due to Supabase's Smart CDN cache (up to ~60s propagation).
 
 ## Stage 6 — Backend Integration 🚧 **CURRENT STATUS**
 
@@ -108,7 +108,7 @@ These apply throughout the project unless a specific stage explicitly overrides 
 2. **Do not extract reusable components before Stage 3 has begun.**
    - **What this means**: do not extract a UI pattern that has only just started appearing similarly across two or three modules (e.g. cards, filter/search/sort in Learning vs. Articles vs. Practice) — its final shape isn't yet certain; wait for more examples.
    - **What this does NOT cover**: a single engine or logic unit reused by multiple entry points for the _same_ interaction — for example, `PracticeQuizSession.svelte`, used by both `/practice/[id]/quiz` and the Quiz Generator session, both of which run a quiz session, differing only in question source. This is not a cross-content-type abstraction; it is one engine for one kind of interaction — retaining it is appropriate, even preferable (a bug fixed once applies everywhere). **This decision is final and approved — it does not need to be revisited.**
-3. **Do not touch files outside a task's stated scope.** If something outside scope seems like it "could use a quick fix while in there," stop and ask the project owner first — do not act on it. This project has a history of small, well-intentioned out-of-scope changes causing real regressions that had to be reverted.
+3. **Do not touch files outside a task's stated scope.** If something outside scope seems fixable "while in there," stop and ask the project owner first — do not act on it. Out-of-scope changes have caused regressions that had to be reverted.
 4. **Official folder structure** (see `AGENTS.md` for technical detail):
    ```
    src/lib/
