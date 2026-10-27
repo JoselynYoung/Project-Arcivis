@@ -25,7 +25,7 @@ This repo has six reference documents under `Docs/` and `Docs/agents/`. Read the
 
 - **`Docs/SCHEMA.md`** — approved database structure and design decisions.
 
-- **`Docs/CHANGELOG.md`** — verified project history and known gaps.
+- **`Docs/CHANGELOG.md`** — release history.
 
 - **`Docs/BACKLOG.md`** — unscheduled ideas. Do not implement backlog items unless the project owner explicitly requests them.
 

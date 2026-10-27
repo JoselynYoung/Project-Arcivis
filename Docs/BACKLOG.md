@@ -19,15 +19,13 @@ Ideas scoped but not scheduled into any current stage. No timeline, no commitmen
   - total package/page timer;
   - per-question benchmark timer that resets when moving to the next question;
   - fixed official-style time allocation.
-- Do not imply that any of this is being implemented now.
 
 ## Practice — Future Question Bank
 
 - Record the agreed architectural direction:
   - The current Stage 5 schema remains **CONTENT → QUESTIONS**.
   - Future Community/Question Bank work may allow one question to be reused across multiple practice packages through a join table.
-  - Do NOT turn questions into a full standalone CONTENT entity unless a future approved design explicitly requires it.
-  - Do NOT modify SCHEMA.md as part of this documentation task.
+  - Questions stay out of the standalone-CONTENT-entity shape unless a future approved design requires it.
 
 ## Article — Reading ecosystem
 

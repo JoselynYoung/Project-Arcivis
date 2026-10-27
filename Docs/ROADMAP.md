@@ -104,10 +104,10 @@ Notifications, recommendations, improved search, analytics, performance optimiza
 
 These apply throughout the project unless a specific stage explicitly overrides one.
 
-1. **No backend, Supabase, auth, or API of any kind — including ordinary state persistence** (bookmarks, dark mode, quiz results) **during Stages 2–4.** This restriction lifts starting Stage 5. The Contribution UI's previously-planned localStorage exception was superseded by the decision above: it is built directly against the real database from Stage 5 onward, not mocked twice.
+1. **No backend, Supabase, auth, or API of any kind — including ordinary state persistence** (bookmarks, dark mode, quiz results) **during Stages 2–4.** This restriction lifts starting Stage 5. The Contribution UI is built directly against the real database from Stage 5 onward, not mocked twice.
 2. **Do not extract reusable components before Stage 3 has begun.**
    - **What this means**: do not extract a UI pattern that has only just started appearing similarly across two or three modules (e.g. cards, filter/search/sort in Learning vs. Articles vs. Practice) — its final shape isn't yet certain; wait for more examples.
-   - **What this does NOT cover**: a single engine or logic unit reused by multiple entry points for the _same_ interaction — for example, `PracticeQuizSession.svelte`, used by both `/practice/[id]/quiz` and the Quiz Generator session, both of which run a quiz session, differing only in question source. This is not a cross-content-type abstraction; it is one engine for one kind of interaction — retaining it is appropriate, even preferable (a bug fixed once applies everywhere). **This decision is final and approved — it does not need to be revisited.**
+   - **What this does NOT cover**: a single engine or logic unit reused by multiple entry points for the _same_ interaction — for example, `PracticeQuizSession.svelte`, used by both `/practice/[id]/quiz` and the Quiz Generator session, both of which run a quiz session, differing only in question source. This is not a cross-content-type abstraction; it is one engine for one kind of interaction (final).
 3. **Do not touch files outside a task's stated scope.** If something outside scope seems fixable "while in there," stop and ask the project owner first — do not act on it. Out-of-scope changes have caused regressions that had to be reverted.
 4. **Official folder structure** (see `AGENTS.md` for technical detail):
    ```
