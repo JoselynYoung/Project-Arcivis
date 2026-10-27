@@ -3,6 +3,7 @@
 	import { untrack } from 'svelte';
 	import { Check, X, ArrowRight, RotateCcw, BookOpen, Info } from '@lucide/svelte';
 	import type { Question } from '$lib/types/practice';
+	import { gradeAnswer, type GradeResult } from '$lib/services/questions';
 	import { supabase } from '$lib/services/supabaseClient';
 
 	let { questions, title, description, difficulty, backRoute, backParams, backLabel, onComplete } =
@@ -23,8 +24,13 @@
 	let correctCount = $state(0);
 	let completedOnce = $state(false);
 	let isAnonymous = $state(false);
+	let grade = $state<GradeResult | null>(null);
+	let grading = $state(false);
+	let gradeError = $state<string | null>(null);
 
 	let currentQuestion = $derived(questions[currentIndex] ?? null);
+	let gradedIndex = $derived(grade?.correctIndex ?? -1);
+	let wasCorrect = $derived(grade?.correct ?? false);
 	let isFinished = $derived(questions.length > 0 && currentIndex >= questions.length);
 	let totalDots = $derived(questions.length);
 
@@ -48,31 +54,56 @@
 	});
 
 	function selectAnswer(index: number) {
-		if (isSubmitted) return;
+		if (isSubmitted || grading) return;
 		selectedAnswer = index;
 	}
 
-	function submitAnswer() {
-		if (selectedAnswer === null) return;
-		isSubmitted = true;
-		if (currentQuestion && selectedAnswer === currentQuestion.correctIndex) {
-			correctCount += 1;
+	async function submitAnswer() {
+		if (selectedAnswer === null || grading || isSubmitted || !currentQuestion) return;
+		grading = true;
+		gradeError = null;
+
+		const { data, error } = await gradeAnswer(String(currentQuestion.id), selectedAnswer);
+		grading = false;
+
+		if (error || !data) {
+			gradeError = error ?? 'Penilaian gagal. Coba lagi.';
+			return;
 		}
+
+		grade = data;
+		isSubmitted = true;
+		if (data.correct) correctCount += 1;
+	}
+
+	function clearAttempt() {
+		selectedAnswer = null;
+		isSubmitted = false;
+		grade = null;
+		grading = false;
+		gradeError = null;
 	}
 
 	function nextQuestion() {
 		currentIndex += 1;
-		selectedAnswer = null;
-		isSubmitted = false;
+		clearAttempt();
 	}
 
 	function resetQuiz() {
 		currentIndex = 0;
-		selectedAnswer = null;
-		isSubmitted = false;
 		correctCount = 0;
 		completedOnce = false;
+		clearAttempt();
 	}
+
+	// New question set (retake or another package) starts clean.
+	$effect(() => {
+		const list = questions;
+		untrack(() => {
+			resetQuiz();
+			void list;
+		});
+	});
 </script>
 
 <div class="mx-auto w-full max-w-2xl">
@@ -149,14 +180,14 @@
 					{:else}
 						<div
 							class="flex items-center justify-between rounded-xl border px-4 py-3 text-sm {i ===
-							currentQuestion.correctIndex
+							gradedIndex
 								? 'border-emerald-300 bg-emerald-50 font-medium text-emerald-700'
 								: i === selectedAnswer
 									? 'border-red-300 bg-red-50 font-medium text-red-700'
 									: 'border-slate-200 text-slate-500'}"
 						>
 							{option}
-							{#if i === currentQuestion.correctIndex}
+							{#if i === gradedIndex}
 								<Check size={16} class="text-emerald-600" aria-label="Benar" />
 							{:else if i === selectedAnswer}
 								<X size={16} class="text-red-600" aria-label="Salah" />
@@ -169,8 +200,8 @@
 			{#if isSubmitted}
 				<div class="mb-5 rounded-xl bg-slate-50 p-4" aria-live="polite" aria-atomic="true">
 					<p class="mb-1 text-xs font-semibold text-slate-500">Pembahasan</p>
-					<p class="text-sm text-slate-600">{currentQuestion.explanation}</p>
-					{#if selectedAnswer === currentQuestion.correctIndex}
+					<p class="text-sm text-slate-600">{grade?.explanation ?? ''}</p>
+					{#if wasCorrect}
 						<p class="mt-2 text-sm font-medium text-emerald-600">Jawaban kamu benar! ✅</p>
 					{:else}
 						<p class="mt-2 text-sm font-medium text-red-600">Jawaban kamu salah ❌</p>
@@ -182,13 +213,15 @@
 				<button
 					type="button"
 					onclick={submitAnswer}
-					disabled={selectedAnswer === null}
+					disabled={selectedAnswer === null || grading}
 					class="w-full rounded-xl bg-primary-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-700 disabled:bg-slate-200 disabled:text-slate-400"
 					aria-describedby="submit-hint"
 				>
-					Kumpulkan Jawaban
+					{grading ? 'Menilai...' : 'Kumpulkan Jawaban'}
 				</button>
-				{#if selectedAnswer === null}
+				{#if gradeError}
+					<p class="mt-2 text-center text-xs text-red-600" role="alert">{gradeError}</p>
+				{:else if selectedAnswer === null}
 					<p id="submit-hint" class="mt-2 text-center text-xs text-slate-400">
 						Pilih jawaban terlebih dahulu
 					</p>

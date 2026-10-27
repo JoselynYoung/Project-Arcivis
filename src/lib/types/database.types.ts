@@ -381,6 +381,10 @@ export type Database = {
 					view_count: number;
 				}[];
 			};
+			grade_answer: {
+				Args: { p_answer: number; p_question_id: string };
+				Returns: Json;
+			};
 			get_learning_view_counts: {
 				Args: { content_ids?: string[] };
 				Returns: {

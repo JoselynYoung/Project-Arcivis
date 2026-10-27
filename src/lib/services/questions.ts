@@ -1,26 +1,19 @@
 import { supabase } from './supabaseClient';
-import type { Tables } from '$lib/types/database.types';
 import type { Question } from '$lib/types/practice';
 
-export function mapQuestionRow(row: Tables<'questions'>): Question {
+interface PublicQuestionRow {
+	id: string;
+	text: string;
+	options: unknown;
+}
+
+export function mapQuestionRow(row: PublicQuestionRow): Question {
 	const options = row.options;
 	if (!Array.isArray(options) || !options.every((option) => typeof option === 'string')) {
 		throw new Error('BLOCKER: data contract questions.options mismatch');
 	}
-	if (
-		!Number.isInteger(row.correct_index) ||
-		row.correct_index < 0 ||
-		row.correct_index >= options.length
-	) {
-		throw new Error('BLOCKER: data contract questions.correct_index mismatch');
-	}
-	return {
-		id: row.id,
-		text: row.text,
-		options,
-		correctIndex: row.correct_index,
-		explanation: row.explanation ?? ''
-	};
+
+	return { id: row.id, text: row.text, options };
 }
 
 export async function getQuestionsByContentId(contentId: string): Promise<{
@@ -29,7 +22,7 @@ export async function getQuestionsByContentId(contentId: string): Promise<{
 }> {
 	const { data, error } = await supabase
 		.from('questions')
-		.select('*')
+		.select('id, content_id, text, options')
 		.eq('content_id', contentId)
 		.order('id');
 
@@ -58,7 +51,7 @@ export interface PracticeQuestionFilters {
 function practiceQuestionsQuery() {
 	return supabase.from('questions').select(
 		`
-	id, content_id, text, options, correct_index, explanation, difficulty, topic,
+	id, content_id, text, options, difficulty, topic,
 	content:content_id!inner(subject_id, status, type)
 `
 	);
@@ -112,4 +105,53 @@ export async function getPracticeQuestions(filters: PracticeQuestionFilters): Pr
 			error: err instanceof Error ? err.message : 'BLOCKER: questions contract mismatch'
 		};
 	}
+}
+
+export interface GradeResult {
+	correct: boolean;
+	correctIndex: number;
+	explanation: string;
+}
+
+// Server-side grading. The key for one question is revealed only after it is
+// answered; bulk key scraping through the questions table is revoked (0009).
+export async function gradeAnswer(
+	questionId: string,
+	answer: number
+): Promise<{ data: GradeResult | null; error: string | null }> {
+	const { data, error } = await supabase.rpc('grade_answer', {
+		p_answer: answer,
+		p_question_id: questionId
+	});
+
+	if (error) {
+		return { data: null, error: error.message };
+	}
+
+	const result = data as {
+		ok?: unknown;
+		correct?: unknown;
+		correct_index?: unknown;
+		explanation?: unknown;
+	} | null;
+
+	if (
+		!result ||
+		result.ok !== true ||
+		typeof result.correct !== 'boolean' ||
+		!Number.isInteger(result.correct_index) ||
+		(result.correct_index as number) < 0 ||
+		typeof result.explanation !== 'string'
+	) {
+		return { data: null, error: 'BLOCKER: grade_answer contract mismatch' };
+	}
+
+	return {
+		data: {
+			correct: result.correct,
+			correctIndex: result.correct_index as number,
+			explanation: result.explanation
+		},
+		error: null
+	};
 }
