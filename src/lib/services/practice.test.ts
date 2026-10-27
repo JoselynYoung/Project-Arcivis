@@ -43,11 +43,10 @@ describe('deriveDifficulty', () => {
 			author: null,
 			subject: { name: 'Matematika' },
 			content_tags: [],
-			questions: [{ difficulty: 'Sedang' }],
-			question_count: [{ count: 1 }]
+			questions: [{ difficulty: 'Sedang' }]
 		} as unknown as PracticeRow;
 
-		const packageData = mapPracticeRow(row);
+		const packageData = mapPracticeRow(row, 1);
 
 		expect(packageData).toBeDefined();
 		expect(packageData.author).toBe('');

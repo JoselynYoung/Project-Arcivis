@@ -385,6 +385,13 @@ export type Database = {
 				Args: { p_answer: number; p_question_id: string };
 				Returns: Json;
 			};
+			get_practice_question_counts: {
+				Args: Record<string, never>;
+				Returns: {
+					content_id: string;
+					question_count: number;
+				}[];
+			};
 			get_learning_view_counts: {
 				Args: { content_ids?: string[] };
 				Returns: {

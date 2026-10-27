@@ -12,8 +12,7 @@ function practiceQuery() {
 		id, title, description, status, created_at,
 		author:profiles!content_author_id_fkey(name),
 		subject:subjects(name), content_tags(tags(name)),
-		questions(difficulty),
-		question_count:questions(count)
+		questions(difficulty)
 	`
 		)
 		.eq('type', 'practice')
@@ -56,7 +55,7 @@ export function deriveDifficulty(difficulties: (string | null)[]): string {
 	return candidates[0];
 }
 
-export function mapPracticeRow(row: PracticeRow): PracticePackage {
+export function mapPracticeRow(row: PracticeRow, questionCount: number): PracticePackage {
 	if (!row.author?.name) {
 		console.error(`Practice package ${row.id} missing author`);
 	}
@@ -67,11 +66,29 @@ export function mapPracticeRow(row: PracticeRow): PracticePackage {
 		description: row.description ?? '',
 		subject: row.subject?.name ?? '',
 		difficulty: deriveDifficulty(row.questions.map((question) => question.difficulty)),
-		questionCount: row.question_count[0]?.count ?? 0,
+		questionCount,
 		author: row.author?.name ?? '',
 		topics: row.content_tags.flatMap((item) => (item.tags ? [item.tags.name] : [])),
 		isVerified: row.status === 'diverifikasi'
 	};
+}
+
+// Counts come from an RPC: questions(count) embeds need table-level SELECT,
+// which is revoked to hide answer keys. A failed count lookup degrades to 0.
+async function getQuestionCounts(): Promise<Map<string, number>> {
+	const counts = new Map<string, number>();
+	const { data, error } = await supabase.rpc('get_practice_question_counts');
+
+	if (error) {
+		console.error('[practice.ts] Question counts unavailable (non-blocking):', error.message);
+		return counts;
+	}
+
+	for (const row of data ?? []) {
+		counts.set(row.content_id, Number(row.question_count));
+	}
+
+	return counts;
 }
 
 export async function getPracticePackages(): Promise<{
@@ -85,9 +102,10 @@ export async function getPracticePackages(): Promise<{
 	}
 
 	const rows = (data ?? []) as unknown as PracticeRow[];
+	const counts = await getQuestionCounts();
 
 	return {
-		data: rows.map(mapPracticeRow),
+		data: rows.map((row) => mapPracticeRow(row, counts.get(row.id) ?? 0)),
 		error: null
 	};
 }
@@ -111,7 +129,10 @@ export async function getPracticePackage(id: string): Promise<{
 	}
 
 	return {
-		data: mapPracticeRow(data as unknown as PracticeRow),
+		data: mapPracticeRow(
+			data as unknown as PracticeRow,
+			(await getQuestionCounts()).get(data.id) ?? 0
+		),
 		error: null
 	};
 }
