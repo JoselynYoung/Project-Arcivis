@@ -3,13 +3,16 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import favicon from '$lib/assets/favicon.svg';
-	import { Home, LayoutGrid, X } from '@lucide/svelte';
+	import { Home, LayoutGrid, LogIn, X } from '@lucide/svelte';
 	import {
 		desktopMainNav,
 		desktopFooterNav,
 		mobileBottomNav,
 		mobileDrawerNav
 	} from '$lib/constants/navigation';
+
+	import { supabase } from '$lib/services/supabaseClient';
+	import { ROUTES } from '$lib/constants/routes';
 
 	let { children } = $props();
 
@@ -30,6 +33,21 @@
 	function toggleMobileMenu() {
 		isMobileMenuOpen = !isMobileMenuOpen;
 	}
+
+	// Signed-out visitors get a login entry point
+	let signedIn = $state(false);
+
+	$effect(() => {
+		supabase.auth.getSession().then(({ data }) => {
+			signedIn = !!data.session;
+		});
+		const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+			signedIn = !!session;
+		});
+		return () => {
+			listener.subscription.unsubscribe();
+		};
+	});
 </script>
 
 <svelte:head>
@@ -95,6 +113,21 @@
 					{#if sideBar}<span>{item.label}</span>{/if}
 				</a>
 			{/each}
+			{#if !signedIn}
+				{@const active = isRouteActive(ROUTES.login)}
+				<a
+					href={resolve(ROUTES.login)}
+					class="flex cursor-pointer items-center gap-3 rounded-xl font-medium transition-all {sideBar
+						? 'w-full justify-start p-2.5'
+						: 'mx-auto h-12 w-12 justify-center'} {active
+						? 'bg-linear-to-br from-primary-800 to-primary-700 text-white shadow-xs'
+						: 'text-slate-500 hover:bg-primary-50 hover:text-primary-700'}"
+					aria-current={active ? 'page' : undefined}
+				>
+					<LogIn size={20} class="shrink-0" />
+					{#if sideBar}<span>Masuk</span>{/if}
+				</a>
+			{/if}
 		</div>
 	</nav>
 
@@ -125,6 +158,16 @@
 						<span class="text-center text-xs text-slate-600">{item.label}</span>
 					</a>
 				{/each}
+				{#if !signedIn}
+					<a href={resolve(ROUTES.login)} class="flex flex-col items-center gap-2">
+						<span
+							class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50 text-primary-700"
+						>
+							<LogIn size={22} />
+						</span>
+						<span class="text-center text-xs text-slate-600">Masuk</span>
+					</a>
+				{/if}
 			</div>
 		</div>
 	{/if}
