@@ -304,16 +304,26 @@
 					</div>
 					<div class="mt-2 flex items-center justify-between gap-2">
 						<p class="text-sm font-medium text-slate-800">{k.judul}</p>
-						{#if k.status === 'draft'}
-							<button
-								type="button"
-								onclick={() => submitDraft(k.id)}
-								disabled={submittingId === k.id}
-								class="shrink-0 rounded-lg bg-primary-50 px-3 py-1.5 text-xs font-semibold text-primary-700 transition-colors hover:bg-primary-100 disabled:text-slate-400"
-							>
-								{submittingId === k.id ? '...' : 'Ajukan review'}
-							</button>
-						{/if}
+						<div class="flex shrink-0 items-center gap-2">
+							{#if k.status === 'draft' || k.status === 'direview'}
+								<a
+									href={resolve('/contribute/[id]', { id: k.id })}
+									class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-200"
+								>
+									Ubah
+								</a>
+							{/if}
+							{#if k.status === 'draft'}
+								<button
+									type="button"
+									onclick={() => submitDraft(k.id)}
+									disabled={submittingId === k.id}
+									class="shrink-0 rounded-lg bg-primary-50 px-3 py-1.5 text-xs font-semibold text-primary-700 transition-colors hover:bg-primary-100 disabled:text-slate-400"
+								>
+									{submittingId === k.id ? '...' : 'Ajukan review'}
+								</button>
+							{/if}
+						</div>
 					</div>
 				</div>
 			{/each}

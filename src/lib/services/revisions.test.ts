@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mapRevisionRow } from './revisions';
+import { mapRevisionRow, docToPlainText } from './revisions';
 
 describe('mapRevisionRow', () => {
 	it('maps a revision row', () => {
@@ -30,5 +30,24 @@ describe('mapRevisionRow', () => {
 				editor: null
 			}).editorName
 		).toBe('Pengunjung');
+	});
+});
+
+describe('docToPlainText', () => {
+	it('joins paragraphs with blank lines', () => {
+		expect(
+			docToPlainText({
+				type: 'doc',
+				content: [
+					{ type: 'paragraph', content: [{ type: 'text', text: 'Satu.' }] },
+					{ type: 'paragraph', content: [{ type: 'text', text: 'Dua.' }] }
+				]
+			})
+		).toBe('Satu.\n\nDua.');
+	});
+
+	it('returns empty string for non-documents', () => {
+		expect(docToPlainText(null)).toBe('');
+		expect(docToPlainText({ type: 'doc' })).toBe('');
 	});
 });

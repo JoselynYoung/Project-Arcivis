@@ -4,9 +4,9 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
-## [v0.7.0] — Stage 7: Comments, Reports, Contributions, Review
+## [v0.7.0] — Stage 7: Comments, Reports, Contributions, Review, Revisions
 
-Opens Stage 7 with per-content discussion, content reports, draft contributions, and curator review. Requires migrations `0012_comments.sql`, `0013_reports.sql`, `0014_report_delete_own.sql`, `0015_trigger_definer_for_body_contract.sql`, and `0016_review_queue_access.sql` on the live database.
+Opens Stage 7 with per-content discussion, content reports, draft contributions, curator review, and revision history. Requires migrations `0012_comments.sql` through `0017_revision_history.sql` on the live database.
 
 ### Added
 
@@ -15,6 +15,8 @@ Opens Stage 7 with per-content discussion, content reports, draft contributions,
 - `CommentSection` on Learning, Articles, and Practice detail pages: plain-text rendering, 2000-character limit, empty state, and a sign-in notice for visitors.
 - `ReportButton` on Learning, Articles, and Practice detail pages: preset reasons, signed-in-only submit, and a sign-in notice for visitors.
 - `/review` queue for reviewer/verifier/admin roles with approve and send-back actions; authors submit drafts from their profile contributions.
+- `/contribute` page with profile entry point: article/learning drafts with subject picker; plain paragraphs become a Tiptap v1 document.
+- Edit flow for authors (`/contribute/[id]`) with automatic revision snapshots and a history viewer on detail pages.
 
 ### Fixed
 

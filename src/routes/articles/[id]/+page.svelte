@@ -6,6 +6,7 @@
 	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
 	import CommentSection from '$lib/components/CommentSection.svelte';
+	import RevisionHistory from '$lib/components/RevisionHistory.svelte';
 	import ReportButton from '$lib/components/ReportButton.svelte';
 
 	let { data }: { data: PageData } = $props();
@@ -214,5 +215,6 @@
 			</div>
 		</div>
 		<CommentSection contentId={article.id} />
+		<RevisionHistory contentId={article.id} />
 	{/if}
 </div>

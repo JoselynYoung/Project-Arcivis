@@ -399,6 +399,51 @@ export type Database = {
 					}
 				];
 			};
+			revisions: {
+				Row: {
+					body: Json | null;
+					content_id: string;
+					created_at: string;
+					editor_id: string | null;
+					id: string;
+					status: string;
+					title: string;
+				};
+				Insert: {
+					body?: Json | null;
+					content_id: string;
+					created_at?: string;
+					editor_id?: string | null;
+					id?: string;
+					status: string;
+					title: string;
+				};
+				Update: {
+					body?: Json | null;
+					content_id?: string;
+					created_at?: string;
+					editor_id?: string | null;
+					id?: string;
+					status?: string;
+					title?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'revisions_content_id_fkey';
+						columns: ['content_id'];
+						isOneToOne: false;
+						referencedRelation: 'content';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'revisions_editor_id_fkey';
+						columns: ['editor_id'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					}
+				];
+			};
 			schedules: {
 				Row: {
 					event_date: string;
