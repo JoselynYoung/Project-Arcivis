@@ -21,6 +21,7 @@ export const ROUTES = {
 	profile: '/profile',
 	login: '/login',
 	contribute: '/contribute',
-	review: '/review'
+	review: '/review',
+	bank: '/bank'
 } as const;
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

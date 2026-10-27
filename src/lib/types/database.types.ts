@@ -319,6 +319,63 @@ export type Database = {
 				};
 				Relationships: [];
 			};
+			question_bank: {
+				Row: {
+					author_id: string;
+					correct_index: number;
+					created_at: string;
+					difficulty: string;
+					explanation: string | null;
+					id: string;
+					options: Json;
+					status: string;
+					subject_id: string | null;
+					text: string;
+					topic: string | null;
+				};
+				Insert: {
+					author_id: string;
+					correct_index: number;
+					created_at?: string;
+					difficulty: string;
+					explanation?: string | null;
+					id?: string;
+					options: Json;
+					status?: string;
+					subject_id?: string | null;
+					text: string;
+					topic?: string | null;
+				};
+				Update: {
+					author_id?: string;
+					correct_index?: number;
+					created_at?: string;
+					difficulty?: string;
+					explanation?: string | null;
+					id?: string;
+					options?: Json;
+					status?: string;
+					subject_id?: string | null;
+					text?: string;
+					topic?: string | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'question_bank_author_id_fkey';
+						columns: ['author_id'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'question_bank_subject_id_fkey';
+						columns: ['subject_id'];
+						isOneToOne: false;
+						referencedRelation: 'subjects';
+						referencedColumns: ['id'];
+					}
+				];
+			};
 			questions: {
 				Row: {
 					content_id: string;

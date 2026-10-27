@@ -3,6 +3,7 @@ node_modules
 .zed
 .opencode
 /agents/
+
 # Output
 .output
 .vercel
