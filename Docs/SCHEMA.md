@@ -156,12 +156,23 @@ Raw private view events, used as the source of truth for the Popular/Statistics 
 
 Per-content discussion. Visible wherever the parent content is visible; posting requires sign-in.
 
+| Column     | Type | Description                     |
+| ---------- | ---- | ------------------------------- |
+| id         | uuid | Primary key                     |
+| content_id | uuid | Foreign key → `content.id`      |
+| user_id    | uuid | Foreign key → `profiles.id`     |
+| body       | text | Comment text, 1-2000 characters |
+
+### 3.13 `reports`
+
+User reports against published content. Intake only; triage happens outside the app until the review queue exists.
+
 | Column     | Type      | Description                     |
 | ---------- | --------- | ------------------------------- |
 | id         | uuid      | Primary key                     |
 | content_id | uuid      | Foreign key → `content.id`      |
 | user_id    | uuid      | Foreign key → `profiles.id`     |
-| body       | text      | Comment text, 1-2000 characters |
+| reason     | text      | Report reason, 1-500 characters |
 | created_at | timestamp | Server-generated event time     |
 
 ## 4. Design Decisions
