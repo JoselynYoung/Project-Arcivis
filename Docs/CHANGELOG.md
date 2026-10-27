@@ -4,9 +4,9 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
-## [v0.7.0] — Stage 7: Comments, Reports, Contributions, Review, Revisions
+## [v0.7.0] — Stage 7: Community
 
-Opens Stage 7 with per-content discussion, content reports, draft contributions, curator review, and revision history. Requires migrations `0012_comments.sql` through `0017_revision_history.sql` on the live database.
+Opens Stage 7: per-content discussion, reports, draft contributions, curator review, revision history, community question bank, and a personal activity feed. Requires migrations `0012_comments.sql` through `0018_question_bank.sql` on the live database.
 
 ### Added
 
@@ -17,6 +17,8 @@ Opens Stage 7 with per-content discussion, content reports, draft contributions,
 - `/review` queue for reviewer/verifier/admin roles with approve and send-back actions; authors submit drafts from their profile contributions.
 - `/contribute` page with profile entry point: article/learning drafts with subject picker; plain paragraphs become a Tiptap v1 document.
 - Edit flow for authors (`/contribute/[id]`) with automatic revision snapshots and a history viewer on detail pages.
+- `/bank`: community question pool with verified list and member submission (subject, difficulty, options, key, explanation).
+- `Aktivitas` tab on profiles: the signed-in user's own comments and reports, newest first.
 
 ### Fixed
 
