@@ -6,11 +6,12 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ## [v0.6.3] — Security Patch A
 
-Fixes the critical findings of the technical audit. Requires migration `0009_quiz_grading_rpc.sql` on the live database.
+Fixes the critical findings of the technical audit. Requires migrations `0009_quiz_grading_rpc.sql` and `0010_practice_question_counts_rpc.sql` on the live database.
 
 ### Added
 
 - `grade_answer` RPC (migration `0009`): grades one answered question server-side and reveals only that question's key. Quiz sessions grade through it; bulk answer-key reads are revoked.
+- `get_practice_question_counts` RPC (migration `0010`): practice package counts without table-level `questions` reads, keeping the key lockdown intact.
 - `/dev` routes render only in development builds; production requests return 404.
 
 ### Fixed
