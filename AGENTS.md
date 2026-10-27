@@ -17,14 +17,15 @@ Before starting, ask the user when antislop applies: during the work, or after i
 
 ## Start here
 
-This repo has four reference documents under `Docs/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
+This repo has six reference documents under `Docs/` and `Docs/agents/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
 
 - **`Docs/ROADMAP.md`** — current stage, what's in scope, what's deliberately deferred, and hard rules. Source of truth for roadmap and architecture decisions.
+- **`Docs/agents/ARCHITECTURE.md`** — folder structure, tech stack, routing conventions, and `resolve()` gotchas.
+- **`Docs/agents/DESIGN_GUIDELINES.md`** — color palette, typography, and component patterns.
+
 - **`Docs/SCHEMA.md`** — approved database structure and design decisions.
 - **`Docs/CHANGELOG.md`** — release history.
 - **`Docs/BACKLOG.md`** — unscheduled ideas. Do not implement backlog items unless the project owner explicitly requests them.
-
-Agent support docs (architecture, design guidelines, decision log, plans) live in the private agents folder outside the repo and remain readable there; they are not project documentation.
 
 This file (`AGENTS.md`) doesn't repeat their content. It only covers things specific to working as an agent in this repo. If something here seems to contradict one of those reference documents, they win — flag the mismatch instead of picking one silently.
 
@@ -57,7 +58,7 @@ If a task turns up something outside its stated scope — a file that "could use
 
 ## Documentation
 
-All project documentation (`Docs/ROADMAP.md`, `AGENTS.md`, `Docs/SCHEMA.md`, `Docs/CHANGELOG.md`, and code comments) is written in English, regardless of what language earlier versions used. Exceptions:
+All project documentation (`Docs/ROADMAP.md`, `Docs/agents/ARCHITECTURE.md`, `Docs/agents/DESIGN_GUIDELINES.md`, `AGENTS.md`, `Docs/SCHEMA.md`, `Docs/CHANGELOG.md`, and code comments) is written in English, regardless of what language earlier versions used. Exceptions:
 
 UI content/copy stays Indonesian (labels, button text, mock data strings) — that's a product decision, not a docs one.
 Indonesian domain/proper terms are kept as-is when quoted (e.g. subject.name values like "Matematika", route labels, field names copied verbatim from data) — don't translate identifiers or data values, just the surrounding documentation prose.
