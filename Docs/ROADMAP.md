@@ -97,9 +97,9 @@ Replace mock data with Supabase. The UI must not change — only the data source
 - Pending decisions: author survival (`SET NULL`), profile bio + join date, `.env.example`.
 - Minor audit findings cleared.
 
-## Stage 7 — Community Features 🚧 **CURRENT STATUS**
+## Stage 7 — Community Features ✅ Complete (v0.7.0)
 
-Build order: comments → reports → draft contribution → review queue → revision history → community question bank → activity feed.
+All seven phases live: comments, reports, draft contributions, review queue, revision history, community question bank, and personal activity feed. Follow-up (unscheduled): wiring the bank into the Quiz Generator.
 
 ## Stage 8 — Enhancement (not started)
 
