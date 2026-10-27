@@ -4,6 +4,21 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
+## [v0.6.4] — Pending Decisions
+
+Resolves the open product questions. Requires migration `0011_author_survival_and_profile_display.sql` on the live database.
+
+### Added
+
+- `profiles.bio` and `profiles.created_at`; the profile header shows the bio (role label fallback) and the join month.
+- `.env.example` lists the required public keys.
+
+### Fixed
+
+- `content.author_id` is nullable with `ON DELETE SET NULL`: deleting an account preserves its content.
+
+---
+
 ## [v0.6.3] — Security Patch A
 
 Fixes the critical findings of the technical audit. Requires migrations `0009_quiz_grading_rpc.sql` and `0010_practice_question_counts_rpc.sql` on the live database.
