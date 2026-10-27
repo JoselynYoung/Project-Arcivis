@@ -152,6 +152,18 @@ Raw private view events, used as the source of truth for the Popular/Statistics 
 | session_id | string, nullable | Opaque anonymous session identifier, not an IP, fingerprint, or device identifier |
 | created_at | timestamp        | Server-generated event time                                                       |
 
+### 3.12 `comments`
+
+Per-content discussion. Visible wherever the parent content is visible; posting requires sign-in.
+
+| Column     | Type      | Description                     |
+| ---------- | --------- | ------------------------------- |
+| id         | uuid      | Primary key                     |
+| content_id | uuid      | Foreign key → `content.id`      |
+| user_id    | uuid      | Foreign key → `profiles.id`     |
+| body       | text      | Comment text, 1-2000 characters |
+| created_at | timestamp | Server-generated event time     |
+
 ## 4. Design Decisions
 
 **4.1 Unified content table.** A single `content` table was chosen over separate tables per content type. This avoids requiring every cross-content feature (bookmarking, contribution history, moderation status) to query and merge results across multiple tables, and keeps the schema consistent with the platform's content model. Fields specific to a single content type (such as question data) are stored in attached tables rather than as additional nullable columns on `content`.
