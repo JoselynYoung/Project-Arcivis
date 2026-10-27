@@ -178,15 +178,32 @@ User reports against published content. Intake only; triage happens outside the 
 
 Automatic snapshots of title, body, and status on every content update. Written by a trigger; never directly by clients.
 
-| Column     | Type      | Description                           |
-| ---------- | --------- | ------------------------------------- |
-| id         | uuid      | Primary key                           |
-| content_id | uuid      | Foreign key → `content.id`            |
-| editor_id  | uuid      | Foreign key → `profiles.id`, nullable |
-| title      | text      | Title before the change               |
-| body       | jsonb     | Body before the change, nullable      |
-| status     | text      | Status before the change              |
-| created_at | timestamp | Server-generated event time           |
+| Column     | Type  | Description                           |
+| ---------- | ----- | ------------------------------------- |
+| id         | uuid  | Primary key                           |
+| content_id | uuid  | Foreign key → `content.id`            |
+| editor_id  | uuid  | Foreign key → `profiles.id`, nullable |
+| title      | text  | Title before the change               |
+| body       | jsonb | Body before the change, nullable      |
+| status     | text  | Status before the change              |
+
+### 3.15 `question_bank`
+
+Community question pool, separate from curated packages. Members submit drafts; verified rows are usable community content. Reuse across packages via a join table is a later step.
+
+| Column        | Type      | Description                              |
+| ------------- | --------- | ---------------------------------------- |
+| id            | uuid      | Primary key                              |
+| subject_id    | uuid      | Foreign key → `subjects.id`, nullable    |
+| topic         | text      | Nullable topic label                     |
+| difficulty    | text      | `Mudah` \| `Sedang` \| `Sulit`           |
+| text          | text      | Question text                            |
+| options       | jsonb     | String array, validated like `questions` |
+| correct_index | integer   | Index into options                       |
+| explanation   | text      | Nullable explanation                     |
+| author_id     | uuid      | Foreign key → `profiles.id`              |
+| status        | text      | `draft` \| `direview` \| `diverifikasi`  |
+| created_at    | timestamp | Server-generated event time              |
 
 ## 4. Design Decisions
 
