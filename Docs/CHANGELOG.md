@@ -4,6 +4,22 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
+## [v0.6.3] — Security Patch A
+
+Fixes the critical findings of the technical audit. Requires migration `0009_quiz_grading_rpc.sql` on the live database.
+
+### Added
+
+- `grade_answer` RPC (migration `0009`): grades one answered question server-side and reveals only that question's key. Quiz sessions grade through it; bulk answer-key reads are revoked.
+- `/dev` routes render only in development builds; production requests return 404.
+
+### Fixed
+
+- Bookmark queries scope every read and delete to the signed-in user's own rows instead of relying on RLS alone.
+- Question fetches select public fields only; answer keys no longer ship with the question list.
+
+---
+
 ## [v0.6.2] — Stage 6: Phase 5 (Home)
 
 Home cards and greeting run on real data. Banners, statistics, posters, and the calendar remain static.

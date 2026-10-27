@@ -77,3 +77,15 @@ Ideas scoped but not scheduled into any current stage. No timeline, no commitmen
 - A dedicated writing/editor tool — rich text (bold, etc.), math formula support, export to plain PDF, DOCX, and LaTeX-rendered PDF. Originally conceived to avoid manually formatting Word templates for practice questions.
 - **Architecture direction agreed**: semi-separate. Built and maintained as its own codebase/app (so its heavier editor/export dependencies never load for regular Arcivis visitors who are just reading), but shares the same Supabase backend/auth — a user logs in once with their Arcivis account, and publishing from the tool writes directly into the same `content`/`questions` tables. Not a fully standalone tool requiring manual export-then-upload.
 - Scope (which content types it covers) not yet decided.
+
+## Technical Audit Findings (minor, unscheduled)
+
+- Delete orphaned mock modules (`mocks/learning.ts`, `mocks/articles.ts`, `mocks/practice.ts`) and dead symbols in `mocks/home.ts` after the Supabase cutover.
+- Read pages (`learning/[id]/read`, `articles/[id]/read`): persist bookmark toggles through the shared service instead of local-only state; record views on client-side navigation, not only on mount.
+- Quiz Generator session: add loading/error/empty states and guard deep-links that arrive without generator config.
+- Collection cards: move the bookmark button out of the card link (valid HTML, keyboard/screen-reader safe).
+- `ContentBody`: render fallbacks for h4-h6 headings, images, math nodes, and unknown blocks instead of dropping them.
+- Question loading: skip and log single malformed rows instead of emptying the whole quiz; degrade view-count failures to zero instead of failing the list.
+- Home calendar: key schedules by full date, surface schedule load errors, wire the dead navigation buttons.
+- View counts: accept Sybil inflation as low-stakes or add rate limiting.
+- Quiz session: reset state when the question set changes; refresh the anonymous notice on auth change.

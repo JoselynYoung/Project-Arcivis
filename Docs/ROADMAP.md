@@ -96,7 +96,7 @@ Contribution, review, verification, revision history, comments, reports, activit
 
 ## Stage 8 — Enhancement (not started)
 
-Notifications, recommendations, improved search, analytics, performance optimization, SEO, offline support.
+Notifications, recommendations, improved search, analytics, performance optimization, SEO, offline support. Plus the hardening backlog from the technical audit: author-account deletion without content loss, tighter RLS (profiles/tags/content_tags visibility), and server-side attempts validation.
 
 ---
 
