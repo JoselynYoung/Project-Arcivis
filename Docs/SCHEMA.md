@@ -167,13 +167,26 @@ Per-content discussion. Visible wherever the parent content is visible; posting 
 
 User reports against published content. Intake only; triage happens outside the app until the review queue exists.
 
-| Column     | Type      | Description                     |
-| ---------- | --------- | ------------------------------- |
-| id         | uuid      | Primary key                     |
-| content_id | uuid      | Foreign key → `content.id`      |
-| user_id    | uuid      | Foreign key → `profiles.id`     |
-| reason     | text      | Report reason, 1-500 characters |
-| created_at | timestamp | Server-generated event time     |
+| Column     | Type | Description                     |
+| ---------- | ---- | ------------------------------- |
+| id         | uuid | Primary key                     |
+| content_id | uuid | Foreign key → `content.id`      |
+| user_id    | uuid | Foreign key → `profiles.id`     |
+| reason     | text | Report reason, 1-500 characters |
+
+### 3.14 `revisions`
+
+Automatic snapshots of title, body, and status on every content update. Written by a trigger; never directly by clients.
+
+| Column     | Type      | Description                           |
+| ---------- | --------- | ------------------------------------- |
+| id         | uuid      | Primary key                           |
+| content_id | uuid      | Foreign key → `content.id`            |
+| editor_id  | uuid      | Foreign key → `profiles.id`, nullable |
+| title      | text      | Title before the change               |
+| body       | jsonb     | Body before the change, nullable      |
+| status     | text      | Status before the change              |
+| created_at | timestamp | Server-generated event time           |
 
 ## 4. Design Decisions
 
