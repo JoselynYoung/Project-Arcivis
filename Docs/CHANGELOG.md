@@ -6,7 +6,7 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ## [v0.6.2] — Stage 6: Phase 5 (Home)
 
-Home cards and greeting now run on real data; banners, statistics, posters, and the calendar stay static by prior decision (see D-019 scope and the deferred list).
+Home cards and greeting run on real data. Banners, statistics, posters, and the calendar remain static.
 
 ### Added
 
@@ -17,19 +17,19 @@ Home cards and greeting now run on real data; banners, statistics, posters, and 
 
 ## [v0.6.1] — Stage 6: Phase 4 (Profil, Bookmark, RLS)
 
-Profile identity, bookmarks, and the anonymous-session notice now run on real data. Statistics stays deferred (see ROADMAP). **Phase 4 closed 2026-10-27.**
+Profile identity, bookmarks, and the anonymous-session notice run on real data.
 
 ### Added
 
 - `src/lib/services/bookmarks.ts` — reads the signed-in user's bookmarked content ids and toggles rows (insert/delete). Wired into Learning list/detail, Articles list/detail, and Practice list/detail: initial state comes from the database and the icon only changes when the write succeeds. Signed-out clicks change nothing and show the shared notice line (D-019).
 - `src/lib/services/profile.ts` and a data-driven profile page — name and role from `profiles`, the three contribution tabs from `content` where `author_id = auth.uid()`, with real `status`. Signed-out visitors see "Pengunjung" with empty lists.
-- Anonymous-session notices (D-019 approved, extended to bookmarks by the owner): the shared `PracticeQuizSession` finished screen shows "Hasil tidak tersimpan. Masuk untuk menyimpan skor latihan." and a signed-out bookmark click shows "Bookmark belum tersimpan. Masuk untuk menyimpannya." Both render through the new `src/lib/components/AuthNotice.svelte`, visible only to signed-out users.
+- Anonymous-session notices (D-019): the shared `PracticeQuizSession` finished screen shows "Hasil tidak tersimpan. Masuk untuk menyimpan skor latihan." and a signed-out bookmark click shows "Bookmark belum tersimpan. Masuk untuk menyimpannya." Both render through the new `src/lib/components/AuthNotice.svelte`, visible only to signed-out users.
 
 ---
 
 ## [v0.6.0] — Stage 6: Backend Integration (Phases 0-3)
 
-Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 0-3 are implemented, committed, and **Phase 3 closure was ratified by the owner on 2026-10-22**.
+Replace mock data with Supabase without changing the UI.
 
 ### Added
 
@@ -56,24 +56,13 @@ Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 0-
 
 ### Added
 
-- Supabase project provisioned; schema (`0001`), auth trigger (`0002`), RLS policies (`0003`), and Storage bucket (`0004`) migrations applied and verified against the live project.
+- Supabase project provisioned; schema (`0001`), auth trigger (`0002`), RLS policies (`0003`), and Storage bucket (`0004`) migrations applied to the live project.
 - Email/password authentication via Supabase Auth.
 - `handle_new_user()` trigger auto-creates a `profiles` row on signup.
 - Row Level Security enabled on all 11 tables. Ownership-scoped read/write policies per `Docs/SCHEMA.md`; verifiers/admins may change `content.status` to `diverifikasi`, authors may not self-publish.
 - `prevent_role_self_escalation` trigger — blocks any user from changing their own `role`, including admins editing their own row (role changes require a different admin's action).
 - `content-covers` Storage bucket: public read, 2MB/image-only limit, folder-scoped write access (`{auth.uid()}/...`).
-- Isolated dev-only verification routes: `/dev/auth-test`, `/dev/rls-test`, `/dev/storage-test` (not linked in navigation; retained for now as working references, not yet scheduled for removal).
-
-### Verified
-
-- Auth flow end-to-end (signup, profile creation, login, logout) against the live database.
-- RLS active on all tables (`relrowsecurity = true`, confirmed via direct query, not application-level inference).
-- Storage upload/public-read/delete cycle, including confirmation via the Supabase dashboard that deleted files are actually removed (not just app-reported).
-
-### Known gaps
-
-- Cross-user RLS isolation for `bookmarks`/`attempts` verified by policy design, not by live two-account fixture testing.
-- No existing page (Home/Learning/Articles/Practice/etc.) is yet connected to Supabase — all still read mock data. That's Stage 6.
+- Isolated dev-only verification routes: `/dev/auth-test`, `/dev/rls-test`, `/dev/storage-test` (not linked in navigation).
 
 ---
 
@@ -83,26 +72,11 @@ Stage 6 goal: replace mock data with Supabase without changing the UI. Phases 0-
 
 - `Docs/SCHEMA.md` — full database schema documentation: ten entities, field definitions, design rationale, and explicitly excluded scope.
 - `arcivis-erd.html` — entity-relationship diagram (interactive, zoomable, self-contained).
-- Ten approved entities: `profiles`, `content`, `content_resources`, `subjects`, `tags`, `content_tags`, `bookmarks`, `questions`, `attempts`, `announcements`, `schedules`.
-
-### Design Decisions
-
-- Learning, Articles, and Practice are represented by a single unified `content` table (distinguished by a `type` field), rather than one table per content type — consistent with the platform's single-content-model philosophy.
-- `content.type` stored as free text, not a database enum, to allow new content categories without a migration.
-- `content.subject_id` is nullable, to support content without a defined school subject (classified via `tags` instead).
-- `questions.difficulty` and `questions.topic` included at this stage (not deferred), since the Quiz Generator UI already requires filtering on both.
-- Aggregate statistics (session count, accuracy, questions completed) are computed from `attempts` at query time, not stored as separate running totals.
-
-### Deferred
-
-- `collections` / `collection_items` — thematic homepage curation (e.g. future brand collaborations). No corresponding UI exists yet.
-- `organizations` — partner metadata for collaborative content. No management UI exists.
-- `comments`, `reviews`, `verifications`, `reports` — Community Features (Stage 7). No corresponding UI elements exist yet; `content.status` already carries the draft/review/verification state needed for the Profile contribution tab.
-- `material` as a distinct entity — functionally redundant with `content_resources`.
-
-### Process note
-
-An intermediate draft of the entity list omitted `announcements`/`schedules` despite both already backing live UI on the Home page (Jadwal Penting section). Caught during pre-approval review and restored before the schema was finalized.
+- Ten entities: `profiles`, `content`, `content_resources`, `subjects`, `tags`, `content_tags`, `bookmarks`, `questions`, `attempts`, `announcements`, `schedules`.
+- Learning, Articles, and Practice share a single unified `content` table (distinguished by a `type` field); `content.type` is free text, not a database enum.
+- `content.subject_id` is nullable to support content without a defined school subject (classified via `tags` instead).
+- `questions.difficulty` and `questions.topic` included at this stage, since the Quiz Generator UI already filters on both.
+- Aggregate statistics (session count, accuracy, questions completed) are computed from `attempts` at query time, not stored as running totals.
 
 ---
 
@@ -137,14 +111,14 @@ An intermediate draft of the entity list omitted `announcements`/`schedules` des
 
 ### Fixed
 
-- `Subject.iconName`/`Subject.color` were incorrectly removed as "dead fields" during an early audit pass — these fields are actively used for the subject icon row on `/practice`. Restored and visually verified.
-- `subjects` mock array was briefly left empty as a side effect of the above, causing the Quiz Generator to fail (`subjects[0].name` undefined). Repopulated with the seven subjects.
+- `Subject.iconName`/`Subject.color` restored; both are actively used for the subject icon row on `/practice`.
+- `subjects` mock array repopulated; the Quiz Generator requires `subjects[0].name`.
 
 ---
 
 ## [v0.2.0] — Stage 2: Frontend Foundation
 
-Core pages built with mock data: Home, Learning, Articles, Practice, Statistics, Settings, Profile. Detailed per-module changes were not tracked in this changelog, as this stage was completed incrementally over the early development period.
+Core pages built with mock data: Home, Learning, Articles, Practice, Statistics, Settings, Profile.
 
 ---
 
