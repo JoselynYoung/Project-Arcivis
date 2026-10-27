@@ -1,0 +1,105 @@
+import { supabase } from './supabaseClient';
+
+export interface Comment {
+	id: string;
+	body: string;
+	createdAt: string;
+	authorName: string;
+}
+
+interface CommentRow {
+	id: string;
+	body: unknown;
+	created_at: string;
+	author: { name: string } | null;
+}
+
+const MAX_BODY_LENGTH = 2000;
+
+export function mapCommentRow(row: CommentRow): Comment {
+	if (typeof row.body !== 'string' || row.body.length === 0) {
+		throw new Error('BLOCKER: data contract comments.body mismatch');
+	}
+
+	return {
+		id: row.id,
+		body: row.body,
+		createdAt: row.created_at,
+		authorName: row.author?.name ?? 'Pengunjung'
+	};
+}
+
+export async function getComments(contentId: string): Promise<{
+	data: Comment[];
+	error: string | null;
+}> {
+	const { data, error } = await supabase
+		.from('comments')
+		.select('id, body, created_at, author:profiles!comments_user_id_fkey(name)')
+		.eq('content_id', contentId)
+		.order('created_at', { ascending: true });
+
+	if (error) {
+		return { data: [], error: error.message };
+	}
+
+	const comments: Comment[] = [];
+	for (const row of (data ?? []) as unknown as CommentRow[]) {
+		try {
+			comments.push(mapCommentRow(row));
+		} catch (err) {
+			console.error('Skipping malformed comment row:', err instanceof Error ? err.message : err);
+		}
+	}
+	return { data: comments, error: null };
+}
+
+export async function addComment(
+	contentId: string,
+	body: string
+): Promise<{ data: Comment | null; error: string | null }> {
+	const trimmed = body.trim();
+
+	if (trimmed.length === 0) {
+		return { data: null, error: 'Komentar tidak boleh kosong.' };
+	}
+
+	if (trimmed.length > MAX_BODY_LENGTH) {
+		return { data: null, error: `Komentar maksimal ${MAX_BODY_LENGTH} karakter.` };
+	}
+
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return { data: null, error: 'Not signed in' };
+
+	const { data, error } = await supabase
+		.from('comments')
+		.insert({ content_id: contentId, user_id: user.id, body: trimmed })
+		.select('id, body, created_at, author:profiles!comments_user_id_fkey(name)')
+		.single();
+
+	if (error) {
+		return { data: null, error: error.message };
+	}
+
+	try {
+		return { data: mapCommentRow(data as unknown as CommentRow), error: null };
+	} catch (err) {
+		return {
+			data: null,
+			error: err instanceof Error ? err.message : 'BLOCKER: comments contract mismatch'
+		};
+	}
+}
+
+export async function deleteComment(id: string): Promise<{ error: string | null }> {
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return { error: 'Not signed in' };
+
+	const { error } = await supabase.from('comments').delete().eq('id', id).eq('user_id', user.id);
+
+	return { error: error?.message ?? null };
+}
