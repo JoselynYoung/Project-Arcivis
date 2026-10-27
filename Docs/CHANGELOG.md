@@ -6,12 +6,13 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ## [v0.7.0] — Stage 7: Comments
 
-Opens Stage 7 with per-content discussion. Requires migration `0012_comments.sql` on the live database.
+Opens Stage 7 with per-content discussion and content reports. Requires migrations `0012_comments.sql`, `0013_reports.sql`, and `0014_report_delete_own.sql` on the live database.
 
 ### Added
 
 - `comments` table with RLS: visible wherever the parent content is visible, signed-in-only posts, owner-only deletes.
-- `CommentSection` on Learning, Articles, and Practice detail pages: plain-text rendering, 2000-character limit, empty state, and a sign-in notice for visitors.
+- `reports` table with RLS: signed-in-only posts, owner-only reads and deletes.
+- `ReportButton` on Learning, Articles, and Practice detail pages: preset reasons, signed-in-only submit, and a sign-in notice for visitors.
 
 ---
 
