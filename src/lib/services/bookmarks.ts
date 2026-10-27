@@ -1,7 +1,15 @@
 import { supabase } from './supabaseClient';
 
 export async function getBookmarkIds(): Promise<{ data: Set<string>; error: string | null }> {
-	const { data, error } = await supabase.from('bookmarks').select('content_id');
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return { data: new Set(), error: null };
+
+	const { data, error } = await supabase
+		.from('bookmarks')
+		.select('content_id')
+		.eq('user_id', user.id);
 
 	if (error) {
 		return { data: new Set(), error: error.message };
@@ -23,6 +31,7 @@ export async function toggleBookmark(contentId: string): Promise<{
 	const { data: row, error: readError } = await supabase
 		.from('bookmarks')
 		.select('content_id')
+		.eq('user_id', user.id)
 		.eq('content_id', contentId)
 		.maybeSingle();
 
@@ -31,7 +40,11 @@ export async function toggleBookmark(contentId: string): Promise<{
 	}
 
 	if (row) {
-		const { error } = await supabase.from('bookmarks').delete().eq('content_id', contentId);
+		const { error } = await supabase
+			.from('bookmarks')
+			.delete()
+			.eq('user_id', user.id)
+			.eq('content_id', contentId);
 		return { saved: false, signedIn: true, error: error?.message ?? null };
 	}
 
