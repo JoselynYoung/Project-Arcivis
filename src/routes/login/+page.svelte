@@ -3,11 +3,11 @@
 	import { resolve } from '$app/paths';
 	import { LogIn, UserPlus, LogOut } from '@lucide/svelte';
 	import { supabase } from '$lib/services/supabaseClient';
-	import { signIn, signUp, signOut } from '$lib/services/auth';
+	import { signIn, signUp, signOut, requestPasswordReset } from '$lib/services/auth';
 
 	let email = $state('');
 	let password = $state('');
-	let mode = $state<'masuk' | 'daftar'>('masuk');
+	let mode = $state<'masuk' | 'daftar' | 'lupa'>('masuk');
 	let message = $state('');
 	let busy = $state(false);
 	let accountEmail = $state<string | null>(null);
@@ -29,6 +29,13 @@
 		if (busy) return;
 		busy = true;
 		message = '';
+
+		if (mode === 'lupa') {
+			const { error } = await requestPasswordReset(email);
+			busy = false;
+			message = error ?? 'Tautan pemulihan dikirim. Periksa email lalu ikuti tautannya.';
+			return;
+		}
 
 		const { error } =
 			mode === 'masuk' ? await signIn(email, password) : await signUp(email, password);
@@ -69,12 +76,18 @@
 			</button>
 		{:else}
 			<h1 class="mb-1 text-xl font-bold text-slate-800">
-				{mode === 'masuk' ? 'Masuk ke Arcivis' : 'Daftar akun Arcivis'}
+				{mode === 'masuk'
+					? 'Masuk ke Arcivis'
+					: mode === 'daftar'
+						? 'Daftar akun Arcivis'
+						: 'Lupa kata sandi'}
 			</h1>
 			<p class="mb-6 text-sm text-slate-500">
 				{mode === 'masuk'
 					? 'Simpan bookmark, nilai, dan komentar atas namamu.'
-					: 'Satu akun untuk semua fitur Arcivis.'}
+					: mode === 'daftar'
+						? 'Satu akun untuk semua fitur Arcivis.'
+						: 'Masukkan email akunmu. Kami kirim tautan pemulihan.'}
 			</p>
 
 			<div class="mb-6 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
@@ -126,25 +139,56 @@
 						class="focus:border-primary-500 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
 					/>
 				</label>
-				<label class="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
-					Kata sandi
-					<input
-						type="password"
-						required
-						minlength={6}
-						bind:value={password}
-						placeholder="Minimal 6 karakter"
-						autocomplete={mode === 'masuk' ? 'current-password' : 'new-password'}
-						class="focus:border-primary-500 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
-					/>
-				</label>
+				{#if mode !== 'lupa'}
+					<label class="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+						Kata sandi
+						<input
+							type="password"
+							required
+							minlength={6}
+							bind:value={password}
+							placeholder="Minimal 6 karakter"
+							autocomplete={mode === 'masuk' ? 'current-password' : 'new-password'}
+							class="focus:border-primary-500 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+						/>
+					</label>
+				{/if}
 				<button
 					type="submit"
 					disabled={busy}
 					class="w-full rounded-xl bg-primary-600 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-primary-700 disabled:bg-slate-200 disabled:text-slate-400"
 				>
-					{busy ? 'Memproses...' : mode === 'masuk' ? 'Masuk' : 'Daftar'}
+					{busy
+						? 'Memproses...'
+						: mode === 'masuk'
+							? 'Masuk'
+							: mode === 'daftar'
+								? 'Daftar'
+								: 'Kirim tautan'}
 				</button>
+				{#if mode === 'masuk'}
+					<button
+						type="button"
+						onclick={() => {
+							mode = 'lupa';
+							message = '';
+						}}
+						class="text-center text-sm font-medium text-primary-600 hover:text-primary-700"
+					>
+						Lupa kata sandi?
+					</button>
+				{:else}
+					<button
+						type="button"
+						onclick={() => {
+							mode = 'masuk';
+							message = '';
+						}}
+						class="text-center text-sm font-medium text-primary-600 hover:text-primary-700"
+					>
+						Kembali masuk
+					</button>
+				{/if}
 			</form>
 		{/if}
 	</div>

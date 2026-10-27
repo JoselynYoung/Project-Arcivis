@@ -36,12 +36,15 @@
 
 	// Signed-out visitors get a login entry point
 	let signedIn = $state(false);
+	let accountEmail = $state<string | null>(null);
 
 	$effect(() => {
 		supabase.auth.getSession().then(({ data }) => {
+			accountEmail = data.session?.user.email ?? null;
 			signedIn = !!data.session;
 		});
 		const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+			accountEmail = session?.user.email ?? null;
 			signedIn = !!session;
 		});
 		return () => {
@@ -99,9 +102,11 @@
 		<!-- Secondary Nav -->
 		<div class="mt-auto flex flex-col gap-2 border-t border-primary-100/40 pt-4">
 			{#each desktopFooterNav as item (item.href)}
-				{@const active = isRouteActive(item.href)}
+				{@const isAccount = item.href === ROUTES.profile}
+				{@const href = isAccount && !signedIn ? ROUTES.login : item.href}
+				{@const active = isRouteActive(href)}
 				<a
-					href={resolve(item.href)}
+					href={resolve(href)}
 					class="flex cursor-pointer items-center gap-3 rounded-xl font-medium transition-all {sideBar
 						? 'w-full justify-start p-2.5'
 						: 'mx-auto h-12 w-12 justify-center'} {active
@@ -109,25 +114,20 @@
 						: 'text-slate-500 hover:bg-primary-50 hover:text-primary-700'}"
 					aria-current={active ? 'page' : undefined}
 				>
-					<item.icon size={20} class="shrink-0" />
-					{#if sideBar}<span>{item.label}</span>{/if}
+					{#if isAccount && !signedIn}
+						<LogIn size={20} class="shrink-0" />
+					{:else}
+						<item.icon size={20} class="shrink-0" />
+					{/if}
+					{#if sideBar}<span class="truncate"
+							>{isAccount && !signedIn
+								? 'Masuk'
+								: isAccount && accountEmail
+									? accountEmail
+									: item.label}</span
+						>{/if}
 				</a>
 			{/each}
-			{#if !signedIn}
-				{@const active = isRouteActive(ROUTES.login)}
-				<a
-					href={resolve(ROUTES.login)}
-					class="flex cursor-pointer items-center gap-3 rounded-xl font-medium transition-all {sideBar
-						? 'w-full justify-start p-2.5'
-						: 'mx-auto h-12 w-12 justify-center'} {active
-						? 'bg-linear-to-br from-primary-800 to-primary-700 text-white shadow-xs'
-						: 'text-slate-500 hover:bg-primary-50 hover:text-primary-700'}"
-					aria-current={active ? 'page' : undefined}
-				>
-					<LogIn size={20} class="shrink-0" />
-					{#if sideBar}<span>Masuk</span>{/if}
-				</a>
-			{/if}
 		</div>
 	</nav>
 
@@ -149,25 +149,23 @@
 		>
 			<div class="grid grid-cols-3 gap-4">
 				{#each mobileDrawerNav as item (item.href)}
-					<a href={resolve(item.href)} class="flex flex-col items-center gap-2">
+					{@const isAccount = item.href === ROUTES.profile}
+					{@const href = isAccount && !signedIn ? ROUTES.login : item.href}
+					<a href={resolve(href)} class="flex flex-col items-center gap-2">
 						<span
 							class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50 text-primary-700"
 						>
-							<item.icon size={22} />
+							{#if isAccount && !signedIn}
+								<LogIn size={22} />
+							{:else}
+								<item.icon size={22} />
+							{/if}
 						</span>
-						<span class="text-center text-xs text-slate-600">{item.label}</span>
+						<span class="text-center text-xs text-slate-600"
+							>{isAccount && !signedIn ? 'Masuk' : item.label}</span
+						>
 					</a>
 				{/each}
-				{#if !signedIn}
-					<a href={resolve(ROUTES.login)} class="flex flex-col items-center gap-2">
-						<span
-							class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50 text-primary-700"
-						>
-							<LogIn size={22} />
-						</span>
-						<span class="text-center text-xs text-slate-600">Masuk</span>
-					</a>
-				{/if}
 			</div>
 		</div>
 	{/if}

@@ -24,6 +24,28 @@ export async function signIn(email: string, password: string): Promise<AuthResul
 	return { error: null };
 }
 
+export async function requestPasswordReset(email: string): Promise<AuthResult> {
+	const { error } = await supabase.auth.resetPasswordForEmail(email, {
+		redirectTo: `${window.location.origin}/login/reset`
+	});
+
+	if (error) {
+		return { error: friendlyMessage(error.message) };
+	}
+
+	return { error: null };
+}
+
+export async function updatePassword(password: string): Promise<AuthResult> {
+	const { error } = await supabase.auth.updateUser({ password });
+
+	if (error) {
+		return { error: friendlyMessage(error.message) };
+	}
+
+	return { error: null };
+}
+
 export async function signOut(): Promise<{ error: string | null }> {
 	const { error } = await supabase.auth.signOut();
 	return { error: error?.message ?? null };
@@ -49,7 +71,7 @@ function friendlyMessage(message: string): string {
 		return 'Kata sandi terlalu pendek (minimal 6 karakter).';
 	}
 
-	if (/invalid email/i.test(message)) {
+	if (/email.*invalid|invalid.*email/i.test(message)) {
 		return 'Format email tidak valid.';
 	}
 
