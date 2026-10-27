@@ -141,7 +141,7 @@ export async function getLearningMaterials(): Promise<{
 	const counts = await getViewCounts(rows.map((row) => row.id));
 
 	if (counts.error) {
-		return { data: [], error: counts.error };
+		console.error('[learning.ts] View counts unavailable (non-blocking):', counts.error);
 	}
 
 	return {

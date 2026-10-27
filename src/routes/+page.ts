@@ -15,7 +15,9 @@ export async function load() {
 			const eventDate = new Date(`${schedule.event_date}T00:00:00`);
 
 			return {
+				id: schedule.id,
 				tanggal: eventDate.getDate(),
+				iso: `${eventDate.getFullYear()}-${String(eventDate.getMonth() + 1).padStart(2, '0')}-${String(eventDate.getDate()).padStart(2, '0')}`,
 				label: schedule.title,
 				warna: SCHEDULE_DOT_COLORS[schedule.title] ?? SCHEDULE_DOT_COLOR_FALLBACK,
 				monthLabel: monthFormatter.format(eventDate),

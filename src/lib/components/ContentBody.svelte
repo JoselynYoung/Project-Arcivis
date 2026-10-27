@@ -68,9 +68,11 @@
 			.join(' ');
 	}
 
-	function headingLevel(node: ContentNode): 1 | 2 | 3 | null {
-		const level = node.attrs?.level;
-		return level === 1 || level === 2 || level === 3 ? level : null;
+	function headingLevel(node: ContentNode): 1 | 2 | 3 | 4 | 5 | 6 | null {
+		const level = Number(node.attrs?.level);
+		return Number.isInteger(level) && level >= 1 && level <= 6
+			? (level as 1 | 2 | 3 | 4 | 5 | 6)
+			: null;
 	}
 
 	function isV1Document(value: unknown): value is ContentBodyDocument {
@@ -108,13 +110,27 @@
 	{:else if node.type === 'text' && typeof node.text === 'string'}
 		<span class={markClasses(node)}>{node.text}</span>
 	{:else if node.type === 'math' && typeof node.attrs?.latex === 'string'}
-		<span class="font-mono">{node.attrs.latex}</span>
+		<span class="font-mono" role="math" aria-label="Rumus matematika">{node.attrs.latex}</span>
 	{:else if node.type === 'image' && typeof node.attrs?.path === 'string'}
-		<span class="text-sm text-slate-500">[Gambar materi]</span>
+		<figure class="my-4">
+			<img
+				src={node.attrs.path}
+				alt={typeof node.attrs?.alt === 'string' ? node.attrs.alt : 'Gambar materi'}
+				loading="lazy"
+				class="max-w-full rounded-lg"
+			/>
+		</figure>
+	{:else if Array.isArray(node.content)}
+		{#each childrenOf(node) as child, index (index)}
+			{@const childNode = asNode(child)}
+			{#if childNode}<ContentBody node={childNode} {editorSchemaVersion} />{/if}
+		{/each}
 	{/if}
 {:else if isV1Document(body)}
 	{#each childrenOf(asNode(body) as ContentNode) as child, index (index)}
 		{@const childNode = asNode(child)}
 		{#if childNode}<ContentBody node={childNode} {editorSchemaVersion} />{/if}
 	{/each}
+{:else}
+	<p class="text-sm text-slate-500">Konten ini memakai format baru yang belum didukung.</p>
 {/if}

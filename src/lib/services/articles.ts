@@ -138,7 +138,7 @@ export async function getArticles(): Promise<{ data: Article[]; error: string | 
 	const counts = await getViewCounts(rows.map((row) => row.id));
 
 	if (counts.error) {
-		return { data: [], error: counts.error };
+		console.error('[articles.ts] View counts unavailable (non-blocking):', counts.error);
 	}
 
 	return {

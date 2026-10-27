@@ -30,14 +30,15 @@ export async function getQuestionsByContentId(contentId: string): Promise<{
 		return { data: [], error: error.message };
 	}
 
-	try {
-		return { data: (data ?? []).map(mapQuestionRow), error: null };
-	} catch (err) {
-		return {
-			data: [],
-			error: err instanceof Error ? err.message : 'BLOCKER: questions contract mismatch'
-		};
+	const questions: Question[] = [];
+	for (const row of data ?? []) {
+		try {
+			questions.push(mapQuestionRow(row));
+		} catch (err) {
+			console.error('Skipping malformed question row:', err instanceof Error ? err.message : err);
+		}
 	}
+	return { data: questions, error: null };
 }
 
 export interface PracticeQuestionFilters {
@@ -97,14 +98,15 @@ export async function getPracticeQuestions(filters: PracticeQuestionFilters): Pr
 		return { data: [], error: error.message };
 	}
 
-	try {
-		return { data: (data ?? []).map(mapQuestionRow), error: null };
-	} catch (err) {
-		return {
-			data: [],
-			error: err instanceof Error ? err.message : 'BLOCKER: questions contract mismatch'
-		};
+	const questions: Question[] = [];
+	for (const row of data ?? []) {
+		try {
+			questions.push(mapQuestionRow(row));
+		} catch (err) {
+			console.error('Skipping malformed question row:', err instanceof Error ? err.message : err);
+		}
 	}
+	return { data: questions, error: null };
 }
 
 export interface GradeResult {

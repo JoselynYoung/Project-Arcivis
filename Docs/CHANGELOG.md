@@ -4,6 +4,30 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
+## [v0.6.5] — Audit Findings (Minor)
+
+Clears the minor backlog from the technical audit. No migration required.
+
+### Added
+
+- Read pages record views on client-side navigation with a session helper that survives insecure contexts and locked storage.
+- Generator session shows loading and error states and redirects direct visits back to the configurator.
+- ContentBody fallbacks for h4-h6 headings, images, math labels, unknown blocks, and newer schema versions.
+
+### Fixed
+
+- Read-page bookmark toggles persist through the shared service instead of local-only state.
+- Collection-card bookmark buttons sit outside the card link (valid HTML, keyboard safe).
+- Single malformed question rows are skipped instead of emptying the quiz; view-count failures degrade to zero.
+- Home calendar uses real month math with full-date schedule dots, surfaces schedule load errors, and wires the pager and see-all links.
+- Quiz anonymous notice follows auth changes.
+
+### Removed
+
+- Orphaned mock modules (`mocks/learning.ts`, `mocks/articles.ts`, `mocks/practice.ts`) and dead symbols in `mocks/home.ts`.
+
+---
+
 ## [v0.6.4] — Pending Decisions
 
 Resolves the open product questions. Requires migration `0011_author_survival_and_profile_display.sql` on the live database.

@@ -2,6 +2,7 @@
 	import { ChevronRight } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
 	import { banners, statistics, learningPoster, practicePoster, calendar } from '$lib/mocks/home';
+	import { resolve } from '$app/paths';
 	import { getProfil } from '$lib/services/profile';
 	import type { PageData } from './$types';
 
@@ -19,18 +20,38 @@
 		});
 	});
 
-	// Calendar (static July 2026, data moved to mock file)
-	let namaBulan = $derived(schedules[0]?.calendarLabel ?? calendar.monthLabel);
+	// Calendar backed by real month math; dots match schedules by full date.
+	const today = new Date();
+	let monthOffset = $state(0);
+	let viewYear = $derived(today.getFullYear());
+	let viewMonth = $derived(today.getMonth() + monthOffset);
+	let viewDate = $derived(new Date(viewYear, viewMonth, 1));
+	let namaBulan = $derived(
+		new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(viewDate)
+	);
 	let namaHari = calendar.dayNames;
-	let offsetAwal = calendar.leadingOffset;
-	let jumlahHari = calendar.daysInMonth;
-	let tanggalGrid = [
+	let offsetAwal = $derived(viewDate.getDay());
+	let jumlahHari = $derived(new Date(viewYear, viewMonth + 1, 0).getDate());
+	let tanggalGrid = $derived([
 		...Array(offsetAwal).fill(null),
 		...Array(jumlahHari)
 			.fill(0)
 			.map((_, i) => i + 1)
-	];
-	let tanggalPenting = calendar.importantDate;
+	]);
+	let tanggalPenting = $derived(
+		viewDate.getFullYear() === today.getFullYear() && viewDate.getMonth() === today.getMonth()
+			? today.getDate()
+			: null
+	);
+
+	function isoForDay(day: number): string {
+		const month = String(viewDate.getMonth() + 1).padStart(2, '0');
+		return `${viewDate.getFullYear()}-${month}-${String(day).padStart(2, '0')}`;
+	}
+
+	function dotColor(iso: string): string | undefined {
+		return schedules.find((j) => j.iso === iso)?.warna;
+	}
 
 	// Carousel
 	let currentIndex = $state(0);
@@ -123,13 +144,13 @@
 		<div class="mb-10">
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-lg font-bold text-slate-800">Materi Fresh</h2>
-				<button
-					type="button"
+				<a
+					href={resolve('/learning')}
 					class="text-primary-600 hover:text-primary-700"
 					aria-label="Lihat semua materi"
 				>
 					<ChevronRight size={20} />
-				</button>
+				</a>
 			</div>
 
 			<div class="flex w-full max-w-full gap-3 overflow-x-auto pb-3 sm:gap-4">
@@ -157,13 +178,13 @@
 		<div class="mb-10 lg:mb-0">
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-lg font-bold text-slate-800">Paket Latihan Soal</h2>
-				<button
-					type="button"
+				<a
+					href={resolve('/practice')}
 					class="text-primary-600 hover:text-primary-700"
 					aria-label="Lihat semua latihan soal"
 				>
 					<ChevronRight size={20} />
-				</button>
+				</a>
 			</div>
 
 			<div class="flex w-full max-w-full gap-3 overflow-x-auto pb-3 sm:gap-4">
@@ -196,12 +217,14 @@
 				<div class="flex gap-1">
 					<button
 						type="button"
+						onclick={() => (monthOffset -= 1)}
 						aria-label="Bulan sebelumnya"
 						class="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100"
 						>‹</button
 					>
 					<button
 						type="button"
+						onclick={() => (monthOffset += 1)}
 						aria-label="Bulan berikutnya"
 						class="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100"
 						>›</button
@@ -228,9 +251,8 @@
 							>
 								{tgl}
 							</span>
-							{#if schedules.some((j) => j.tanggal === tgl)}
-								<span class="h-1 w-1 rounded-full {schedules.find((j) => j.tanggal === tgl)?.warna}"
-								></span>
+							{#if dotColor(isoForDay(tgl))}
+								<span class="h-1 w-1 rounded-full {dotColor(isoForDay(tgl))}"></span>
 							{/if}
 						</div>
 					{/if}
@@ -242,13 +264,16 @@
 		<div class="rounded-xl bg-white p-5 shadow-sm">
 			<p class="mb-4 font-bold text-slate-800">Jadwal Penting</p>
 			<div class="flex flex-col gap-3" role="list">
-				{#each schedules as j (j.tanggal)}
+				{#each schedules as j (j.id)}
 					<div class="flex items-center gap-3" role="listitem">
 						<span class="h-2 w-2 rounded-full {j.warna} shrink-0"></span>
 						<p class="text-sm text-slate-600">{j.label}</p>
 						<p class="ml-auto text-xs text-slate-400">{j.monthLabel} {j.tanggal}</p>
 					</div>
 				{/each}
+				{#if data.scheduleError}
+					<p class="text-xs text-red-500">Jadwal tidak dapat dimuat.</p>
+				{/if}
 			</div>
 		</div>
 	</div>

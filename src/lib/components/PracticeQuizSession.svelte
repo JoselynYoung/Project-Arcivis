@@ -43,13 +43,14 @@
 		}
 	});
 	$effect(() => {
-		let cancelled = false;
+		const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+			isAnonymous = !session;
+		});
 		supabase.auth.getSession().then(({ data }) => {
-			if (cancelled) return;
 			isAnonymous = !data.session;
 		});
 		return () => {
-			cancelled = true;
+			listener.subscription.unsubscribe();
 		};
 	});
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { getViewSessionId } from '$lib/utils/viewSession';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, User, Calendar } from '@lucide/svelte';
 	import { ROUTES } from '$lib/constants/routes';
@@ -10,14 +10,14 @@
 	let { data }: { data: PageData } = $props();
 
 	const article = $derived(data.article);
+	let recordedId: string | null = null;
 
-	onMount(() => {
-		if (!article) return;
-
-		const key = 'arcivis:view-session';
-		const sessionId = sessionStorage.getItem(key) ?? crypto.randomUUID().replaceAll('-', '');
-		sessionStorage.setItem(key, sessionId);
-		void recordArticleView(article.id, sessionId);
+	// Re-runs on client-side navigation between read pages (onMount runs once).
+	$effect(() => {
+		const id = article?.id;
+		if (!id || recordedId === id) return;
+		recordedId = id;
+		void recordArticleView(id, getViewSessionId());
 	});
 </script>
 

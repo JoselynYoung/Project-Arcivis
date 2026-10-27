@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { getViewSessionId } from '$lib/utils/viewSession';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, BookOpen, Bookmark, CheckCircle2, Share2 } from '@lucide/svelte';
 	import { recordLearningView } from '$lib/services/learning';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
+	import AuthNotice from '$lib/components/AuthNotice.svelte';
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PageData } from './$types';
 	import ContentBody from '$lib/components/ContentBody.svelte';
@@ -12,24 +14,42 @@
 
 	let isCompleted = $state(false);
 	let isBookmarked = $state(false);
+	let authNotice = $state(false);
+	let recordedId: string | null = null;
 
-	onMount(() => {
-		if (!material) return;
-
-		const key = 'arcivis:view-session';
-		const sessionId = sessionStorage.getItem(key) ?? crypto.randomUUID().replaceAll('-', '');
-		sessionStorage.setItem(key, sessionId);
-		void recordLearningView(material.id, sessionId);
+	// Re-runs on client-side navigation between read pages (onMount runs once).
+	$effect(() => {
+		const id = material?.id;
+		if (!id || recordedId === id) return;
+		recordedId = id;
+		void recordLearningView(id, getViewSessionId());
 	});
 
 	$effect(() => {
-		if (material) {
-			isBookmarked = !!material.isBookmark;
-		}
+		let cancelled = false;
+		const id = material?.id;
+		getBookmarkIds().then(({ data: ids, error }) => {
+			if (error) console.error('Failed to load bookmarks:', error);
+			if (cancelled || !id) return;
+			isBookmarked = ids.has(id);
+		});
+		return () => {
+			cancelled = true;
+		};
 	});
 
-	function toggleBookmark() {
-		isBookmarked = !isBookmarked;
+	async function toggleBookmark() {
+		if (!material) return;
+
+		const { saved, signedIn, error } = await toggleBookmarkRequest(material.id);
+
+		if (error) {
+			console.error('Failed to toggle bookmark:', error);
+			if (!signedIn) authNotice = true;
+			return;
+		}
+
+		isBookmarked = saved;
 	}
 
 	function markAsCompleted() {
@@ -104,6 +124,9 @@
 				</button>
 			</div>
 		</div>
+		{#if authNotice}
+			<AuthNotice />
+		{/if}
 
 		<!-- Article Reader Card -->
 		<article class="space-y-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
