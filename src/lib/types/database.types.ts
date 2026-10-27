@@ -100,7 +100,7 @@ export type Database = {
 			};
 			content: {
 				Row: {
-					author_id: string;
+					author_id: string | null;
 					body: Json | null;
 					cover_image: string | null;
 					created_at: string;
@@ -114,7 +114,7 @@ export type Database = {
 					updated_at: string;
 				};
 				Insert: {
-					author_id: string;
+					author_id: string | null;
 					body?: Json | null;
 					cover_image?: string | null;
 					created_at?: string;
@@ -128,7 +128,7 @@ export type Database = {
 					updated_at?: string;
 				};
 				Update: {
-					author_id?: string;
+					author_id?: string | null;
 					body?: Json | null;
 					cover_image?: string | null;
 					created_at?: string;
@@ -258,16 +258,22 @@ export type Database = {
 			};
 			profiles: {
 				Row: {
+					bio: string;
+					created_at: string;
 					id: string;
 					name: string;
 					role: string;
 				};
 				Insert: {
+					bio?: string;
+					created_at?: string;
 					id: string;
 					name: string;
 					role?: string;
 				};
 				Update: {
+					bio?: string;
+					created_at?: string;
 					id?: string;
 					name?: string;
 					role?: string;

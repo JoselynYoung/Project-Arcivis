@@ -5,6 +5,8 @@
 	// Profile Data
 	let nama = $state('');
 	let bio = $state('');
+	let peran = $state('');
+	let bergabung = $state('');
 
 	// Tab State
 	let activeTab = $state<'bacaan' | 'latihan' | 'materi'>('bacaan');
@@ -26,7 +28,9 @@
 			}
 
 			nama = data.nama;
-			bio = roleLabel(data.role);
+			bio = data.bio;
+			peran = roleLabel(data.role);
+			bergabung = formatJoined(data.createdAt);
 			kontribusiBacaan = data.bacaan;
 			kontribusiLatihan = data.latihan;
 			kontribusiMateri = data.materi;
@@ -45,6 +49,14 @@
 			admin: 'Admin'
 		};
 		return `${labels[role] ?? 'Kontributor'} Arcivis`;
+	}
+
+	function formatJoined(iso: string): string {
+		if (!iso) return '';
+		const label = new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(
+			new Date(iso)
+		);
+		return `Bergabung ${label}`;
 	}
 
 	// Derived: Total & Active Count by Tab
@@ -74,10 +86,13 @@
 			</span>
 			<div class="min-w-0">
 				<p class="text-lg font-bold text-slate-800">{nama}</p>
-				<p class="flex items-center gap-1.5 text-sm text-slate-400">
-					<Calendar size={13} />
-					{bio}
-				</p>
+				<p class="text-sm text-slate-500">{bio || peran}</p>
+				{#if bergabung}
+					<p class="flex items-center gap-1.5 text-sm text-slate-400">
+						<Calendar size={13} />
+						{bergabung}
+					</p>
+				{/if}
 			</div>
 		</div>
 

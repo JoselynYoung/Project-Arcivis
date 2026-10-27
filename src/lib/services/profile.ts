@@ -12,6 +12,8 @@ export interface ContributionItem {
 export interface ProfilData {
 	nama: string;
 	role: string;
+	bio: string;
+	createdAt: string;
 	bacaan: ContributionItem[];
 	latihan: ContributionItem[];
 	materi: ContributionItem[];
@@ -33,7 +35,11 @@ export async function getProfil(): Promise<{ data: ProfilData | null; error: str
 
 	const [{ data: profile, error: profileError }, { data: rows, error: contentError }] =
 		await Promise.all([
-			supabase.from('profiles').select('name, role').eq('id', user.id).maybeSingle(),
+			supabase
+				.from('profiles')
+				.select('name, role, bio, created_at')
+				.eq('id', user.id)
+				.maybeSingle(),
 			supabase
 				.from('content')
 				.select(`id, title, type, status, subject:subjects(name)`)
@@ -68,6 +74,8 @@ export async function getProfil(): Promise<{ data: ProfilData | null; error: str
 		data: {
 			nama: profile?.name ?? 'Pengunjung',
 			role: profile?.role ?? 'member',
+			bio: profile?.bio ?? '',
+			createdAt: profile?.created_at ?? '',
 			bacaan: byType.bacaan,
 			latihan: byType.latihan,
 			materi: byType.materi
