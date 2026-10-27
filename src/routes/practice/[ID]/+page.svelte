@@ -13,6 +13,7 @@
 	import { ROUTES } from '$lib/constants/routes';
 	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
+	import CommentSection from '$lib/components/CommentSection.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -256,5 +257,6 @@
 				</div>
 			</div>
 		</div>
+		<CommentSection contentId={pkg.id} />
 	{/if}
 </div>

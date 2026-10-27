@@ -68,6 +68,45 @@ export type Database = {
 					}
 				];
 			};
+			comments: {
+				Row: {
+					body: string;
+					content_id: string;
+					created_at: string;
+					id: string;
+					user_id: string;
+				};
+				Insert: {
+					body: string;
+					content_id: string;
+					created_at?: string;
+					id?: string;
+					user_id: string;
+				};
+				Update: {
+					body?: string;
+					content_id?: string;
+					created_at?: string;
+					id?: string;
+					user_id?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'comments_content_id_fkey';
+						columns: ['content_id'];
+						isOneToOne: false;
+						referencedRelation: 'content';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'comments_user_id_fkey';
+						columns: ['user_id'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					}
+				];
+			};
 			bookmarks: {
 				Row: {
 					content_id: string;

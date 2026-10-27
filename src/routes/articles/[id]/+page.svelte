@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
+	import CommentSection from '$lib/components/CommentSection.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -208,5 +209,6 @@
 				</div>
 			</div>
 		</div>
+		<CommentSection contentId={article.id} />
 	{/if}
 </div>
