@@ -360,6 +360,45 @@ export type Database = {
 					}
 				];
 			};
+			reports: {
+				Row: {
+					content_id: string;
+					created_at: string;
+					id: string;
+					reason: string;
+					user_id: string;
+				};
+				Insert: {
+					content_id: string;
+					created_at?: string;
+					id?: string;
+					reason: string;
+					user_id: string;
+				};
+				Update: {
+					content_id?: string;
+					created_at?: string;
+					id?: string;
+					reason?: string;
+					user_id?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'reports_content_id_fkey';
+						columns: ['content_id'];
+						isOneToOne: false;
+						referencedRelation: 'content';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'reports_user_id_fkey';
+						columns: ['user_id'];
+						isOneToOne: false;
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					}
+				];
+			};
 			schedules: {
 				Row: {
 					event_date: string;

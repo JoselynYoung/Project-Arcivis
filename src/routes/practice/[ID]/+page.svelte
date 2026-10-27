@@ -14,6 +14,7 @@
 	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
 	import CommentSection from '$lib/components/CommentSection.svelte';
+	import ReportButton from '$lib/components/ReportButton.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -74,14 +75,12 @@
 					<ShieldCheck size={14} /> Terverifikasi
 				</span>
 			{/if}
-			<button
-				type="button"
-				onclick={toggleBookmark}
-				aria-label="Simpan ke Bookmark"
-				class="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition-all hover:bg-slate-50"
-			>
+			<button type="button" onclick={toggleBookmark} aria-label="Simpan ke Bookmark">
 				<Bookmark size={18} class={isBookmarked ? 'fill-amber-400 text-amber-500' : ''} />
 			</button>
+			{#if pkg}
+				<ReportButton contentId={pkg.id} />
+			{/if}
 			<button
 				type="button"
 				aria-label="Bagikan Halaman"

@@ -6,6 +6,7 @@
 	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
 	import CommentSection from '$lib/components/CommentSection.svelte';
+	import ReportButton from '$lib/components/ReportButton.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -58,6 +59,9 @@
 			>
 				<Bookmark size={18} class={isBookmarked ? 'fill-amber-400 text-amber-500' : ''} />
 			</button>
+			{#if article}
+				<ReportButton contentId={article.id} />
+			{/if}
 			<button
 				type="button"
 				aria-label="Bagikan Halaman"
