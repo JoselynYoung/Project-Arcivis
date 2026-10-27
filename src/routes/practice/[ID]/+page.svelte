@@ -12,6 +12,7 @@
 	} from '@lucide/svelte';
 	import { ROUTES } from '$lib/constants/routes';
 	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
+	import AuthNotice from '$lib/components/AuthNotice.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -24,6 +25,7 @@
 	}
 
 	let isBookmarked = $state(false);
+	let authNotice = $state(false);
 
 	$effect(() => {
 		let cancelled = false;
@@ -41,10 +43,11 @@
 	async function toggleBookmark() {
 		if (!pkg) return;
 
-		const { saved, error } = await toggleBookmarkRequest(pkg.id);
+		const { saved, signedIn, error } = await toggleBookmarkRequest(pkg.id);
 
 		if (error) {
 			console.error('Failed to toggle bookmark:', error);
+			if (!signedIn) authNotice = true;
 			return;
 		}
 
@@ -87,6 +90,9 @@
 			</button>
 		</div>
 	</div>
+	{#if authNotice}
+		<AuthNotice />
+	{/if}
 
 	{#if !pkg}
 		<div class="rounded-3xl border border-slate-200 bg-white p-12 text-center">

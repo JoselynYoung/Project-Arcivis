@@ -6,6 +6,7 @@
 	import type { PageData } from './$types';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
+	import AuthNotice from '$lib/components/AuthNotice.svelte';
 
 	const kategoriOptions = [
 		'Semua Kategori',
@@ -27,6 +28,7 @@
 	let selectedKategori = $state('Semua Kategori');
 	let selectedSort = $state('terbaru');
 	let isSortDropdownOpen = $state(false);
+	let authNotice = $state(false);
 
 	let { data }: { data: PageData } = $props();
 	let listArticles = $state<Article[]>([]);
@@ -81,10 +83,11 @@
 	);
 
 	async function toggleBookmark(id: string) {
-		const { saved, error } = await toggleBookmarkRequest(id);
+		const { saved, signedIn, error } = await toggleBookmarkRequest(id);
 
 		if (error) {
 			console.error('Failed to toggle bookmark:', error);
+			if (!signedIn) authNotice = true;
 			return;
 		}
 
@@ -111,6 +114,9 @@
 		bind:isSortDropdownOpen
 		onReset={resetFilters}
 	/>
+	{#if authNotice}
+		<AuthNotice />
+	{/if}
 
 	{#if data.articlesError}
 		<EmptyState

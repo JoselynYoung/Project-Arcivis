@@ -4,11 +4,13 @@
 	import { ROUTES } from '$lib/constants/routes';
 	import type { PageData } from './$types';
 	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
+	import AuthNotice from '$lib/components/AuthNotice.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const material = $derived(data.material);
 
 	let isBookmarked = $state(false);
+	let authNotice = $state(false);
 
 	$effect(() => {
 		let cancelled = false;
@@ -26,10 +28,11 @@
 	async function toggleBookmark() {
 		if (!material) return;
 
-		const { saved, error } = await toggleBookmarkRequest(material.id);
+		const { saved, signedIn, error } = await toggleBookmarkRequest(material.id);
 
 		if (error) {
 			console.error('Failed to toggle bookmark:', error);
+			if (!signedIn) authNotice = true;
 			return;
 		}
 
@@ -66,6 +69,9 @@
 			</button>
 		</div>
 	</div>
+	{#if authNotice}
+		<AuthNotice />
+	{/if}
 
 	{#if !material}
 		<div class="rounded-3xl border border-slate-200 bg-white p-12 text-center">
