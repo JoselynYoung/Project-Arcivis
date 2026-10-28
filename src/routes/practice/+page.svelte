@@ -182,6 +182,7 @@
 			loading="lazy"
 		></iframe>
 		<p class="mt-2 text-center text-xs text-slate-400">
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external app URL, not a route -->
 			<a href={communityUrl} target="_blank" rel="noreferrer" class="underline hover:text-slate-600"
 				>Buka komunitas di tab baru</a
 			>
