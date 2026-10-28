@@ -19,11 +19,11 @@ Before starting, ask the user when antislop applies: during the work, or after i
 
 > Agent support files (multi-task plans, local skills) live in the gitignored `agents/` folder at the repo root. The decision log is `Docs/DECISIONS.md` (also untracked — never commit it).
 
-This repo has six reference documents under `Docs/` and `Docs/agents/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
+ This repo has six reference documents under `Docs/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
 
 - **`Docs/ROADMAP.md`** — current stage, what's in scope, what's deliberately deferred, and hard rules. Source of truth for roadmap and architecture decisions.
-- **`Docs/agents/ARCHITECTURE.md`** — folder structure, tech stack, routing conventions, and `resolve()` gotchas.
-- **`Docs/agents/DESIGN_GUIDELINES.md`** — color palette, typography, and component patterns.
+ - **`Docs/ARCHITECTURE.md`** — folder structure, tech stack, routing conventions, and `resolve()` gotchas.
+ - **`Docs/DESIGN_GUIDELINES.md`** — color palette, typography, and component patterns.
 
 - **`Docs/SCHEMA.md`** — approved database structure and design decisions.
 - **`Docs/CHANGELOG.md`** — release history.
@@ -60,7 +60,7 @@ If a task turns up something outside its stated scope — a file that "could use
 
 ## Documentation
 
-All project documentation (`Docs/ROADMAP.md`, `Docs/agents/ARCHITECTURE.md`, `Docs/agents/DESIGN_GUIDELINES.md`, `AGENTS.md`, `Docs/SCHEMA.md`, `Docs/CHANGELOG.md`, and code comments) is written in English, regardless of what language earlier versions used. Exceptions:
+All project documentation (`Docs/ROADMAP.md`, `Docs/ARCHITECTURE.md`, `Docs/DESIGN_GUIDELINES.md`, `AGENTS.md`, `Docs/SCHEMA.md`, `Docs/CHANGELOG.md`, and code comments) is written in English, regardless of what language earlier versions used. Exceptions:
 
 UI content/copy stays Indonesian (labels, button text, mock data strings) — that's a product decision, not a docs one.
 Indonesian domain/proper terms are kept as-is when quoted (e.g. subject.name values like "Matematika", route labels, field names copied verbatim from data) — don't translate identifiers or data values, just the surrounding documentation prose.

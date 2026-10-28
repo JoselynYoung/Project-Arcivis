@@ -89,4 +89,4 @@ Dynamic segments are always lowercase (`[id]`).
 4. **Styling**: use Tailwind utility classes. Avoid inline `style` for anything expressible with Tailwind. Passing a Tailwind class string into `style="background-color: ..."` is invalid CSS and has caused a real rendering bug.
 5. **Icons**: use `@lucide/svelte` and import icons individually.
 
-For the design system (colors, typography, and component patterns), see `Docs/agents/DESIGN_GUIDELINES.md`. For stages, roadmap, and hard rules, see `Docs/ROADMAP.md`.
+For the design system (colors, typography, and component patterns), see `Docs/DESIGN_GUIDELINES.md`. For stages, roadmap, and hard rules, see `Docs/ROADMAP.md`.

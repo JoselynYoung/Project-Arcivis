@@ -1,6 +1,6 @@
 # Arcivis Design and UI System Guidelines
 
-This document defines Arcivis's UI/UX design system, including visual consistency, layout, colors, typography, and UX patterns for developers and AI coding assistants. For technical and folder structure, see `Docs/agents/ARCHITECTURE.md`. For stage and roadmap status, see `Docs/ROADMAP.md`.
+This document defines Arcivis's UI/UX design system, including visual consistency, layout, colors, typography, and UX patterns for developers and AI coding assistants. For technical and folder structure, see `Docs/ARCHITECTURE.md`. For stage and roadmap status, see `Docs/ROADMAP.md`.
 
 ---
 
