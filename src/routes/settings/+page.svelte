@@ -24,7 +24,6 @@
 </script>
 
 <div class="w-full max-w-2xl">
-	<h1 class="mb-8 text-2xl font-bold text-slate-800">Pengaturan</h1>
 
 	<!-- Preference Section -->
 	<div class="mb-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
