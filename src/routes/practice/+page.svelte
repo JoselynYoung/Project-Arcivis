@@ -105,7 +105,7 @@
 				? 'border-primary-600 text-primary-700'
 				: 'border-transparent text-slate-400 hover:text-slate-600'}"
 		>
-			<BookOpen size={15} /> Paket Kurasi
+			<BookOpen size={15} /> Paket Soal
 		</button>
 		<button
 			type="button"
@@ -117,7 +117,7 @@
 				? 'border-primary-600 text-primary-700'
 				: 'border-transparent text-slate-400 hover:text-slate-600'}"
 		>
-			<Zap size={15} /> Buat Sendiri
+			<Zap size={15} /> Lab Soal
 		</button>
 	</div>
 
