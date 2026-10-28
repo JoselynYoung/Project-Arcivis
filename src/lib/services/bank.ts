@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { getAuthorNames } from './authorNames';
 
 export interface BankQuestion {
 	id: string;
@@ -19,12 +20,12 @@ interface BankRow {
 	difficulty: string | null;
 	topic: string | null;
 	subject: { name: string } | null;
-	author: { name: string } | null;
+	author_id: string | null;
 	status: string;
 	created_at: string;
 }
 
-export function mapBankRow(row: BankRow): BankQuestion {
+export function mapBankRow(row: BankRow, authorName: string | null | undefined): BankQuestion {
 	const options = row.options;
 	if (!Array.isArray(options) || !options.every((option) => typeof option === 'string')) {
 		throw new Error('BLOCKER: data contract question_bank.options mismatch');
@@ -37,14 +38,14 @@ export function mapBankRow(row: BankRow): BankQuestion {
 		difficulty: row.difficulty ?? '',
 		topic: row.topic ?? '',
 		subject: row.subject?.name ?? 'Umum',
-		authorName: row.author?.name ?? 'Pengunjung',
+		authorName: authorName ?? 'Penulis anonim',
 		status: row.status,
 		createdAt: row.created_at
 	};
 }
 
 const bankSelect =
-	'id, text, options, difficulty, topic, status, created_at, subject:subjects(name), author:profiles!question_bank_author_id_fkey(name)';
+	'id, text, options, difficulty, topic, status, created_at, author_id, subject:subjects(name)';
 
 export async function getBankQuestions(): Promise<{
 	data: BankQuestion[];
@@ -60,10 +61,12 @@ export async function getBankQuestions(): Promise<{
 		return { data: [], error: error.message };
 	}
 
+	const rows = (data ?? []) as unknown as BankRow[];
+	const names = await getAuthorNames(rows.map((row) => row.author_id));
 	const questions: BankQuestion[] = [];
-	for (const row of (data ?? []) as unknown as BankRow[]) {
+	for (const row of rows) {
 		try {
-			questions.push(mapBankRow(row));
+			questions.push(mapBankRow(row, names.get(row.author_id ?? '')));
 		} catch (err) {
 			console.error('Skipping malformed bank row:', err instanceof Error ? err.message : err);
 		}

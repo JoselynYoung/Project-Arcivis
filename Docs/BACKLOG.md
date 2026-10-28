@@ -38,7 +38,7 @@ Ideas scoped but not scheduled into any current stage. No timeline, no commitmen
 - **Direction agreed**: Question Bank — questions reusable across multiple packages via a join table (`question_id` ↔ `package_id`), not `Question` becoming its own standalone Content entity with its own workflow. Keeps future migration light.
 - Two tiers, coexisting (not competing): Community content (usable as soon as it passes basic validation — "rolling release") vs. Verified/Official package (curated, recommended — "stable release").
 - Flow: Upload (draft) → basic validation → Community Content (public, usable) → curator selects → Official Package.
-- **Role vs. content status — kept separate**: Roles (Guest, Member, Contributor, Reviewer, Verifier, Admin) can stack on one person (e.g. a trusted teacher = Contributor + Reviewer). Content status stays a fixed linear flow: `draft → direview → diverifikasi → published`. Reviewer ≠ Verifier: Reviewer judges content quality ("is this correct and well-made"), Verifier judges publication trust ("does the source/author meet Arcivis's standard"). This distinction is core to Arcivis's sanad/isnad philosophy — do not collapse it into one step.
+- **Role vs. content status — kept separate**: Roles (Guest, Member, Contributor, Reviewer, Verifier, Admin) can stack on one person (e.g. a trusted teacher = Contributor + Reviewer). Content status stays a fixed linear flow: `draft → direview → diverifikasi`. Reviewer ≠ Verifier: Reviewer judges content quality ("is this correct and well-made"), Verifier judges publication trust ("does the source/author meet Arcivis's standard"). This distinction is core to Arcivis's sanad/isnad philosophy — do not collapse it into one step.
 - Admin/Reviewer/Verifier dashboards (`/review-dashboard`, `/verification-panel`, etc.) — not MVP, database can be role-ready without the UI existing yet.
 - Open questions, unresolved on purpose: does small-scale contribution need a new entity (`suggestion`/`revision`), or can it reuse the existing content workflow? Does Community content show publicly immediately or after minimal review? Is a contributor reputation system needed? How does a curator select which community questions make it into an official package?
 
@@ -81,3 +81,5 @@ Ideas scoped but not scheduled into any current stage. No timeline, no commitmen
 ## Technical Audit Findings (minor, unscheduled)
 
 - View-count Sybil inflation accepted as low-stakes (anonymous session ids are self-generated; no rate limiting planned).
+- Math/LaTeX rendering (KaTeX): `math` nodes exist in the editor schema but render as plain text. Needs a renderer before math-heavy content ships.
+- Guest accounts (deferred): time-limited guest accounts (e.g. 14 days) for trial use without full signup. Deferred — no design yet.

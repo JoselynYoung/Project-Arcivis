@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { mapQuestionRow } from './questions';
 
 describe('questions service validation', () => {
 	it('validates options array structure', () => {
@@ -25,5 +26,27 @@ describe('questions service validation', () => {
 
 		const validExplanation: string | null = 'Valid explanation';
 		expect(validExplanation ?? '').toBe('Valid explanation');
+	});
+});
+
+describe('mapQuestionRow', () => {
+	it('maps a valid row', () => {
+		expect(mapQuestionRow({ id: 'q1', text: '2+2?', options: ['3', '4'] })).toEqual({
+			id: 'q1',
+			text: '2+2?',
+			options: ['3', '4']
+		});
+	});
+
+	it('throws on non-array options', () => {
+		expect(() => mapQuestionRow({ id: 'q2', text: 'T?', options: 'AB' })).toThrow(
+			'BLOCKER: data contract questions.options mismatch'
+		);
+	});
+
+	it('throws on non-string option entries', () => {
+		expect(() => mapQuestionRow({ id: 'q3', text: 'T?', options: ['A', 1] })).toThrow(
+			'BLOCKER: data contract questions.options mismatch'
+		);
 	});
 });

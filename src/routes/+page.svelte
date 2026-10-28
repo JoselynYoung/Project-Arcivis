@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { ChevronRight } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
-	import { banners, statistics, learningPoster, practicePoster, calendar } from '$lib/mocks/home';
+	import { banners, learningPoster, practicePoster, calendar } from '$lib/mocks/home';
 	import { resolve } from '$app/paths';
 	import { getProfil } from '$lib/services/profile';
+	import { ROUTES } from '$lib/constants/routes';
+	import { getMyStatistics } from '$lib/services/attempts';
+	import { supabase } from '$lib/services/supabaseClient';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -12,14 +15,23 @@
 	const recentPractice = $derived(data.recentPractice ?? []);
 
 	let userName = $state('Pejuang');
+	let signedIn = $state(false);
+	let homeStats: { sessions: number; accuracy: number | null; questions: number } | null =
+		$state(null);
 
 	$effect(() => {
 		getProfil().then(({ data: profil, error }) => {
 			if (error) console.error('Failed to load profile:', error);
 			if (profil) userName = profil.nama;
 		});
+		getMyStatistics().then(({ data: stats, error }) => {
+			if (error) console.error('Failed to load home statistics:', error);
+			homeStats = stats;
+		});
+		supabase.auth.getSession().then(({ data: sessionData }) => {
+			signedIn = !!sessionData.session;
+		});
 	});
-
 	// Calendar backed by real month math; dots match schedules by full date.
 	const today = new Date();
 	let monthOffset = $state(0);
@@ -130,15 +142,35 @@
 			</button>
 		</div>
 
-		<!-- Statistics -->
-		<div class="mb-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-			{#each statistics as stat (stat.label)}
-				<div class="rounded-xl bg-white p-4 shadow-sm">
-					<p class="text-2xl font-bold text-slate-800">{stat.value}</p>
-					<p class="text-sm text-slate-500">{stat.label}</p>
-				</div>
-			{/each}
-		</div>
+		<!-- Statistics — real data when signed in, sign-in prompt otherwise -->
+		{#if signedIn && homeStats}
+			{@const homeMetrics = [
+				{ label: 'Sesi selesai', value: String(homeStats.sessions) },
+				{
+					label: 'Akurasi rata-rata',
+					value: homeStats.accuracy === null ? '–' : `${homeStats.accuracy}%`
+				},
+				{ label: 'Soal dikerjakan', value: String(homeStats.questions) }
+			]}
+			<div class="mb-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+				{#each homeMetrics as metric (metric.label)}
+					<div class="rounded-xl bg-white p-4 shadow-sm">
+						<p class="text-2xl font-bold text-slate-800">{metric.value}</p>
+						<p class="text-sm text-slate-500">{metric.label}</p>
+					</div>
+				{/each}
+			</div>
+		{:else if !signedIn}
+			<div class="mb-10 rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm">
+				<p class="text-sm text-slate-500">Masuk untuk melihat ringkasan belajarmu di sini.</p>
+				<a
+					href={resolve(ROUTES.login)}
+					class="mt-2 inline-block text-sm font-semibold text-primary-600 hover:text-primary-700"
+				>
+					Masuk sekarang
+				</a>
+			</div>
+		{/if}
 
 		<!-- Fresh Materials -->
 		<div class="mb-10">

@@ -40,16 +40,32 @@ describe('deriveDifficulty', () => {
 			description: null,
 			status: 'diverifikasi',
 			created_at: '2026-09-26T00:00:00.000Z',
-			author: null,
+			author_id: null,
 			subject: { name: 'Matematika' },
 			content_tags: [],
 			questions: [{ difficulty: 'Sedang' }]
 		} as unknown as PracticeRow;
 
-		const packageData = mapPracticeRow(row, 1);
+		const packageData = mapPracticeRow(row, 1, null);
 
 		expect(packageData).toBeDefined();
-		expect(packageData.author).toBe('');
+		expect(packageData.author).toBe('Penulis anonim');
 		expect(packageData.title).toBe('Paket Practice');
+	});
+
+	it('uses the resolved author name when available', () => {
+		const row = {
+			id: '22222222-2222-4222-8222-222222222222',
+			title: 'Paket Practice',
+			description: null,
+			status: 'diverifikasi',
+			created_at: '2026-09-26T00:00:00.000Z',
+			author_id: '38cd0709-98f3-4383-a9d6-57eb4a17fbc2',
+			subject: { name: 'Matematika' },
+			content_tags: [],
+			questions: [{ difficulty: 'Sedang' }]
+		} as unknown as PracticeRow;
+
+		expect(mapPracticeRow(row, 1, 'Akun Uji A').author).toBe('Akun Uji A');
 	});
 });

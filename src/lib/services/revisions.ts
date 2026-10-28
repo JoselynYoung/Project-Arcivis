@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { getAuthorNames } from './authorNames';
 import { buildDraftBody } from './contributions';
 
 export interface Revision {
@@ -14,16 +15,16 @@ interface RevisionRow {
 	title: string;
 	status: string;
 	created_at: string;
-	editor: { name: string } | null;
+	editor_id: string | null;
 }
 
-export function mapRevisionRow(row: RevisionRow): Revision {
+export function mapRevisionRow(row: RevisionRow, editorName: string | null | undefined): Revision {
 	return {
 		id: row.id,
 		title: row.title,
 		status: row.status,
 		createdAt: row.created_at,
-		editorName: row.editor?.name ?? 'Pengunjung'
+		editorName: editorName ?? 'Penulis anonim'
 	};
 }
 
@@ -33,7 +34,7 @@ export async function getRevisions(contentId: string): Promise<{
 }> {
 	const { data, error } = await supabase
 		.from('revisions')
-		.select('id, title, status, created_at, editor:profiles!revisions_editor_id_fkey(name)')
+		.select('id, title, status, created_at, editor_id')
 		.eq('content_id', contentId)
 		.order('created_at', { ascending: false });
 
@@ -41,7 +42,12 @@ export async function getRevisions(contentId: string): Promise<{
 		return { data: [], error: error.message };
 	}
 
-	return { data: (data ?? []).map((row) => mapRevisionRow(row as RevisionRow)), error: null };
+	const rows = (data ?? []) as unknown as RevisionRow[];
+	const names = await getAuthorNames(rows.map((row) => row.editor_id));
+	return {
+		data: rows.map((row) => mapRevisionRow(row, names.get(row.editor_id ?? ''))),
+		error: null
+	};
 }
 
 export async function updateOwnContent(

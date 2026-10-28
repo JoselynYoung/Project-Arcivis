@@ -567,6 +567,13 @@ export type Database = {
 					view_count: number;
 				}[];
 			};
+			get_author_names: {
+				Args: { ids: string[] };
+				Returns: {
+					id: string;
+					name: string;
+				}[];
+			};
 			grade_answer: {
 				Args: { p_answer: number; p_question_id: string };
 				Returns: Json;

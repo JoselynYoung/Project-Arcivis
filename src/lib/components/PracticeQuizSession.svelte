@@ -138,6 +138,11 @@
 					<span>{questions.length} Soal</span>
 				</div>
 			{/if}
+			{#if isAnonymous}
+				<p class="mt-2 flex items-center gap-1.5 text-xs text-amber-600">
+					<Info size={13} /> Masuk untuk menyimpan hasil.
+				</p>
+			{/if}
 		</div>
 
 		<div class="mb-6 flex items-center justify-between">

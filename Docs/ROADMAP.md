@@ -24,19 +24,19 @@ Vision, Mission, Core Philosophy, Domain Model, Content Model, User Roles, Publi
 
 **Module progress:**
 
-| Module     | Status                                                                                                                                                                                                                             |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Home       | ✅ Complete                                                                                                                                                                                                                        |
-| Learning   | ✅ Complete (Collection → Detail → Read)                                                                                                                                                                                           |
-| Articles   | ✅ Complete (Collection → Detail → Read)                                                                                                                                                                                           |
-| Practice   | ✅ Complete (Collection→Detail→Action migration done; Quiz Generator as a separate tool done; `PracticeQuizSession` as a shared engine finalized)                                                                                  |
-| Statistics | ✅ Present (static)                                                                                                                                                                                                                |
-| Settings   | ✅ Present (dark mode toggle intentionally cosmetic, not functional)                                                                                                                                                               |
-| Profile    | ✅ Present                                                                                                                                                                                                                         |
-| Library    | ❌ **Out of scope** — its function is already covered by Article/Learning; no separate module needed                                                                                                                               |
-| Community  | ✅ Complete — not a standalone page/module; it is the contribution-history tab (Bacaan/Latihan/Materi) inside **Profile**, passive in function (self-tracking, similar to an activity log), optional and not a platform foundation |
+| Module     | Status                                                                                                                                                                                                            |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Home       | ✅ Complete                                                                                                                                                                                                       |
+| Learning   | ✅ Complete (Collection → Detail → Read)                                                                                                                                                                          |
+| Articles   | ✅ Complete (Collection → Detail → Read)                                                                                                                                                                          |
+| Practice   | ✅ Complete (Collection→Detail→Action migration done; Quiz Generator as a separate tool done; `PracticeQuizSession` as a shared engine finalized)                                                                 |
+| Statistics | ✅ Present (static)                                                                                                                                                                                               |
+| Settings   | ✅ Present (dark mode toggle intentionally cosmetic, not functional)                                                                                                                                              |
+| Profile    | ✅ Present                                                                                                                                                                                                        |
+| Library    | ❌ **Out of scope** — its function is already covered by Article/Learning; no separate module needed                                                                                                              |
+| Community  | ✅ Complete — Stage 7 shipped discussion, reports, review queue, revisions, question bank, and activity feed. The Profile contribution-history tab (Bacaan/Latihan/Materi) remains the passive self-tracking part |
 
-Library was never in scope; Community is complete as part of Profile.
+Library was never in scope; Community shipped as full Stage 7 features plus the Profile contribution tab.
 
 ### Key domain clarification for Stage 2
 
@@ -75,7 +75,7 @@ ERD, schema, relationships, and constraints. Carried out only after the UI was s
 - `content.type` is stored as free text, not a database enum, so new content categories can be added without a migration.
 - `content.subject_id` is nullable, to support content without a defined school subject (classified via `tags` instead).
 - `questions.difficulty` and `questions.topic` are included now (not deferred), since the Quiz Generator UI already exists and filters on both.
-- **Explicitly deferred, not part of this schema**: `collections`/`collection_items` (thematic curation for the homepage, e.g. future brand collaborations), `organizations` (partner metadata), and the Community-feature tables `comments`/`reviews`/`verifications`/`reports` — all deferred to Stage 7, as none currently have a corresponding UI. Rationale and revisit conditions are recorded in `Docs/SCHEMA.md` Section 5.
+- **Explicitly deferred, not part of this schema**: `collections`/`collection_items` (thematic curation for the homepage, e.g. future brand collaborations) and `organizations` (partner metadata). The Community-feature tables `comments`/`reviews`/`verifications`/`reports` shipped in Stage 7 with their UI. Rationale and revisit conditions are recorded in `Docs/SCHEMA.md` Section 5.
 
 ## Stage 5 — Supabase Implementation ✅ Complete (v0.5.0)
 
@@ -83,7 +83,7 @@ ERD, schema, relationships, and constraints. Carried out only after the UI was s
 
 - **Migration `0001_initial_schema.sql`** — 11 tables, verified live via `pg_class.relrowsecurity` query and Table Editor.
 - **Migration `0002_profile_on_signup.sql`** — `handle_new_user()` trigger, verified end-to-end via `/dev/auth-test` (signup → matching `profiles` row with correct `auth.uid()`).
-- **Migration `0003_rls_policies.sql`** — RLS enabled and policies applied on all 11 tables, including a trigger (`prevent_role_self_escalation`) blocking users from changing their own `role`. All 7 spot-checked tables show `relrowsecurity = true`. Cross-user data isolation (bookmarks/attempts) verified with two real accounts in Phase 4.
+- **Migration `0003_rls_policies.sql`** — RLS enabled and policies applied on all 11 tables, including a trigger (`prevent_role_self_escalation`) blocking users from changing their own `role`. All 7 spot-checked tables show `relrowsecurity = true`. Cross-user data isolation (bookmarks/attempts) is not yet verified with live accounts — policy and code review only.
 - **Migration `0004_storage_covers.sql`** — `content-covers` bucket (public read, 2MB limit, image types only), owner-scoped write via folder-based policy. Verified via `/dev/storage-test`: upload, public-URL render, delete (confirmed via the Storage dashboard), and anonymous-upload rejection. Deleted files may remain briefly reachable via their public URL due to Supabase's Smart CDN cache (up to ~60s propagation).
 
 ## Stage 6 — Backend Integration ✅ Complete (v0.6.5)
@@ -94,7 +94,7 @@ Replace mock data with Supabase. The UI must not change — only the data source
 - Phase 4: profile from `profiles` + contributions, bookmark persistence, anonymous-session notices.
 - Phase 5: Home cards and greeting from live data (banners, statistics, posters, calendar stay static).
 - Security patch A: bookmark queries scoped per user, server-side quiz grading (`grade_answer`), column-locked answer keys, `/dev` routes dev-only.
-- Pending decisions: author survival (`SET NULL`), profile bio + join date, `.env.example`.
+- Pending decisions: none — author survival (`0011`), profile bio + join date (v0.6.4), and `.env.example` (v0.6.4) are all resolved.
 - Minor audit findings cleared.
 
 ## Stage 7 — Community Features ✅ Complete (v0.7.0, 2026-10-28)
@@ -146,9 +146,9 @@ These apply throughout the project unless a specific stage explicitly overrides 
    └── services/
    ```
    No `stores/`, `features/`, `repositories/`, or `hooks/` — that is the old structure and has been replaced.
-5. **Routing**: all routes are in English (`practice/`, `learning/`, `articles/`, `profile/`, `settings/`), following the pattern `/{module}` → `/{module}/[id]` → `/{module}/[id]/{action}`. (`library/` is not used — out of scope. The "community" feature lives as a tab inside `profile/`, not as its own route.)
+5. **Routing**: all routes are in English (`practice/`, `learning/`, `articles/`, `profile/`, `settings/`), following the pattern `/{module}` → `/{module}/[id]` → `/{module}/[id]/{action}`. (`library/` is not used — out of scope. Community discussion, report, review, and bank pages are standalone routes; the contribution-history tab still lives inside `profile/`.)
 6. **Mock data does not need to be complete or fully realistic** — only enough to validate the UI. Do not spend significant effort filling in data that will be discarded during migration to Supabase, unless the project owner explicitly requests it.
-7. **Deliberate placeholders** (do not "fix" without being asked): the "Unduh PDF" button (`alert()`), the dark mode toggle (cosmetic only), the Community section placeholder (inside Practice).
+7. **Deliberate placeholders** (do not "fix" without being asked): the "Unduh PDF" button (`alert()`) and the dark mode toggle (cosmetic only).
 8. **`AGENTS.md`** may contain technical detail and implementation gotchas, but must not unilaterally decide new roadmap or architecture direction — decisions at that level must trace back to project-owner-approved instructions, recorded in this file.
 9. **Do not invent new stages or sub-stages** (e.g. "Stage 3.5," "Final Polish Phase") for small work items. Minor or cosmetic findings that surface after a stage has closed are recorded as a single backlog line, not treated as grounds for opening a new process or holding up the transition to the next stage. When in doubt whether something is blocking, the default is: **proceed**, record it, ask the project owner later.
 10. **`Docs/SCHEMA.md`** is the authoritative source for database structure once Stage 4 begins. Schema changes must trace back to a project-owner-approved decision, recorded there — not introduced unilaterally during implementation.

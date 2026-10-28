@@ -6,6 +6,7 @@ function row(overrides = {}) {
 		id: '11111111-1111-4111-8111-111111111111',
 		body: 'Bagus sekali!',
 		created_at: '2026-10-28T00:00:00.000Z',
+		user_id: '38cd0709-98f3-4383-a9d6-57eb4a17fbc2',
 		author: { name: 'Akun Uji A' },
 		...overrides
 	};
@@ -21,8 +22,8 @@ describe('mapCommentRow', () => {
 		});
 	});
 
-	it('falls back to Pengunjung without an author', () => {
-		expect(mapCommentRow(row({ author: null })).authorName).toBe('Pengunjung');
+	it('falls back to Penulis anonim without an author', () => {
+		expect(mapCommentRow(row({ author: null })).authorName).toBe('Penulis anonim');
 	});
 
 	it('throws on non-string body', () => {

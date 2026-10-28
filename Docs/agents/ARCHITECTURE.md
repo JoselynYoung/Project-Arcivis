@@ -71,7 +71,7 @@ Dynamic segments are always lowercase (`[id]`).
 - Raw string `href`/`goto()` fails lint (`svelte/no-navigation-without-resolve`).
 - `resolve()` requires a literal route pattern plus a `params` object, not a string produced by `$derived`. For dynamic links, use `resolve('/practice/[id]', { id: String(pkg.id) })` inline in the template.
 
-**Shared quiz engine**: `src/lib/components/PracticeQuizSession.svelte` (props: `questions`, `title`, `backRoute`, `backParams`), used by `/practice/[id]/quiz` and the generator session. This is one engine for one interaction type, not a cross-module UI abstraction deferred to Stage 3.
+**Shared quiz engine**: `src/lib/components/PracticeQuizSession.svelte` (props: `questions`, `title`, `description`, `difficulty?`, `backRoute`, `backParams?`, `backLabel`, `onComplete?`), used by `/practice/[id]/quiz` and the generator session. This is one engine for one interaction type, not a cross-module UI abstraction deferred to Stage 3.
 
 ## 4. Data and State
 

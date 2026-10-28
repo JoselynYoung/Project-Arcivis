@@ -1,5 +1,6 @@
 import type { QueryData } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
+import { getAuthorNames } from './authorNames';
 import type { PracticePackage as MockPracticePackage } from '$lib/types/practice';
 
 export type PracticePackage = Omit<MockPracticePackage, 'id'> & { id: string };
@@ -10,7 +11,7 @@ function practiceQuery() {
 		.select(
 			`
 		id, title, description, status, created_at,
-		author:profiles!content_author_id_fkey(name),
+		author_id,
 		subject:subjects(name), content_tags(tags(name)),
 		questions(difficulty)
 	`
@@ -55,8 +56,12 @@ export function deriveDifficulty(difficulties: (string | null)[]): string {
 	return candidates[0];
 }
 
-export function mapPracticeRow(row: PracticeRow, questionCount: number): PracticePackage {
-	if (!row.author?.name) {
+export function mapPracticeRow(
+	row: PracticeRow,
+	questionCount: number,
+	authorName: string | null | undefined
+): PracticePackage {
+	if (!authorName) {
 		console.error(`Practice package ${row.id} missing author`);
 	}
 
@@ -67,7 +72,7 @@ export function mapPracticeRow(row: PracticeRow, questionCount: number): Practic
 		subject: row.subject?.name ?? '',
 		difficulty: deriveDifficulty(row.questions.map((question) => question.difficulty)),
 		questionCount,
-		author: row.author?.name ?? '',
+		author: authorName ?? 'Penulis anonim',
 		topics: row.content_tags.flatMap((item) => (item.tags ? [item.tags.name] : [])),
 		isVerified: row.status === 'diverifikasi'
 	};
@@ -102,10 +107,15 @@ export async function getPracticePackages(): Promise<{
 	}
 
 	const rows = (data ?? []) as unknown as PracticeRow[];
-	const counts = await getQuestionCounts();
+	const [counts, names] = await Promise.all([
+		getQuestionCounts(),
+		getAuthorNames(rows.map((row) => row.author_id))
+	]);
 
 	return {
-		data: rows.map((row) => mapPracticeRow(row, counts.get(row.id) ?? 0)),
+		data: rows.map((row) =>
+			mapPracticeRow(row, counts.get(row.id) ?? 0, names.get(row.author_id ?? ''))
+		),
 		error: null
 	};
 }
@@ -128,10 +138,16 @@ export async function getPracticePackage(id: string): Promise<{
 		return { data: null, error: null };
 	}
 
+	const [counts, names] = await Promise.all([
+		getQuestionCounts(),
+		getAuthorNames(data ? [(data as { author_id: string | null }).author_id] : [])
+	]);
+
 	return {
 		data: mapPracticeRow(
 			data as unknown as PracticeRow,
-			(await getQuestionCounts()).get(data.id) ?? 0
+			counts.get(data.id) ?? 0,
+			names.get((data as { author_id: string | null }).author_id ?? '')
 		),
 		error: null
 	};

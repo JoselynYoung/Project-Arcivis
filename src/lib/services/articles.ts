@@ -3,6 +3,7 @@ import {
 	ARTICLE_CATEGORY_COLOR_FALLBACK
 } from '$lib/constants/publicData';
 import { supabase } from '$lib/services/supabaseClient';
+import { getAuthorNames } from './authorNames';
 
 export interface Article {
 	id: string;
@@ -26,7 +27,7 @@ interface ArticleRow {
 	updated_at: string;
 	body: Record<string, unknown> | null;
 	editor_schema_version: number;
-	author: { name: string }[] | null;
+	author_id: string | null;
 	subject: { name: string }[] | null;
 	content_tags: { tags: { name: string } | null }[];
 }
@@ -43,7 +44,7 @@ const articleSelect = `
 	updated_at,
 	body,
 	editor_schema_version,
-	author:profiles!content_author_id_fkey(name),
+	author_id,
 	subject:subjects(name),
 	content_tags(tags(name))
 `;
@@ -79,7 +80,11 @@ function getBadgeColor(category: string): string {
 	return ARTICLE_CATEGORY_COLORS[category] ?? ARTICLE_CATEGORY_COLOR_FALLBACK;
 }
 
-function mapArticleRow(row: ArticleRow, viewCount: number): Article {
+function mapArticleRow(
+	row: ArticleRow,
+	viewCount: number,
+	authorName: string | null | undefined
+): Article {
 	const subject = row.subject?.[0]?.name ?? '';
 	const topics = row.content_tags.flatMap((item) => (item.tags ? [item.tags.name] : []));
 
@@ -88,7 +93,7 @@ function mapArticleRow(row: ArticleRow, viewCount: number): Article {
 		judul: row.title,
 		deskripsi: row.description ?? '',
 		kategori: topics[0] ?? '',
-		author: row.author?.[0]?.name ?? '',
+		author: authorName ?? 'Penulis anonim',
 		updatedAt: formatDate(row.updated_at),
 		dibaca: viewCount,
 		badgeWarna: getBadgeColor(subject),
@@ -135,14 +140,19 @@ export async function getArticles(): Promise<{ data: Article[]; error: string | 
 	}
 
 	const rows = (data ?? []) as unknown as ArticleRow[];
-	const counts = await getViewCounts(rows.map((row) => row.id));
+	const [counts, names] = await Promise.all([
+		getViewCounts(rows.map((row) => row.id)),
+		getAuthorNames(rows.map((row) => row.author_id))
+	]);
 
 	if (counts.error) {
 		console.error('[articles.ts] View counts unavailable (non-blocking):', counts.error);
 	}
 
 	return {
-		data: rows.map((row) => mapArticleRow(row, counts.data.get(row.id) ?? 0)),
+		data: rows.map((row) =>
+			mapArticleRow(row, counts.data.get(row.id) ?? 0, names.get(row.author_id ?? ''))
+		),
 		error: null
 	};
 }
@@ -171,14 +181,21 @@ export async function getArticle(id: string): Promise<{
 		return { data: null, error: null };
 	}
 
-	const counts = await getViewCounts([id]);
+	const [singleCounts, singleNames] = await Promise.all([
+		getViewCounts([id]),
+		getAuthorNames(data ? [(data as { author_id: string | null }).author_id] : [])
+	]);
 
-	if (counts.error) {
-		return { data: null, error: counts.error };
+	if (singleCounts.error) {
+		return { data: null, error: singleCounts.error };
 	}
 
 	return {
-		data: mapArticleRow(data as unknown as ArticleRow, counts.data.get(id) ?? 0),
+		data: mapArticleRow(
+			data as unknown as ArticleRow,
+			singleCounts.data.get(id) ?? 0,
+			singleNames.get((data as { author_id: string | null }).author_id ?? '')
+		),
 		error: null
 	};
 }

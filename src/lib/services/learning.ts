@@ -1,5 +1,6 @@
 import { SUBJECT_COLORS, SUBJECT_COLOR_FALLBACK } from '$lib/constants/publicData';
 import { supabase } from '$lib/services/supabaseClient';
+import { getAuthorNames } from './authorNames';
 
 export interface LearningMaterial {
 	id: string;
@@ -25,7 +26,7 @@ interface LearningRow {
 	updated_at: string;
 	body: Record<string, unknown> | null;
 	editor_schema_version: number;
-	author: { name: string }[] | null;
+	author_id: string | null;
 	subject: { name: string }[] | null;
 	content_tags: { tags: { name: string } | null }[];
 }
@@ -41,8 +42,7 @@ const learningSelect = `
 	description,
 	created_at,
 	updated_at,
-	body,
-	author:profiles!content_author_id_fkey(name),
+	author_id,
 	subject:subjects(name),
 	content_tags(tags(name))
 `;
@@ -61,7 +61,11 @@ function getBadgeColor(subject: string): string {
 	return border ? `${color} border-${border.replace(/-50$/, '-200')}` : `${color} border-slate-200`;
 }
 
-function mapLearningRow(row: LearningRow, viewCount: number): LearningMaterial {
+function mapLearningRow(
+	row: LearningRow,
+	viewCount: number,
+	authorName: string | null | undefined
+): LearningMaterial {
 	const subject = row.subject?.[0]?.name ?? '';
 
 	return {
@@ -71,7 +75,7 @@ function mapLearningRow(row: LearningRow, viewCount: number): LearningMaterial {
 		mapel: subject,
 		tanggal: row.created_at.slice(0, 10),
 		updatedAt: formatDate(row.updated_at),
-		author: row.author?.[0]?.name ?? '',
+		author: authorName ?? 'Penulis anonim',
 		dibaca: viewCount,
 		badgeWarna: getBadgeColor(subject),
 		topics: row.content_tags.flatMap((item) => (item.tags ? [item.tags.name] : [])),
@@ -138,14 +142,19 @@ export async function getLearningMaterials(): Promise<{
 	}
 
 	const rows = (data ?? []) as unknown as LearningRow[];
-	const counts = await getViewCounts(rows.map((row) => row.id));
+	const [counts, names] = await Promise.all([
+		getViewCounts(rows.map((row) => row.id)),
+		getAuthorNames(rows.map((row) => row.author_id))
+	]);
 
 	if (counts.error) {
 		console.error('[learning.ts] View counts unavailable (non-blocking):', counts.error);
 	}
 
 	return {
-		data: rows.map((row) => mapLearningRow(row, counts.data.get(row.id) ?? 0)),
+		data: rows.map((row) =>
+			mapLearningRow(row, counts.data.get(row.id) ?? 0, names.get(row.author_id ?? ''))
+		),
 		error: null
 	};
 }
@@ -174,14 +183,21 @@ export async function getLearningMaterial(id: string): Promise<{
 		return { data: null, error: null };
 	}
 
-	const counts = await getViewCounts([id]);
+	const [singleCounts, singleNames] = await Promise.all([
+		getViewCounts([id]),
+		getAuthorNames(data ? [(data as { author_id: string | null }).author_id] : [])
+	]);
 
-	if (counts.error) {
-		return { data: null, error: counts.error };
+	if (singleCounts.error) {
+		return { data: null, error: singleCounts.error };
 	}
 
 	return {
-		data: mapLearningRow(data as unknown as LearningRow, counts.data.get(id) ?? 0),
+		data: mapLearningRow(
+			data as unknown as LearningRow,
+			singleCounts.data.get(id) ?? 0,
+			singleNames.get((data as { author_id: string | null }).author_id ?? '')
+		),
 		error: null
 	};
 }

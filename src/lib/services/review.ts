@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { getAuthorNames } from './authorNames';
 
 export type ReviewDecision = 'diverifikasi' | 'draft';
 
@@ -15,15 +16,15 @@ interface ReviewRow {
 	title: string;
 	type: string;
 	updated_at: string;
-	author: { name: string } | null;
+	author_id: string | null;
 }
 
-export function mapReviewRow(row: ReviewRow): ReviewItem {
+export function mapReviewRow(row: ReviewRow, authorName: string | null | undefined): ReviewItem {
 	return {
 		id: row.id,
 		title: row.title,
 		type: row.type,
-		authorName: row.author?.name ?? 'Pengunjung',
+		authorName: authorName ?? 'Penulis anonim',
 		updatedAt: row.updated_at
 	};
 }
@@ -34,7 +35,7 @@ export async function getReviewQueue(): Promise<{
 }> {
 	const { data, error } = await supabase
 		.from('content')
-		.select('id, title, type, updated_at, author:profiles!content_author_id_fkey(name)')
+		.select('id, title, type, updated_at, author_id')
 		.eq('status', 'direview')
 		.order('updated_at', { ascending: true });
 
@@ -42,7 +43,12 @@ export async function getReviewQueue(): Promise<{
 		return { data: [], error: error.message };
 	}
 
-	return { data: (data ?? []).map((row) => mapReviewRow(row as ReviewRow)), error: null };
+	const rows = (data ?? []) as unknown as ReviewRow[];
+	const names = await getAuthorNames(rows.map((row) => row.author_id));
+	return {
+		data: rows.map((row) => mapReviewRow(row, names.get(row.author_id ?? '') ?? null)),
+		error: null
+	};
 }
 
 export async function submitForReview(id: string): Promise<{ error: string | null }> {

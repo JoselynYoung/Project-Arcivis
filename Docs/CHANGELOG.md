@@ -10,19 +10,19 @@ Opens Stage 7: per-content discussion, reports, draft contributions, curator rev
 
 ### Added
 
-- `comments` table with RLS: visible wherever the parent content is visible, signed-in-only posts, owner-only deletes.
-- `reports` table with RLS: signed-in-only posts, owner-only reads and deletes.
+- `comments` table with RLS (`0012_comments.sql`): visible wherever the parent content is visible, signed-in-only posts, owner-only deletes.
+- `reports` table with RLS (`0013_reports.sql`): signed-in-only posts, owner-only reads; owner deletes via `0014_report_delete_own.sql`.
 - `CommentSection` on Learning, Articles, and Practice detail pages: plain-text rendering, 2000-character limit, empty state, and a sign-in notice for visitors.
 - `ReportButton` on Learning, Articles, and Practice detail pages: preset reasons, signed-in-only submit, and a sign-in notice for visitors.
-- `/review` queue for reviewer/verifier/admin roles with approve and send-back actions; authors submit drafts from their profile contributions.
+- `/review` queue for reviewer/verifier/admin roles (`0016_review_queue_access.sql`) with approve and send-back actions; authors submit drafts from their profile contributions.
 - `/contribute` page with profile entry point: article/learning drafts with subject picker; plain paragraphs become a Tiptap v1 document.
-- Edit flow for authors (`/contribute/[id]`) with automatic revision snapshots and a history viewer on detail pages.
-- `/bank`: community question pool with verified list and member submission (subject, difficulty, options, key, explanation).
+- Edit flow for authors (`/contribute/[id]`) with automatic revision snapshots (`0017_revision_history.sql`) and a history viewer on detail pages.
+- `/bank`: community question pool (`0018_question_bank.sql`) with verified list and member submission (subject, difficulty, options, key, explanation).
 - `Aktivitas` tab on profiles: the signed-in user's own comments and reports, newest first.
 
 ### Fixed
 
-- Body-contract trigger runs as definer: authenticated inserts with a body no longer fail validation with a permission error.
+- Body-contract trigger runs as definer (`0015_trigger_definer_for_body_contract.sql`): authenticated inserts with a body no longer fail validation with a permission error.
 
 ---
 

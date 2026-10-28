@@ -17,7 +17,7 @@ Before starting, ask the user when antislop applies: during the work, or after i
 
 ## Start here
 
-> Agent support files (decision log, multi-task plans, local skills) live in the gitignored `agents/` folder at the repo root.
+> Agent support files (multi-task plans, local skills) live in the gitignored `agents/` folder at the repo root. The decision log is `Docs/DECISIONS.md` (also untracked — never commit it).
 
 This repo has six reference documents under `Docs/` and `Docs/agents/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
 
@@ -33,7 +33,7 @@ This file (`AGENTS.md`) doesn't repeat their content. It only covers things spec
 
 ## Repo basics
 
-SvelteKit 2 + Svelte 5 (runes mode) + TypeScript + Tailwind CSS v4. Mock-data only, no backend. Content language is Indonesian.
+SvelteKit 2 + Svelte 5 (runes mode) + TypeScript + Tailwind CSS v4. Supabase backend (see `Docs/SCHEMA.md`); mock data remains only for Home banners/posters/calendar. Content language is Indonesian.
 
 ### Commands
 

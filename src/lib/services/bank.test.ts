@@ -9,7 +9,7 @@ function row(overrides = {}) {
 		difficulty: 'Mudah',
 		topic: 'Aritmetika',
 		subject: { name: 'Matematika' },
-		author: { name: 'Akun Uji A' },
+		author_id: 'a1',
 		status: 'diverifikasi',
 		created_at: '2026-10-28T00:00:00.000Z',
 		...overrides
@@ -18,7 +18,7 @@ function row(overrides = {}) {
 
 describe('mapBankRow', () => {
 	it('maps a valid row', () => {
-		expect(mapBankRow(row())).toEqual({
+		expect(mapBankRow(row(), 'Akun Uji A')).toEqual({
 			id: 'b1',
 			text: '2 + 2?',
 			options: ['3', '4'],
@@ -32,12 +32,12 @@ describe('mapBankRow', () => {
 	});
 
 	it('throws on non-string options', () => {
-		expect(() => mapBankRow(row({ options: ['a', 1] }))).toThrow('BLOCKER');
+		expect(() => mapBankRow(row({ options: ['a', 1] }), null)).toThrow('BLOCKER');
 	});
 
 	it('falls back on missing subject and author', () => {
-		const mapped = mapBankRow(row({ subject: null, author: null }));
+		const mapped = mapBankRow(row({ subject: null, author_id: null }), null);
 		expect(mapped.subject).toBe('Umum');
-		expect(mapped.authorName).toBe('Pengunjung');
+		expect(mapped.authorName).toBe('Penulis anonim');
 	});
 });

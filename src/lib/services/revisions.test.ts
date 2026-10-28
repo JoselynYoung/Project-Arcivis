@@ -4,13 +4,16 @@ import { mapRevisionRow, docToPlainText } from './revisions';
 describe('mapRevisionRow', () => {
 	it('maps a revision row', () => {
 		expect(
-			mapRevisionRow({
-				id: 'r1',
-				title: 'Judul Lama',
-				status: 'draft',
-				created_at: '2026-10-28T00:00:00.000Z',
-				editor: { name: 'Akun Uji A' }
-			})
+			mapRevisionRow(
+				{
+					id: 'r1',
+					title: 'Judul Lama',
+					status: 'draft',
+					created_at: '2026-10-28T00:00:00.000Z',
+					editor_id: 'a1'
+				},
+				'Akun Uji A'
+			)
 		).toEqual({
 			id: 'r1',
 			title: 'Judul Lama',
@@ -22,14 +25,17 @@ describe('mapRevisionRow', () => {
 
 	it('falls back without an editor', () => {
 		expect(
-			mapRevisionRow({
-				id: 'r2',
-				title: 'T',
-				status: 'draft',
-				created_at: '2026-10-28T00:00:00.000Z',
-				editor: null
-			}).editorName
-		).toBe('Pengunjung');
+			mapRevisionRow(
+				{
+					id: 'r2',
+					title: 'T',
+					status: 'draft',
+					created_at: '2026-10-28T00:00:00.000Z',
+					editor_id: null
+				},
+				null
+			).editorName
+		).toBe('Penulis anonim');
 	});
 });
 

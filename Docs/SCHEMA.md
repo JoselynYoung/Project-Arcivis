@@ -1,6 +1,6 @@
 # Arcivis Database Schema
 
-**Stage:** Stage 6 — Phase 2 Schema Decision
+**Stage:** Stage 7 — Community Features (current through migration `0018_question_bank.sql`)
 
 ---
 
@@ -261,24 +261,25 @@ schema. Both RPCs are live and verified against the project's Supabase
 instance as of Phase 2. Only these two aggregate-read RPCs are in scope for
 Phase 2; a general-purpose Statistics dashboard beyond this sorting use case
 remains unbuilt and is not implied by this section.
+**4.8 Author display names.** Content lists show the author's `profiles.name` through the read-only `get_author_names` RPC (one call per list, UUIDs in, display names out), never by embedding `profiles` in content queries. Only the display name is exposed; no email or personal data leaves the database. Deleted accounts keep their profile row with the name soft-cleared to "Pengguna Terhapus" (D-024), so existing comments and history keep rendering.
 
 ## 5. Scope Excluded from the Current Schema
 
 The following entities were considered and are explicitly excluded from the current schema.
 
-| Entity                                            | Rationale                                                                                                                                                                                                                                    | Planned Stage                                                       |
-| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `collections`, `collection_items`                 | Would support curated, cross-content-type groupings for homepage presentation. No corresponding interface has been implemented.                                                                                                              | Reassess when homepage curation requires database-driven management |
-| `organizations`                                   | Would store partner metadata for collaborative content initiatives. No management interface exists.                                                                                                                                          | Alongside `collections`                                             |
-| `comments`, `reviews`, `verifications`, `reports` | Belong to the Community Features stage. No corresponding interface elements exist. The `content.status` field already supports the required draft/review/verification states for contribution tracking; detailed audit records are excluded. | Stage 7 — Community Features                                        |
-| `material` (as a distinct entity)                 | Functionally redundant with `content_resources`.                                                                                                                                                                                             | Not planned                                                         |
-| `tags.kind`                                       | Would distinguish tag sub-types (e.g. `category` vs `topic`). Rejected for now — see §4.6 — in favor of a single flat tag system.                                                                                                            | Reassess only if a concrete UI need for tag sub-typing emerges      |
+| Entity                                            | Rationale                                                                                                                                                                                                                                                                                   | Planned Stage                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `collections`, `collection_items`                 | Would support curated, cross-content-type groupings for homepage presentation. No corresponding interface has been implemented.                                                                                                                                                             | Reassess when homepage curation requires database-driven management |
+| `organizations`                                   | Would store partner metadata for collaborative content initiatives. No management interface exists.                                                                                                                                                                                         | Alongside `collections`                                             |
+| `comments`, `reviews`, `verifications`, `reports` | Shipped in Stage 7 (migrations `0012`–`0018`): per-content discussion, reports, curator review queue, revision history, and the community question bank. The `content.status` field still carries the draft/review/verification states; these tables hold the detailed records behind them. | Shipped in Stage 7                                                  |
+| `material` (as a distinct entity)                 | Functionally redundant with `content_resources`.                                                                                                                                                                                                                                            | Not planned                                                         |
+| `tags.kind`                                       | Would distinguish tag sub-types (e.g. `category` vs `topic`). Rejected for now — see §4.6 — in favor of a single flat tag system.                                                                                                                                                           | Reassess only if a concrete UI need for tag sub-typing emerges      |
 
 ## 6. Validation Summary
 
-This schema was validated against the following criteria, most recently as of the Stage 6 Phase 2 update:
+This schema was validated against the following criteria, most recently as of the Stage 7 update:
 
-1. All interface pages defined through Stage 2, plus the Learning/Article body-rendering and view-tracking behavior introduced in Stage 6 Phase 2, have corresponding data support in this schema.
+1. All interface pages defined through Stage 2, plus the Learning/Article body-rendering and view-tracking behavior introduced in Stage 6 and the community features introduced in Stage 7 (comments, reports, review queue, revisions, question bank), have corresponding data support in this schema.
 2. Migration from mock data to this schema does not require interface changes, as mock data structures were designed to approximate the eventual data model.
 3. No entity or column included in this schema lacks a defined, current use case, **with one recorded exception**: `tags.slug` (§4.6), which is provisioned ahead of a UI consumer as a deliberate, explicitly justified exception rather than an oversight.
 4. The `content_view_events` table and its two read-only aggregate RPCs (`get_learning_view_counts`, `get_article_view_counts`) support the pre-existing "Paling Populer" sorting behavior without introducing a precomputed, redundantly-stored view count.

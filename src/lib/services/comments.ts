@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { getAuthorNames } from './authorNames';
 
 export interface Comment {
 	id: string;
@@ -11,6 +12,7 @@ interface CommentRow {
 	id: string;
 	body: unknown;
 	created_at: string;
+	user_id: string | null;
 	author: { name: string } | null;
 }
 
@@ -25,7 +27,7 @@ export function mapCommentRow(row: CommentRow): Comment {
 		id: row.id,
 		body: row.body,
 		createdAt: row.created_at,
-		authorName: row.author?.name ?? 'Pengunjung'
+		authorName: row.author?.name ?? 'Penulis anonim'
 	};
 }
 
@@ -35,7 +37,7 @@ export async function getComments(contentId: string): Promise<{
 }> {
 	const { data, error } = await supabase
 		.from('comments')
-		.select('id, body, created_at, author:profiles!comments_user_id_fkey(name)')
+		.select('id, body, created_at, user_id')
 		.eq('content_id', contentId)
 		.order('created_at', { ascending: true });
 
@@ -43,17 +45,20 @@ export async function getComments(contentId: string): Promise<{
 		return { data: [], error: error.message };
 	}
 
+	const rows = (data ?? []) as unknown as CommentRow[];
+	const names = await getAuthorNames(rows.map((row) => row.user_id));
+
 	const comments: Comment[] = [];
-	for (const row of (data ?? []) as unknown as CommentRow[]) {
+	for (const row of rows) {
 		try {
-			comments.push(mapCommentRow(row));
+			const name = row.user_id ? names.get(row.user_id) : undefined;
+			comments.push(mapCommentRow({ ...row, author: name ? { name } : null }));
 		} catch (err) {
 			console.error('Skipping malformed comment row:', err instanceof Error ? err.message : err);
 		}
 	}
 	return { data: comments, error: null };
 }
-
 export async function addComment(
 	contentId: string,
 	body: string
