@@ -24,7 +24,6 @@
 </script>
 
 <div class="w-full max-w-2xl">
-
 	<!-- Preference Section -->
 	<div class="mb-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
 		<h2 class="mb-4 text-sm font-semibold text-slate-500">Preferensi</h2>

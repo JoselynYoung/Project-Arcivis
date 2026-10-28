@@ -9,6 +9,7 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import type { PageData } from './$types';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
+	import { PUBLIC_COMMUNITY_URL } from '$env/static/public';
 
 	let { data }: { data: PageData } = $props();
 	const subjects = $derived(data.subjects ?? []);
@@ -19,6 +20,30 @@
 	let isSortDropdownOpen = $state(false);
 	let activeTab = $state<'paket' | 'buat'>('paket');
 	let authNotice = $state(false);
+	const communityUrl = PUBLIC_COMMUNITY_URL || 'http://localhost:5175';
+	let frameHeight = $state(900);
+
+	$effect(() => {
+		const allowedOrigin = (() => {
+			try {
+				return new URL(communityUrl).origin;
+			} catch {
+				return null;
+			}
+		})();
+		const onMessage = (event: MessageEvent) => {
+			if (allowedOrigin && event.origin !== allowedOrigin) return;
+			const data = event.data;
+			if (!data || typeof data !== 'object') return;
+			if (!('communityHeight' in data)) return;
+			const height = data.communityHeight;
+			if (typeof height === 'number' && height > 200 && height < 5000) {
+				frameHeight = height;
+			}
+		};
+		window.addEventListener('message', onMessage);
+		return () => window.removeEventListener('message', onMessage);
+	});
 
 	const sortOptions = [
 		{ id: 'terbaru', label: 'Terbaru' },
@@ -123,51 +148,44 @@
 
 	{#if activeTab === 'buat'}
 		<div
-			class="mb-8 rounded-2xl border-2 border-primary-100 bg-linear-to-br from-primary-50 to-white p-5 shadow-sm sm:mb-10 sm:p-6"
+			class="mb-4 flex flex-wrap items-center gap-3 rounded-2xl border border-primary-100 bg-linear-to-br from-primary-50 to-white p-4 shadow-sm"
 		>
-			<div class="flex items-start gap-4">
-				<div
-					class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-sm sm:h-14 sm:w-14"
-					aria-hidden="true"
-				>
-					<Zap size={24} />
-				</div>
-				<div class="min-w-0 flex-1">
-					<div class="mb-1 flex items-center gap-2">
-						<h2 class="text-base font-bold text-slate-800 sm:text-lg">Latihan Acak</h2>
-						<span
-							class="rounded-full bg-primary-100 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-primary-700 uppercase"
-						>
-							Generator
-						</span>
-					</div>
-					<p class="mb-4 text-sm leading-relaxed text-slate-500">
-						Buat sesi latihan sesuai keinginanmu. Pilih mapel, topik, tingkat kesulitan, dan jumlah
-						soal.
-					</p>
-					<div class="mb-4 flex flex-wrap items-center gap-3 text-xs text-slate-400">
-						<span class="flex items-center gap-1">
-							<span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-							{subjects.length} Mapel
-						</span>
-						<span class="flex items-center gap-1">
-							<span class="bg-primary-400 inline-block h-1.5 w-1.5 rounded-full"></span>
-							5-30 Soal
-						</span>
-						<span class="flex items-center gap-1">
-							<span class="inline-block h-1.5 w-1.5 rounded-full bg-amber-400"></span>
-							3 Mode
-						</span>
-					</div>
-					<a
-						href={resolve(ROUTES.practiceQuizGenerator)}
-						class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary-700"
-					>
-						Buka Generator <ChevronRight size={16} />
-					</a>
-				</div>
+			<div
+				class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white"
+				aria-hidden="true"
+			>
+				<Zap size={20} />
 			</div>
+			<div class="min-w-0 flex-1">
+				<p class="text-sm font-bold text-slate-800">
+					Latihan Acak <span
+						class="ml-1 rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-bold tracking-wider text-primary-700 uppercase"
+						>Generator</span
+					>
+				</p>
+				<p class="text-xs text-slate-500">
+					Racik paket latihan sendiri, atau jawab soal bareng komunitas di bawah.
+				</p>
+			</div>
+			<a
+				href={resolve(ROUTES.practiceQuizGenerator)}
+				class="inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-4 py-2 text-sm font-bold text-white hover:bg-primary-700"
+			>
+				Buka Generator <ChevronRight size={15} />
+			</a>
 		</div>
+		<iframe
+			src={communityUrl}
+			title="Lab Soal Komunitas"
+			style:height={frameHeight + 'px'}
+			class="w-full rounded-2xl border border-slate-200 bg-white shadow-sm"
+			loading="lazy"
+		></iframe>
+		<p class="mt-2 text-center text-xs text-slate-400">
+			<a href={communityUrl} target="_blank" rel="noreferrer" class="underline hover:text-slate-600"
+				>Buka komunitas di tab baru</a
+			>
+		</p>
 	{:else}
 		<FilterBar
 			searchPlaceholder="Cari paket latihan atau topik..."

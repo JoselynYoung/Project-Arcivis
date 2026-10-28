@@ -19,11 +19,11 @@ Before starting, ask the user when antislop applies: during the work, or after i
 
 > Agent support files (multi-task plans, local skills) live in the gitignored `agents/` folder at the repo root. The decision log is `Docs/DECISIONS.md` (also untracked — never commit it).
 
- This repo has six reference documents under `Docs/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
+This repo has six reference documents under `Docs/`. Read the relevant ones before starting a task; do not rely on memory from a previous session:
 
 - **`Docs/ROADMAP.md`** — current stage, what's in scope, what's deliberately deferred, and hard rules. Source of truth for roadmap and architecture decisions.
- - **`Docs/ARCHITECTURE.md`** — folder structure, tech stack, routing conventions, and `resolve()` gotchas.
- - **`Docs/DESIGN_GUIDELINES.md`** — color palette, typography, and component patterns.
+- **`Docs/ARCHITECTURE.md`** — folder structure, tech stack, routing conventions, and `resolve()` gotchas.
+- **`Docs/DESIGN_GUIDELINES.md`** — color palette, typography, and component patterns.
 
 - **`Docs/SCHEMA.md`** — approved database structure and design decisions.
 - **`Docs/CHANGELOG.md`** — release history.
