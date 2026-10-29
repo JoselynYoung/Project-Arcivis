@@ -20,11 +20,11 @@ Arcivis is organized around a single central entity: **Content**. Learning mater
 
 Represents a platform user.
 
-| Column | Type   | Description                                                |
-| ------ | ------ | ---------------------------------------------------------- |
-| id     | uuid   | Primary key                                                |
-| name   | string | Display name                                               |
-| role   | string | `guest` \| `member` \| `reviewer` \| `verifier` \| `admin` |
+| Column | Type   | Description                                                    |
+| ------ | ------ | -------------------------------------------------------------- |
+| id     | uuid   | Primary key                                                    |
+| name   | string | Display name                                                   |
+| role   | string | `guest` \| `member` \| `contributor` \| `moderator` \| `admin` |
 
 ### 3.2 `content`
 

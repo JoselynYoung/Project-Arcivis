@@ -1,5 +1,18 @@
 import { supabase } from './supabaseClient';
 
+export const CONTRIBUTOR_ROLES = ['contributor', 'moderator', 'admin'];
+export const MODERATOR_ROLES = ['moderator', 'admin'];
+
+export async function getMyRole(): Promise<string | null> {
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return null;
+	const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+	if (!data || typeof data !== 'object' || !('role' in data)) return null;
+	return typeof data.role === 'string' ? data.role : null;
+}
+
 export type ContributionStatus = 'draft' | 'direview' | 'diverifikasi';
 
 export interface ContributionItem {

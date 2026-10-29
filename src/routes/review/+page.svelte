@@ -3,6 +3,7 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
 	import { getReviewQueue, decideReview, type ReviewItem } from '$lib/services/review';
+	import { getMyRole, MODERATOR_ROLES } from '$lib/services/profile';
 	import { supabase } from '$lib/services/supabaseClient';
 
 	let items = $state<ReviewItem[]>([]);
@@ -11,7 +12,7 @@
 	let loadError = $state<string | null>(null);
 	let acting = $state<string | null>(null);
 
-	const canReview = $derived(role === 'reviewer' || role === 'verifier' || role === 'admin');
+	const canReview = $derived(role !== null && MODERATOR_ROLES.includes(role));
 
 	$effect(() => {
 		supabase.auth.getUser().then(async ({ data }) => {
@@ -19,15 +20,9 @@
 			signedIn = !!user;
 			if (!user) return;
 
-			const { data: profile } = await supabase
-				.from('profiles')
-				.select('role')
-				.eq('id', user.id)
-				.maybeSingle();
+			role = (await getMyRole()) ?? 'member';
 
-			role = profile?.role ?? 'member';
-
-			if (role === 'reviewer' || role === 'verifier' || role === 'admin') {
+			if (MODERATOR_ROLES.includes(role)) {
 				const { data: queue, error } = await getReviewQueue();
 				if (error) loadError = error;
 				else items = queue;
@@ -67,7 +62,7 @@
 		<EmptyState
 			icon={ShieldCheck}
 			title="Khusus kurator"
-			description="Halaman ini hanya untuk reviewer, verifier, dan admin."
+			description="Halaman ini hanya untuk moderator dan admin."
 		/>
 	{:else if loadError}
 		<EmptyState icon={ShieldCheck} title="Antrian Tidak Dapat Dimuat" description={loadError} />

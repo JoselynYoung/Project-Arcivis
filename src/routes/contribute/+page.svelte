@@ -6,8 +6,11 @@
 	import { getPublicSubjects } from '$lib/services/subjects';
 	import { submitContribution, type ContributionType } from '$lib/services/contributions';
 	import { supabase } from '$lib/services/supabaseClient';
+	import { getMyRole, CONTRIBUTOR_ROLES } from '$lib/services/profile';
 
 	let signedIn = $state<boolean | null>(null);
+	let role = $state<string | null>(null);
+	const canContribute = $derived(role !== null && CONTRIBUTOR_ROLES.includes(role));
 	let subjects = $state<{ id: string; name: string }[]>([]);
 	let type = $state<ContributionType>('article');
 	let title = $state('');
@@ -18,10 +21,10 @@
 	let sending = $state(false);
 	let sent = $state(false);
 	let error = $state<string | null>(null);
-
 	$effect(() => {
-		supabase.auth.getSession().then(({ data }) => {
+		supabase.auth.getSession().then(async ({ data }) => {
 			signedIn = !!data.session;
+			if (data.session) role = await getMyRole();
 		});
 		getPublicSubjects().then(({ data, error: subjectsError }) => {
 			if (subjectsError) console.error('Failed to load subjects:', subjectsError);
@@ -65,6 +68,13 @@
 		<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 			<h1 class="mb-2 text-xl font-bold text-slate-800">Tulis kontribusi</h1>
 			<AuthNotice message="Masuk untuk mengirim tulisan." />
+		</div>
+	{:else if !canContribute}
+		<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+			<h1 class="mb-2 text-xl font-bold text-slate-800">Tulis kontribusi</h1>
+			<p class="text-sm text-slate-500">
+				Kontribusi dibuka untuk peran Kontributor ke atas. Hubungi admin untuk upgrade peranmu.
+			</p>
 		</div>
 	{:else if !sent}
 		<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">

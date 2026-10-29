@@ -4,6 +4,12 @@ All notable changes to Arcivis are documented in this file. Format follows [Keep
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- Roles simplified to `guest` / `member` / `contributor` / `moderator` / `admin` (owner decision 2026-10-29): Reviewer and Verifier merged into Moderator. Requires migration `0025_roles_contributor_moderator.sql`: migrates old roles, promotes content authors to Contributor, restricts draft submission to Contributor and above. `/review` and verification now check Moderator; `/contribute` and bank submission require Contributor.
+
 ## [v0.7.0] — Stage 7: Community
 
 Opens Stage 7: per-content discussion, reports, draft contributions, curator review, revision history, community question bank, and a personal activity feed. Requires migrations `0012_comments.sql` through `0018_question_bank.sql` on the live database.

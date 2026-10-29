@@ -5,8 +5,11 @@
 	import { getBankQuestions, submitBankQuestion, type BankQuestion } from '$lib/services/bank';
 	import { getPublicSubjects } from '$lib/services/subjects';
 	import { supabase } from '$lib/services/supabaseClient';
+	import { getMyRole, CONTRIBUTOR_ROLES } from '$lib/services/profile';
 
 	let signedIn = $state<boolean | null>(null);
+	let role = $state<string | null>(null);
+	const canContribute = $derived(role !== null && CONTRIBUTOR_ROLES.includes(role));
 	let questions = $state<BankQuestion[]>([]);
 	let loadError = $state<string | null>(null);
 	let subjects = $state<{ id: string; name: string }[]>([]);
@@ -24,8 +27,9 @@
 	let sent = $state(false);
 
 	$effect(() => {
-		supabase.auth.getSession().then(({ data }) => {
+		supabase.auth.getSession().then(async ({ data }) => {
 			signedIn = !!data.session;
+			if (data.session) role = await getMyRole();
 		});
 		getBankQuestions().then(({ data, error }) => {
 			if (error) loadError = error;
@@ -82,7 +86,7 @@
 		<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 			<AuthNotice message="Masuk untuk mengirim soal ke bank komunitas." />
 		</div>
-	{:else}
+	{:else if canContribute}
 		<button
 			type="button"
 			onclick={() => {
@@ -96,6 +100,10 @@
 			<Plus size={16} />
 			{formOpen ? 'Tutup formulir' : 'Kirim soal'}
 		</button>
+	{:else if signedIn}
+		<p class="mb-6 rounded-xl bg-slate-100 p-4 text-center text-xs text-slate-500">
+			Pengiriman soal dibuka untuk peran Kontributor — hubungi admin untuk upgrade.
+		</p>
 	{/if}
 
 	{#if sent}
@@ -104,7 +112,7 @@
 		</p>
 	{/if}
 
-	{#if formOpen && signedIn}
+	{#if formOpen && signedIn && canContribute}
 		<form
 			onsubmit={submit}
 			class="mb-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"

@@ -112,12 +112,12 @@
 	function roleLabel(role: string): string {
 		const labels: Record<string, string> = {
 			guest: 'Pengunjung',
-			member: 'Kontributor',
-			reviewer: 'Reviewer',
-			verifier: 'Verifier',
+			member: 'Anggota',
+			contributor: 'Kontributor',
+			moderator: 'Moderator',
 			admin: 'Admin'
 		};
-		return `${labels[role] ?? 'Kontributor'} Arcivis`;
+		return `${labels[role] ?? 'Anggota'} Arcivis`;
 	}
 
 	function formatJoined(iso: string): string {
@@ -279,7 +279,7 @@
 	</div>
 
 	<!-- Contribute Entry -->
-	{#if nama !== 'Pengunjung'}
+	{#if nama !== 'Pengunjung' && (rawRole === 'contributor' || rawRole === 'moderator' || rawRole === 'admin')}
 		<div class="mb-5">
 			<a
 				href={resolve(ROUTES.contribute)}
@@ -288,8 +288,12 @@
 				<PenLine size={16} /> Tulis kontribusi
 			</a>
 		</div>
+	{:else if nama !== 'Pengunjung'}
+		<p class="mb-5 rounded-xl bg-slate-100 p-4 text-center text-xs text-slate-500">
+			Kontribusi dibuka untuk peran Kontributor — hubungi admin untuk upgrade.
+		</p>
 	{/if}
-	{#if rawRole === 'reviewer' || rawRole === 'verifier' || rawRole === 'admin'}
+	{#if rawRole === 'moderator' || rawRole === 'admin'}
 		<div class="mb-5">
 			<a
 				href={resolve(ROUTES.review)}

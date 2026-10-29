@@ -38,8 +38,8 @@ Ideas scoped but not scheduled into any current stage. No timeline, no commitmen
 - **Direction agreed**: Question Bank — questions reusable across multiple packages via a join table (`question_id` ↔ `package_id`), not `Question` becoming its own standalone Content entity with its own workflow. Keeps future migration light.
 - Two tiers, coexisting (not competing): Community content (usable as soon as it passes basic validation — "rolling release") vs. Verified/Official package (curated, recommended — "stable release").
 - Flow: Upload (draft) → basic validation → Community Content (public, usable) → curator selects → Official Package.
-- **Role vs. content status — kept separate**: Roles (Guest, Member, Contributor, Reviewer, Verifier, Admin) can stack on one person (e.g. a trusted teacher = Contributor + Reviewer). Content status stays a fixed linear flow: `draft → direview → diverifikasi`. Reviewer ≠ Verifier: Reviewer judges content quality ("is this correct and well-made"), Verifier judges publication trust ("does the source/author meet Arcivis's standard"). This distinction is core to Arcivis's sanad/isnad philosophy — do not collapse it into one step.
-- Admin/Reviewer/Verifier dashboards (`/review-dashboard`, `/verification-panel`, etc.) — not MVP, database can be role-ready without the UI existing yet.
+- **Role vs. content status — kept separate**: Roles are Guest, Member, Contributor, Moderator, Admin (owner decision 2026-10-29: Reviewer and Verifier were merged into Moderator). Authenticated users start as Member; Contributors submit drafts; Moderators judge quality and trust, then publish. Content status stays a fixed linear flow: `draft → direview → diverifikasi`.
+- Admin/Moderator dashboards (`/review-dashboard`, etc.) — not MVP, database can be role-ready without the UI existing yet.
 - Open questions, unresolved on purpose: does small-scale contribution need a new entity (`suggestion`/`revision`), or can it reuse the existing content workflow? Does Community content show publicly immediately or after minimal review? Is a contributor reputation system needed? How does a curator select which community questions make it into an official package?
 
 ## Community — Atomic Contribution
@@ -51,9 +51,7 @@ Ideas scoped but not scheduled into any current stage. No timeline, no commitmen
 - Preserve the existing distinction between:
   - community/rolling content;
   - verified/official/stable content.
-- Keep Reviewer and Verifier distinct.
-  - Reviewer: evaluates quality/correctness.
-  - Verifier: evaluates trust/source/publication eligibility.
+- Reviewer and Verifier are merged into Moderator (owner decision 2026-10-29): a Moderator evaluates both quality/correctness and trust/source/publication eligibility.
 - Do not create role tables, dashboards, revision tables, or Community schema in this documentation task.
 
 ## Collections / Thematic Curation
