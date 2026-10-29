@@ -100,10 +100,6 @@
 			<Plus size={16} />
 			{formOpen ? 'Tutup formulir' : 'Kirim soal'}
 		</button>
-	{:else if signedIn}
-		<p class="mb-6 rounded-xl bg-slate-100 p-4 text-center text-xs text-slate-500">
-			Pengiriman soal dibuka untuk peran Kontributor — hubungi admin untuk upgrade.
-		</p>
 	{/if}
 
 	{#if sent}

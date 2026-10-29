@@ -288,10 +288,6 @@
 				<PenLine size={16} /> Tulis kontribusi
 			</a>
 		</div>
-	{:else if nama !== 'Pengunjung'}
-		<p class="mb-5 rounded-xl bg-slate-100 p-4 text-center text-xs text-slate-500">
-			Kontribusi dibuka untuk peran Kontributor — hubungi admin untuk upgrade.
-		</p>
 	{/if}
 	{#if rawRole === 'moderator' || rawRole === 'admin'}
 		<div class="mb-5">
