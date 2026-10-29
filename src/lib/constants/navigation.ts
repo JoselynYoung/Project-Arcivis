@@ -1,5 +1,14 @@
 import type { RoutePath } from './routes';
-import { Home, BookOpen, Layers, Newspaper, BarChart3, Settings, User } from '@lucide/svelte';
+import {
+	Home,
+	BookOpen,
+	Layers,
+	Newspaper,
+	BarChart3,
+	Settings,
+	User,
+	PenLine
+} from '@lucide/svelte';
 import { ROUTES } from './routes';
 
 export const navItems = [
@@ -8,6 +17,7 @@ export const navItems = [
 	{ href: ROUTES.learning, label: 'Learning', icon: Layers },
 	{ href: ROUTES.articles, label: 'Articles', icon: Newspaper },
 	{ href: ROUTES.statistics, label: 'Statistics', icon: BarChart3 },
+	{ href: ROUTES.contribute, label: 'Tulis', icon: PenLine },
 	{ href: ROUTES.settings, label: 'Settings', icon: Settings },
 	{ href: ROUTES.profile, label: 'Profile', icon: User }
 ] as const;

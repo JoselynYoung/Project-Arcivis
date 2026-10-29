@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { ROUTES } from '$lib/constants/routes';
 	import {
 		User,
 		ShieldCheck,
@@ -12,7 +11,6 @@
 		Pencil,
 		Check,
 		X,
-		PenLine,
 		MessageCircle,
 		Flag,
 		Activity
@@ -27,7 +25,6 @@
 	let bio = $state('');
 	let peran = $state('');
 	let bergabung = $state('');
-	let rawRole = $state('member');
 	let editingName = $state(false);
 	let savingName = $state(false);
 	let submittingId = $state<string | null>(null);
@@ -54,7 +51,6 @@
 			}
 
 			nama = data.nama;
-			rawRole = data.role;
 			peran = roleLabel(data.role);
 			bergabung = formatJoined(data.createdAt);
 			kontribusiBacaan = data.bacaan;
@@ -277,28 +273,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Contribute Entry -->
-	{#if nama !== 'Pengunjung' && (rawRole === 'contributor' || rawRole === 'moderator' || rawRole === 'admin')}
-		<div class="mb-5">
-			<a
-				href={resolve(ROUTES.contribute)}
-				class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-primary-700"
-			>
-				<PenLine size={16} /> Tulis kontribusi
-			</a>
-		</div>
-	{/if}
-	{#if rawRole === 'moderator' || rawRole === 'admin'}
-		<div class="mb-5">
-			<a
-				href={resolve(ROUTES.review)}
-				class="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-6 py-3 text-sm font-bold text-primary-700 transition-colors hover:bg-primary-100"
-			>
-				<ShieldCheck size={16} /> Antrian Review
-			</a>
-		</div>
-	{/if}
 
 	<!-- Tabs -->
 	<div class="mb-5 flex border-b border-slate-200">
