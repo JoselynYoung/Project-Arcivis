@@ -9,7 +9,6 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import type { PageData } from './$types';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
-	import { PUBLIC_COMMUNITY_URL } from '$env/static/public';
 
 	let { data }: { data: PageData } = $props();
 	const subjects = $derived(data.subjects ?? []);
@@ -20,31 +19,6 @@
 	let isSortDropdownOpen = $state(false);
 	let activeTab = $state<'paket' | 'buat'>('paket');
 	let authNotice = $state(false);
-	const communityUrl = PUBLIC_COMMUNITY_URL || 'http://localhost:5175';
-	let frameHeight = $state(900);
-
-	$effect(() => {
-		const allowedOrigin = (() => {
-			try {
-				return new URL(communityUrl).origin;
-			} catch {
-				return null;
-			}
-		})();
-		const onMessage = (event: MessageEvent) => {
-			if (allowedOrigin && event.origin !== allowedOrigin) return;
-			const data = event.data;
-			if (!data || typeof data !== 'object') return;
-			if (!('communityHeight' in data)) return;
-			const height = data.communityHeight;
-			if (typeof height === 'number' && height > 200 && height < 5000) {
-				frameHeight = height;
-			}
-		};
-		window.addEventListener('message', onMessage);
-		return () => window.removeEventListener('message', onMessage);
-	});
-
 	const sortOptions = [
 		{ id: 'terbaru', label: 'Terbaru' },
 		{ id: 'az', label: 'Abjad A-Z' },
@@ -164,7 +138,8 @@
 					>
 				</p>
 				<p class="text-xs text-slate-500">
-					Racik paket latihan sendiri, atau jawab soal bareng komunitas di bawah.
+					Racik paket latihan sesuai keinginanmu. Pilih mapel, topik, tingkat kesulitan, dan jumlah
+					soal.
 				</p>
 			</div>
 			<a
@@ -174,19 +149,6 @@
 				Buka Generator <ChevronRight size={15} />
 			</a>
 		</div>
-		<iframe
-			src={communityUrl}
-			title="Lab Soal Komunitas"
-			style:height={frameHeight + 'px'}
-			class="w-full rounded-2xl border border-slate-200 bg-white shadow-sm"
-			loading="lazy"
-		></iframe>
-		<p class="mt-2 text-center text-xs text-slate-400">
-			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external app URL, not a route -->
-			<a href={communityUrl} target="_blank" rel="noreferrer" class="underline hover:text-slate-600"
-				>Buka komunitas di tab baru</a
-			>
-		</p>
 	{:else}
 		<FilterBar
 			searchPlaceholder="Cari paket latihan atau topik..."
