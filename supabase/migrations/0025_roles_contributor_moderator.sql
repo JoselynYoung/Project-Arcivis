@@ -1,10 +1,13 @@
--- 0025_roles_contributor_moderator.sql
+-- 0026_roles_contributor_moderator_retry.sql
 --
--- Roles become guest / member / contributor / moderator / admin.
--- reviewer+verifier merge into moderator; existing accounts move over.
--- Members who already authored content, bank rows, threads, or answers
--- become contributors so nothing they own gets locked out.
--- Submitting drafts now requires the contributor role or above.
+-- 0025 failed partway: prevent_role_self_escalation() blocks every
+-- profiles UPDATE when auth.uid() is null, which includes migrations
+-- and dashboard edits. This retry disables that trigger while the role
+-- values move, re-applies every 0025 step idempotently, then installs a
+-- trigger that still blocks self-escalation but lets direct database
+-- access (migrations, dashboard service key) through.
+
+alter table public.profiles disable trigger prevent_role_change;
 
 alter table public.profiles drop constraint if exists profiles_role_check;
 
@@ -34,14 +37,12 @@ as $$
 	);
 $$;
 
--- Profiles: moderators/admins read all rows.
 drop policy if exists "profiles_select_reviewer_admin" on public.profiles;
 create policy "profiles_select_moderator_admin"
 	on public.profiles
 	for select
 	using (public.is_moderator_or_admin());
 
--- Content: moderators/admins see everything, including drafts in review.
 drop policy if exists "content_select_reviewer_all" on public.content;
 create policy "content_select_moderator_all"
 	on public.content
@@ -53,7 +54,6 @@ create policy "content_select_moderator_all"
 		)
 	);
 
--- Content: moderators decide direview rows (approve or send back).
 drop policy if exists "content_update_reviewer_decide" on public.content;
 create policy "content_update_moderator_decide"
 	on public.content
@@ -73,7 +73,6 @@ create policy "content_update_moderator_decide"
 		and status in ('draft', 'diverifikasi')
 	);
 
--- Content: moderators/admins may update and publish any row.
 drop policy if exists "content_update_verifier_admin" on public.content;
 create policy "content_update_moderator_admin"
 	on public.content
@@ -91,7 +90,6 @@ create policy "content_update_moderator_admin"
 		)
 	);
 
--- Content: inserting drafts requires the contributor role or above.
 drop policy if exists "content_insert_own_draft" on public.content;
 create policy "content_insert_contributor_draft"
 	on public.content
@@ -105,7 +103,6 @@ create policy "content_insert_contributor_draft"
 		)
 	);
 
--- Bank: moderators/admins may decide any row.
 drop policy if exists "question_bank_update_verifier_admin" on public.question_bank;
 create policy "question_bank_update_moderator_admin"
 	on public.question_bank
@@ -123,7 +120,6 @@ create policy "question_bank_update_moderator_admin"
 		)
 	);
 
--- Bank: submitting drafts requires the contributor role or above.
 drop policy if exists "question_bank_insert_own_draft" on public.question_bank;
 create policy "question_bank_insert_contributor_draft"
 	on public.question_bank
@@ -137,7 +133,6 @@ create policy "question_bank_insert_contributor_draft"
 		)
 	);
 
--- Threads: moderators keep full access; posting needs contributor or above.
 drop policy if exists "threads_update_own_or_reviewer" on public.threads;
 create policy "threads_update_own_or_moderator"
 	on public.threads
@@ -159,7 +154,6 @@ create policy "threads_insert_contributor"
 		)
 	);
 
--- Answers: moderators verify; posting needs contributor or above.
 drop policy if exists "answers_update_own_or_reviewer" on public.answers;
 create policy "answers_update_own_or_moderator"
 	on public.answers
@@ -182,3 +176,35 @@ create policy "answers_insert_contributor"
 	);
 
 drop function if exists public.is_reviewer_or_admin();
+
+-- Self-escalation guard that still lets direct database access through.
+-- PostgREST always carries JWT claims; only direct connections (migrations,
+-- dashboard service key) arrive without them.
+create or replace function public.prevent_role_self_escalation()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+	if new.role is distinct from old.role then
+		if current_setting('request.jwt.claims', true) is null then
+			return new;
+		end if;
+		if not exists (
+			select 1 from public.profiles
+			where id = auth.uid() and role = 'admin'
+		) then
+			raise exception 'Only admins can change role.';
+		end if;
+	end if;
+	return new;
+end;
+$$;
+
+drop trigger if exists prevent_role_change on public.profiles;
+create trigger prevent_role_change
+	before update on public.profiles
+	for each row execute function public.prevent_role_self_escalation();
+
+alter table public.profiles enable trigger prevent_role_change;
