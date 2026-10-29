@@ -93,6 +93,13 @@
 				{#if childNode}<ContentBody node={childNode} {editorSchemaVersion} />{/if}
 			{/each}
 		</p>
+	{:else if node.type === 'blockquote'}
+		<div class="my-4 border-l-4 border-slate-800 pl-4 text-lg leading-relaxed text-slate-800">
+			{#each childrenOf(node) as child, index (index)}
+				{@const childNode = asNode(child)}
+				{#if childNode}<ContentBody node={childNode} {editorSchemaVersion} />{/if}
+			{/each}
+		</div>
 	{:else if node.type === 'heading' && headingLevel(node)}
 		<svelte:element this={`h${headingLevel(node)}`}>
 			{#each childrenOf(node) as child, index (index)}

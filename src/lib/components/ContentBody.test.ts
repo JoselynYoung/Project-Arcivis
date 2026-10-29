@@ -34,6 +34,24 @@ describe('ContentBody', () => {
 		expect(screen.getByText('x^2')).toBeDefined();
 	});
 
+	it('renders blockquote with quote styling', () => {
+		const { container } = render(ContentBody, {
+			props: {
+				body: {
+					type: 'doc',
+					content: [
+						{
+							type: 'blockquote',
+							content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Kutipan bijak' }] }]
+						}
+					]
+				}
+			}
+		});
+		expect(screen.getByText('Kutipan bijak')).toBeDefined();
+		expect(container.querySelector('div.border-l-4')).not.toBeNull();
+	});
+
 	it('does not render an unsupported schema version', () => {
 		render(ContentBody, {
 			props: {
