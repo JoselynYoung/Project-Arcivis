@@ -9,8 +9,8 @@ export interface ContributionDraft {
 	subjectId: string | null;
 	description: string;
 	bodyText: string;
-	coverFile: File | null;
-	tagIds: string[];
+	coverFile?: File | null;
+	tagIds?: string[];
 }
 
 // Markdown-lite to Tiptap v1: blank line = block break; `# `/`## `/`### `
@@ -166,9 +166,14 @@ export async function createTag(
 ): Promise<{ data: { id: string } | null; error: string | null }> {
 	const trimmed = name.trim();
 	if (!trimmed) return { data: null, error: 'Nama tag tidak boleh kosong.' };
+	const slug = trimmed
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/(^-|-$)/g, '');
+	if (!slug) return { data: null, error: 'Nama tag harus mengandung huruf atau angka.' };
 	const { data, error } = await supabase
 		.from('tags')
-		.insert({ name: trimmed })
+		.insert({ name: trimmed, slug })
 		.select('id')
 		.single();
 	if (error) return { data: null, error: error.message };
@@ -344,10 +349,11 @@ export async function submitContribution(
 	}
 
 	const row = data as unknown as { id: string };
-	if (draft.tagIds.length > 0) {
+	const tagIds = draft.tagIds ?? [];
+	if (tagIds.length > 0) {
 		const { error: tagError } = await supabase
 			.from('content_tags')
-			.insert(draft.tagIds.map((tagId) => ({ content_id: row.id, tag_id: tagId })));
+			.insert(tagIds.map((tagId) => ({ content_id: row.id, tag_id: tagId })));
 		if (tagError) return { data: { id: row.id }, error: tagError.message };
 	}
 
