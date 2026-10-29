@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BookOpen, PenLine, ShieldCheck, Plus } from '@lucide/svelte';
+	import { BookOpen, PenLine, ShieldCheck } from '@lucide/svelte';
 	import AuthNotice from '$lib/components/AuthNotice.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import { getPublicSubjects } from '$lib/services/subjects';
@@ -571,7 +571,7 @@
 					bind:this={bodyEl}
 					bind:value={bodyText}
 					rows={12}
-					placeholder={'Tulis di sini…\n\n# Judul bagian\n\n> Kutipan bijak\n\n- Poin daftar'}
+					placeholder="Tulis di sini…&#10;&#10;# Judul bagian&#10;&#10;> Kutipan bijak&#10;&#10;- Poin daftar"
 					class="focus:border-primary-500 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-mono text-sm leading-relaxed text-slate-800 placeholder:text-slate-400 focus:outline-none"
 				></textarea>
 				{#if formError}
