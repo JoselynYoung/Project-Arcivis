@@ -17,7 +17,7 @@ export interface ContributionDraft {
 // headings (levels 1-3); `> ` quote lines merge into one blockquote;
 // `- ` and `1. ` list items merge into bullet/ordered lists;
 // `![alt](path)` image lines; `**bold**` and `*italic*` inline marks
-// (`\*` stays literal). Validator (0005 + 0026) accepts exactly these shapes.
+// (`\*` stays literal). Validator (0005 + 0026, compat 0006/0027, blockquote nesting 0028) accepts exactly these shapes.
 interface TextLeaf {
 	type: 'text';
 	text: string;
