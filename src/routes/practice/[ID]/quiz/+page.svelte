@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import PracticeQuizSession from '$lib/components/PracticeQuizSession.svelte';
 	import { recordCuratedAttempt } from '$lib/services/attempts';
 	import type { PageData } from './$types';
@@ -7,7 +8,9 @@
 
 	const pkg = $derived(data.pkg ?? null);
 	const questionList = $derived(data.questionList ?? []);
-	const backParams = $derived<Record<string, string>>(pkg ? { id: String(pkg.id) } : {});
+	const backHref = $derived(
+		pkg ? resolve('/practice/[id]', { id: String(pkg.id) }) : resolve('/practice')
+	);
 
 	function handleComplete(result: { correctCount: number; totalQuestions: number }) {
 		if (!pkg || result.totalQuestions === 0) return;
@@ -22,8 +25,7 @@
 		title={pkg.title}
 		description={pkg.description}
 		difficulty={pkg.difficulty}
-		backRoute="/practice/[id]"
-		{backParams}
+		{backHref}
 		backLabel="Kembali ke Detail Paket"
 		onComplete={handleComplete}
 	/>
