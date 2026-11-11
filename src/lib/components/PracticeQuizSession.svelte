@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { Check, X, ArrowRight, RotateCcw, BookOpen, Info } from '@lucide/svelte';
-	import type { Question } from '$lib/types/practice';
-	import { gradeAnswer, type GradeResult } from '$lib/services/questions';
-	import { supabase } from '$lib/services/supabaseClient';
+	import type { Question } from '#lib/types/practice';
+	import { gradeAnswer, type GradeResult } from '#lib/services/questions';
+	import { supabase } from '#lib/services/supabaseClient';
 
 	let {
 		questions,
@@ -126,12 +126,14 @@
 			<p class="mb-5 text-sm text-slate-500">
 				Latihan ini masih disiapkan. Nantikan pembahasannya di pembaruan berikutnya.
 			</p>
+			<!-- eslint-disable svelte/no-navigation-without-resolve -- backHref is pre-resolved with resolve() at both call sites -->
 			<a
 				href={backHref}
 				class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm transition-colors hover:bg-primary-700"
 			>
 				{backLabel}
 			</a>
+			<!-- eslint-enable svelte/no-navigation-without-resolve -->
 		</div>
 	{:else if !isFinished && currentQuestion}
 		<div class="mb-6">

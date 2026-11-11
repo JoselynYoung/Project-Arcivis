@@ -1,5 +1,5 @@
-import { getPracticePackage } from '$lib/services/practice';
-import { getQuestionsByContentId } from '$lib/services/questions';
+import { getPracticePackage } from '#lib/services/practice';
+import { getQuestionsByContentId } from '#lib/services/questions';
 
 export async function load({ params }) {
 	const [{ data: pkg, error: packageError }, { data: questionList, error: questionsError }] =

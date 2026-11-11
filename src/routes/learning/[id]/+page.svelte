@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, BookOpen, User, Bookmark, Share2, Sparkles } from '@lucide/svelte';
-	import { ROUTES } from '$lib/constants/routes';
+	import { ROUTES } from '#lib/constants/routes';
 	import type { PageData } from './$types';
-	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
-	import AuthNotice from '$lib/components/AuthNotice.svelte';
-	import CommentSection from '$lib/components/CommentSection.svelte';
-	import RevisionHistory from '$lib/components/RevisionHistory.svelte';
-	import ReportButton from '$lib/components/ReportButton.svelte';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '#lib/services/bookmarks';
+	import AuthNotice from '#lib/components/AuthNotice.svelte';
+	import CommentSection from '#lib/components/CommentSection.svelte';
+	import RevisionHistory from '#lib/components/RevisionHistory.svelte';
+	import ReportButton from '#lib/components/ReportButton.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const material = $derived(data.material);

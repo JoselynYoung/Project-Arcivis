@@ -1,4 +1,4 @@
-import { getLearningMaterial } from '$lib/services/learning';
+import { getLearningMaterial } from '#lib/services/learning';
 
 export async function load({ params }) {
 	const { data, error } = await getLearningMaterial(params.id);

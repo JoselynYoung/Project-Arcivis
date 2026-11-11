@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { supabase } from '$lib/services/supabaseClient';
-	import { updatePassword } from '$lib/services/auth';
+	import { supabase } from '#lib/services/supabaseClient';
+	import { updatePassword } from '#lib/services/auth';
 
 	let password = $state('');
 	let confirm = $state('');

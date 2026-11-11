@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase } from '$lib/services/supabaseClient';
+	import { supabase } from '#lib/services/supabaseClient';
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 

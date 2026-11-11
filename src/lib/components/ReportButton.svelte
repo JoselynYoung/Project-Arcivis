@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Flag } from '@lucide/svelte';
-	import AuthNotice from '$lib/components/AuthNotice.svelte';
-	import { submitReport, REPORT_REASONS } from '$lib/services/reports';
+	import AuthNotice from '#lib/components/AuthNotice.svelte';
+	import { submitReport, REPORT_REASONS } from '#lib/services/reports';
 
 	let { contentId }: { contentId: string } = $props();
 

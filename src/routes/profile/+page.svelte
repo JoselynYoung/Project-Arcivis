@@ -15,10 +15,10 @@
 		Flag,
 		Activity
 	} from '@lucide/svelte';
-	import { supabase } from '$lib/services/supabaseClient';
-	import { getProfil, type ContributionItem } from '$lib/services/profile';
-	import { getOwnComments, type OwnComment } from '$lib/services/comments';
-	import { getOwnReports, type OwnReport } from '$lib/services/reports';
+	import { supabase } from '#lib/services/supabaseClient';
+	import { getProfil, type ContributionItem } from '#lib/services/profile';
+	import { getOwnComments, type OwnComment } from '#lib/services/comments';
+	import { getOwnReports, type OwnReport } from '#lib/services/reports';
 
 	// Profile Data
 	let nama = $state('');
@@ -128,7 +128,7 @@
 		if (submittingId) return;
 		submittingId = id;
 
-		const { submitForReview } = await import('$lib/services/review');
+		const { submitForReview } = await import('#lib/services/review');
 		const { error } = await submitForReview(id);
 
 		submittingId = null;

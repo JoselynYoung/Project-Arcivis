@@ -2,17 +2,17 @@
 	import './layout.css';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '#lib/assets/favicon.svg';
 	import { Home, LayoutGrid, LogIn, X } from '@lucide/svelte';
 	import {
 		desktopMainNav,
 		desktopFooterNav,
 		mobileBottomNav,
 		mobileDrawerNav
-	} from '$lib/constants/navigation';
+	} from '#lib/constants/navigation';
 
-	import { supabase } from '$lib/services/supabaseClient';
-	import { ROUTES } from '$lib/constants/routes';
+	import { supabase } from '#lib/services/supabaseClient';
+	import { ROUTES } from '#lib/constants/routes';
 
 	let { children } = $props();
 

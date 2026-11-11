@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { BookOpen, PenLine, ShieldCheck } from '@lucide/svelte';
-	import AuthNotice from '$lib/components/AuthNotice.svelte';
-	import EmptyState from '$lib/components/EmptyState.svelte';
-	import { getPublicSubjects } from '$lib/services/subjects';
+	import AuthNotice from '#lib/components/AuthNotice.svelte';
+	import EmptyState from '#lib/components/EmptyState.svelte';
+	import { getPublicSubjects } from '#lib/services/subjects';
 	import {
 		createEmptyDraft,
 		finalizeDraft,
@@ -11,11 +11,11 @@
 		getPublicTags,
 		createTag,
 		type ContributionType
-	} from '$lib/services/contributions';
-	import { getBankQuestions, submitBankQuestion, type BankQuestion } from '$lib/services/bank';
-	import { getReviewQueue, decideReview, type ReviewItem } from '$lib/services/review';
-	import { getMyRole, CONTRIBUTOR_ROLES, MODERATOR_ROLES } from '$lib/services/profile';
-	import { supabase } from '$lib/services/supabaseClient';
+	} from '#lib/services/contributions';
+	import { getBankQuestions, submitBankQuestion, type BankQuestion } from '#lib/services/bank';
+	import { getReviewQueue, decideReview, type ReviewItem } from '#lib/services/review';
+	import { getMyRole, CONTRIBUTOR_ROLES, MODERATOR_ROLES } from '#lib/services/profile';
+	import { supabase } from '#lib/services/supabaseClient';
 
 	let signedIn = $state<boolean | null>(null);
 	let role = $state<string | null>(null);

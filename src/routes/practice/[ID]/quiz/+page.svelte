@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import PracticeQuizSession from '$lib/components/PracticeQuizSession.svelte';
-	import { recordCuratedAttempt } from '$lib/services/attempts';
+	import PracticeQuizSession from '#lib/components/PracticeQuizSession.svelte';
+	import { recordCuratedAttempt } from '#lib/services/attempts';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

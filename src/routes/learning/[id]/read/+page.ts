@@ -1,4 +1,4 @@
-import { getLearningMaterial } from '$lib/services/learning';
+import { getLearningMaterial } from '#lib/services/learning';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {

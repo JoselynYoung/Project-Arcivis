@@ -8,8 +8,8 @@ export default defineConfig({
 	plugins: [tailwindcss(), svelte({ compilerOptions: { runes: true } }), svelteTesting()],
 	resolve: {
 		alias: {
-			$lib: path.resolve('./src/lib'),
-			'$env/static/public': path.resolve('./vitest-env.ts')
+			'#lib': path.resolve('./src/lib'),
+			'$app/env/public': path.resolve('./vitest-env.ts')
 		}
 	},
 	ssr: {

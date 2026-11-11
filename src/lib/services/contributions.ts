@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import type { Json } from '$lib/types/database.types';
+import type { Json } from '#lib/types/database.types';
 
 export type ContributionType = 'article' | 'learning';
 

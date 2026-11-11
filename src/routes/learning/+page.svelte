@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Bookmark, BookOpen } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
-	import type { LearningMaterial } from '$lib/services/learning';
-	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
+	import type { LearningMaterial } from '#lib/services/learning';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '#lib/services/bookmarks';
 	import type { PageData } from './$types';
-	import FilterBar from '$lib/components/FilterBar.svelte';
-	import EmptyState from '$lib/components/EmptyState.svelte';
-	import AuthNotice from '$lib/components/AuthNotice.svelte';
+	import FilterBar from '#lib/components/FilterBar.svelte';
+	import EmptyState from '#lib/components/EmptyState.svelte';
+	import AuthNotice from '#lib/components/AuthNotice.svelte';
 
 	const mapelOptions = [
 		'Semua',

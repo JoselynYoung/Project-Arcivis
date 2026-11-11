@@ -1,8 +1,8 @@
 import {
 	ARTICLE_CATEGORY_COLORS,
 	ARTICLE_CATEGORY_COLOR_FALLBACK
-} from '$lib/constants/publicData';
-import { supabase } from '$lib/services/supabaseClient';
+} from '#lib/constants/publicData';
+import { supabase } from '#lib/services/supabaseClient';
 import { getAuthorNames } from './authorNames';
 
 export interface Article {

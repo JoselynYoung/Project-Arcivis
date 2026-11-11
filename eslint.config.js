@@ -2,7 +2,8 @@ import prettier from 'eslint-config-prettier';
 import path from 'node:path';
 import js from '@eslint/js';
 import svelte from 'eslint-plugin-svelte';
-import { defineConfig, includeIgnoreFile } from 'eslint/config';
+import { defineConfig } from 'eslint/config';
+import { includeIgnoreFile } from '@eslint/compat';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 

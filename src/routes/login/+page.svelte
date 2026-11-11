@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { LogIn, UserPlus, LogOut } from '@lucide/svelte';
-	import { supabase } from '$lib/services/supabaseClient';
-	import { signIn, signUp, signOut, requestPasswordReset } from '$lib/services/auth';
+	import { supabase } from '#lib/services/supabaseClient';
+	import { signIn, signUp, signOut, requestPasswordReset } from '#lib/services/auth';
 
 	let email = $state('');
 	let password = $state('');

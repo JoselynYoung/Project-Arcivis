@@ -1,7 +1,7 @@
-import { getPublicSchedules } from '$lib/services/schedules';
-import { getLearningMaterials } from '$lib/services/learning';
-import { getPracticePackages } from '$lib/services/practice';
-import { SCHEDULE_DOT_COLOR_FALLBACK, SCHEDULE_DOT_COLORS } from '$lib/constants/publicData';
+import { getPublicSchedules } from '#lib/services/schedules';
+import { getLearningMaterials } from '#lib/services/learning';
+import { getPracticePackages } from '#lib/services/practice';
+import { SCHEDULE_DOT_COLOR_FALLBACK, SCHEDULE_DOT_COLORS } from '#lib/constants/publicData';
 
 const monthFormatter = new Intl.DateTimeFormat('id-ID', { month: 'long' });
 const calendarFormatter = new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' });

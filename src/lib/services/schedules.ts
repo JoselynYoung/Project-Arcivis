@@ -1,4 +1,4 @@
-import { supabase } from '$lib/services/supabaseClient';
+import { supabase } from '#lib/services/supabaseClient';
 
 export interface PublicSchedule {
 	id: string;

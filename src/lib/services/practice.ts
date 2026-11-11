@@ -1,7 +1,7 @@
 import type { QueryData } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 import { getAuthorNames } from './authorNames';
-import type { PracticePackage as MockPracticePackage } from '$lib/types/practice';
+import type { PracticePackage as MockPracticePackage } from '#lib/types/practice';
 
 export type PracticePackage = Omit<MockPracticePackage, 'id'> & { id: string };
 

@@ -1,6 +1,6 @@
-import { SUBJECT_COLORS, SUBJECT_COLOR_FALLBACK } from '$lib/constants/publicData';
-import { getPublicSubjects } from '$lib/services/subjects';
-import { getPracticePackages } from '$lib/services/practice';
+import { SUBJECT_COLORS, SUBJECT_COLOR_FALLBACK } from '#lib/constants/publicData';
+import { getPublicSubjects } from '#lib/services/subjects';
+import { getPracticePackages } from '#lib/services/practice';
 
 export async function load() {
 	const [{ data: subjectData, error: subjectError }, { data: packages, error: packagesError }] =

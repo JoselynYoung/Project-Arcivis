@@ -10,7 +10,7 @@ This document defines Arcivis's folder architecture, code conventions, and proje
 - **Language**: TypeScript.
 - **Styling**: Tailwind CSS v4 (`@tailwindcss/vite`).
 - **Icons**: `@lucide/svelte`, not the deprecated `lucide-svelte` package.
-- **Path alias**: `$lib` → `./src/lib`.
+- **Path alias**: `#lib` → `./src/lib` (subpath import via `package.json` `imports`; SvelteKit 3 removed `$lib`).
 
 ## 2. Directory Structure (official; do not deviate without approval)
 

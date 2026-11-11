@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { getViewSessionId } from '$lib/utils/viewSession';
+	import { getViewSessionId } from '#lib/utils/viewSession';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, User, Calendar } from '@lucide/svelte';
-	import { ROUTES } from '$lib/constants/routes';
+	import { ROUTES } from '#lib/constants/routes';
 	import type { PageData } from './$types';
-	import ContentBody from '$lib/components/ContentBody.svelte';
-	import { recordArticleView } from '$lib/services/articles';
+	import ContentBody from '#lib/components/ContentBody.svelte';
+	import { recordArticleView } from '#lib/services/articles';
 
 	let { data }: { data: PageData } = $props();
 

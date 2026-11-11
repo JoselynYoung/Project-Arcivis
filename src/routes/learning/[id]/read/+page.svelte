@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { getViewSessionId } from '$lib/utils/viewSession';
+	import { getViewSessionId } from '#lib/utils/viewSession';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, BookOpen, Bookmark, CheckCircle2, Share2 } from '@lucide/svelte';
-	import { recordLearningView } from '$lib/services/learning';
-	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
-	import AuthNotice from '$lib/components/AuthNotice.svelte';
-	import { ROUTES } from '$lib/constants/routes';
+	import { recordLearningView } from '#lib/services/learning';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '#lib/services/bookmarks';
+	import AuthNotice from '#lib/components/AuthNotice.svelte';
+	import { ROUTES } from '#lib/constants/routes';
 	import type { PageData } from './$types';
-	import ContentBody from '$lib/components/ContentBody.svelte';
+	import ContentBody from '#lib/components/ContentBody.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const material = $derived(data.material);

@@ -2,12 +2,12 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { BookOpen } from '@lucide/svelte';
-	import { quizGeneratorConfig } from '$lib/utils/quizGeneratorState.svelte';
-	import { getPracticeQuestions } from '$lib/services/questions';
-	import { recordGeneratorAttempt } from '$lib/services/attempts';
-	import PracticeQuizSession from '$lib/components/PracticeQuizSession.svelte';
-	import EmptyState from '$lib/components/EmptyState.svelte';
-	import type { Question } from '$lib/types/practice';
+	import { quizGeneratorConfig } from '#lib/utils/quizGeneratorState.svelte';
+	import { getPracticeQuestions } from '#lib/services/questions';
+	import { recordGeneratorAttempt } from '#lib/services/attempts';
+	import PracticeQuizSession from '#lib/components/PracticeQuizSession.svelte';
+	import EmptyState from '#lib/components/EmptyState.svelte';
+	import type { Question } from '#lib/types/practice';
 
 	const config = $derived(quizGeneratorConfig);
 

@@ -9,9 +9,9 @@
 		BookOpen
 	} from '@lucide/svelte';
 	import { resolve } from '$app/paths';
-	import { ROUTES } from '$lib/constants/routes';
-	import { getProfil } from '$lib/services/profile';
-	import { getMyStatistics, type MyStatistics } from '$lib/services/attempts';
+	import { ROUTES } from '#lib/constants/routes';
+	import { getProfil } from '#lib/services/profile';
+	import { getMyStatistics, type MyStatistics } from '#lib/services/attempts';
 
 	let nama = $state('Pejuang');
 	let stats = $state<MyStatistics | null>(null);
@@ -31,7 +31,7 @@
 	});
 
 	async function supabaseAuthCheck() {
-		const { supabase } = await import('$lib/services/supabaseClient');
+		const { supabase } = await import('#lib/services/supabaseClient');
 		const { data } = await supabase.auth.getSession();
 		signedIn = !!data.session;
 	}

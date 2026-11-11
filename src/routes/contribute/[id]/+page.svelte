@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { PenLine } from '@lucide/svelte';
-	import { getPublicSubjects } from '$lib/services/subjects';
-	import { updateOwnContent, docToPlainText } from '$lib/services/revisions';
+	import { getPublicSubjects } from '#lib/services/subjects';
+	import { updateOwnContent, docToPlainText } from '#lib/services/revisions';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

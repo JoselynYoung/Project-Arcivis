@@ -2,13 +2,13 @@
 	import { untrack } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { Bookmark, BookOpen, Zap, ChevronRight } from '@lucide/svelte';
-	import { ROUTES } from '$lib/constants/routes';
-	import type { PracticePackage } from '$lib/services/practice';
-	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '$lib/services/bookmarks';
-	import FilterBar from '$lib/components/FilterBar.svelte';
-	import EmptyState from '$lib/components/EmptyState.svelte';
+	import { ROUTES } from '#lib/constants/routes';
+	import type { PracticePackage } from '#lib/services/practice';
+	import { getBookmarkIds, toggleBookmark as toggleBookmarkRequest } from '#lib/services/bookmarks';
+	import FilterBar from '#lib/components/FilterBar.svelte';
+	import EmptyState from '#lib/components/EmptyState.svelte';
 	import type { PageData } from './$types';
-	import AuthNotice from '$lib/components/AuthNotice.svelte';
+	import AuthNotice from '#lib/components/AuthNotice.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const subjects = $derived(data.subjects ?? []);

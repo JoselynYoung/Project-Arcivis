@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { MessageCircle } from '@lucide/svelte';
-	import AuthNotice from '$lib/components/AuthNotice.svelte';
-	import { getComments, addComment, deleteComment, type Comment } from '$lib/services/comments';
+	import AuthNotice from '#lib/components/AuthNotice.svelte';
+	import { getComments, addComment, deleteComment, type Comment } from '#lib/services/comments';
 
 	let { contentId }: { contentId: string } = $props();
 

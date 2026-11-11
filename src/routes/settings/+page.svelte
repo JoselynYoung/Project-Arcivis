@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Bell, Moon, LogOut, KeyRound } from '@lucide/svelte';
-	import { signOut } from '$lib/services/auth';
+	import { signOut } from '#lib/services/auth';
 
 	// Preference Toggles (local-only by design: dark mode is cosmetic,
 	// reminders have no backend yet)

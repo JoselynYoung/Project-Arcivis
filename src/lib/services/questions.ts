@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import type { Question } from '$lib/types/practice';
+import type { Question } from '#lib/types/practice';
 
 interface PublicQuestionRow {
 	id: string;

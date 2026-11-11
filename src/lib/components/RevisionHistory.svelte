@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { History } from '@lucide/svelte';
-	import { getRevisions, type Revision } from '$lib/services/revisions';
+	import { getRevisions, type Revision } from '#lib/services/revisions';
 
 	let { contentId }: { contentId: string } = $props();
 

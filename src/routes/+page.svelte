@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { ChevronRight } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
-	import { banners, learningPoster, practicePoster, calendar } from '$lib/mocks/home';
+	import { banners, learningPoster, practicePoster, calendar } from '#lib/mocks/home';
 	import { resolve } from '$app/paths';
-	import { getProfil } from '$lib/services/profile';
-	import { ROUTES } from '$lib/constants/routes';
-	import { getMyStatistics } from '$lib/services/attempts';
-	import { supabase } from '$lib/services/supabaseClient';
+	import { getProfil } from '#lib/services/profile';
+	import { ROUTES } from '#lib/constants/routes';
+	import { getMyStatistics } from '#lib/services/attempts';
+	import { supabase } from '#lib/services/supabaseClient';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

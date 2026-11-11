@@ -1,4 +1,4 @@
-import type { QuizGeneratorConfig } from '$lib/types/practice';
+import type { QuizGeneratorConfig } from '#lib/types/practice';
 
 export const quizGeneratorConfig = $state<QuizGeneratorConfig>({
 	subject: 'Matematika',

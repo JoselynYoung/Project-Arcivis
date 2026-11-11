@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { ArrowLeft, Zap, Play, Check } from '@lucide/svelte';
-	import { ROUTES } from '$lib/constants/routes';
-	import { setQuizGeneratorConfig } from '$lib/utils/quizGeneratorState.svelte';
+	import { ROUTES } from '#lib/constants/routes';
+	import { setQuizGeneratorConfig } from '#lib/utils/quizGeneratorState.svelte';
 	import type { PageData } from './$types';
 	const ALL_TOPICS = '';
 

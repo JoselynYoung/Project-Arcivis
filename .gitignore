@@ -28,3 +28,7 @@ vite.config.ts.timestamp-*
 
 # Database
 supabase/.temp/
+
+# Tests
+/test-results
+/playwright-report

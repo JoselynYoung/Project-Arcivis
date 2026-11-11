@@ -1,5 +1,5 @@
-import { SUBJECT_COLORS, SUBJECT_COLOR_FALLBACK } from '$lib/constants/publicData';
-import { supabase } from '$lib/services/supabaseClient';
+import { SUBJECT_COLORS, SUBJECT_COLOR_FALLBACK } from '#lib/constants/publicData';
+import { supabase } from '#lib/services/supabaseClient';
 import { getAuthorNames } from './authorNames';
 
 export interface LearningMaterial {

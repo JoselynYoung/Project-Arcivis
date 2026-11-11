@@ -1,5 +1,5 @@
-import { supabase } from '$lib/services/supabaseClient';
-import type { Database } from '$lib/types/database.types';
+import { supabase } from '#lib/services/supabaseClient';
+import type { Database } from '#lib/types/database.types';
 
 async function getAuthenticatedUserId(): Promise<string | null> {
 	const {
