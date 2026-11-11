@@ -1,22 +1,27 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { untrack } from 'svelte';
 	import { Check, X, ArrowRight, RotateCcw, BookOpen, Info } from '@lucide/svelte';
 	import type { Question } from '$lib/types/practice';
 	import { gradeAnswer, type GradeResult } from '$lib/services/questions';
 	import { supabase } from '$lib/services/supabaseClient';
 
-	let { questions, title, description, difficulty, backRoute, backParams, backLabel, onComplete } =
-		$props<{
-			questions: Question[];
-			title: string;
-			description: string;
-			difficulty?: string;
-			backRoute: string;
-			backParams?: Record<string, string>;
-			backLabel: string;
-			onComplete?: (result: { correctCount: number; totalQuestions: number }) => void;
-		}>();
+	let {
+		questions,
+		title,
+		description,
+		difficulty,
+		backHref,
+		backLabel,
+		onComplete
+	}: {
+		questions: Question[];
+		title: string;
+		description: string;
+		difficulty?: string;
+		backHref: string;
+		backLabel: string;
+		onComplete?: (result: { correctCount: number; totalQuestions: number }) => void;
+	} = $props();
 
 	let currentIndex = $state(0);
 	let selectedAnswer = $state<number | null>(null);
@@ -122,7 +127,7 @@
 				Latihan ini masih disiapkan. Nantikan pembahasannya di pembaruan berikutnya.
 			</p>
 			<a
-				href={resolve(backRoute, backParams)}
+				href={backHref}
 				class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm transition-colors hover:bg-primary-700"
 			>
 				{backLabel}

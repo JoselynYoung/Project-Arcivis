@@ -95,7 +95,7 @@
 		title={sessionTitle}
 		description={sessionDescription}
 		difficulty={config.difficulty}
-		backRoute="/practice/quiz-generator"
+		backHref={resolve('/practice/quiz-generator')}
 		backLabel="Ubah Konfigurasi Latihan"
 		onComplete={handleComplete}
 	/>
