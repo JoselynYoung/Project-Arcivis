@@ -13,7 +13,7 @@ export async function getMyRole(): Promise<string | null> {
 	return typeof data.role === 'string' ? data.role : null;
 }
 
-export type ContributionStatus = 'draft' | 'direview' | 'diverifikasi' | 'ditolak';
+export type ContributionStatus = 'draft' | 'direview' | 'diverifikasi' | 'revisi' | 'ditolak';
 
 export interface ContributionItem {
 	id: string;
@@ -68,7 +68,10 @@ export async function getProfil(): Promise<{ data: ProfilData | null; error: str
 		judul: row.title,
 		tag: row.subject?.name ?? 'Umum',
 		status:
-			row.status === 'diverifikasi' || row.status === 'direview' || row.status === 'ditolak'
+			row.status === 'diverifikasi' ||
+			row.status === 'direview' ||
+			row.status === 'revisi' ||
+			row.status === 'ditolak'
 				? (row.status as ContributionStatus)
 				: 'draft'
 	});

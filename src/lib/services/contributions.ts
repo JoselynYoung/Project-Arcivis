@@ -363,7 +363,7 @@ export interface MyContribution {
 	id: string;
 	title: string;
 	type: ContributionType;
-	status: 'draft' | 'direview' | 'diverifikasi' | 'ditolak';
+	status: 'draft' | 'direview' | 'diverifikasi' | 'revisi' | 'ditolak';
 	subject: string;
 	tags: string[];
 	updatedAt: string;
@@ -385,7 +385,10 @@ export function mapMyContributionRow(row: MyContributionRow): MyContribution {
 		title: row.title,
 		type: row.type === 'learning' ? 'learning' : 'article',
 		status:
-			row.status === 'direview' || row.status === 'diverifikasi' || row.status === 'ditolak'
+			row.status === 'direview' ||
+			row.status === 'diverifikasi' ||
+			row.status === 'revisi' ||
+			row.status === 'ditolak'
 				? row.status
 				: 'draft',
 		subject: row.subject?.name ?? 'Umum',

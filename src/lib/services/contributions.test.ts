@@ -116,4 +116,18 @@ describe('mapMyContributionRow', () => {
 			}).status
 		).toBe('ditolak');
 	});
+
+	it('passes revisi through', () => {
+		expect(
+			mapMyContributionRow({
+				id: 'c4',
+				title: 'Revisi',
+				type: 'learning',
+				status: 'revisi',
+				updated_at: '2026-11-04T00:00:00.000Z',
+				subject: null,
+				content_tags: []
+			}).status
+		).toBe('revisi');
+	});
 });

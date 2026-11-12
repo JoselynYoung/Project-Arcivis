@@ -76,7 +76,7 @@
 		materi: { label: 'Materi', placeholder: 'Cari materi atau topik...' }
 	};
 
-	const filterOptions = ['Semua', 'Draft', 'Menunggu persetujuan', 'Ditolak'];
+	const filterOptions = ['Semua', 'Draft', 'Menunggu persetujuan', 'Perlu revisi', 'Ditolak'];
 
 	const sortOptions = [
 		{ id: 'terbaru', label: 'Terbaru' },
@@ -134,18 +134,21 @@
 
 	function statusLabel(status: MyContribution['status']): string {
 		if (status === 'direview') return 'Menunggu persetujuan';
+		if (status === 'revisi') return 'Perlu revisi';
 		if (status === 'ditolak') return 'Ditolak';
 		return 'Draft';
 	}
 
 	function bankStatusLabel(status: string): string {
 		if (status === 'direview') return 'Menunggu persetujuan';
+		if (status === 'revisi') return 'Perlu revisi';
 		if (status === 'ditolak') return 'Ditolak';
 		return 'Draft';
 	}
 
 	function statusClass(status: MyContribution['status']): string {
 		if (status === 'direview') return 'bg-amber-50 text-amber-700';
+		if (status === 'revisi') return 'bg-orange-50 text-orange-700';
 		if (status === 'ditolak') return 'bg-red-50 text-red-700';
 		return 'bg-slate-100 text-slate-500';
 	}
@@ -435,6 +438,7 @@
 						bind:isSortDropdownOpen
 						onFilterChange={handleFilterChange}
 						onReset={resetFilters}
+						showActiveFilters={false}
 					/>
 				{/key}
 			</div>

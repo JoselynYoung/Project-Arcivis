@@ -15,7 +15,8 @@
 		onSortChange = undefined,
 		onReset = undefined,
 		activeFilterLabel = 'Filter Aktif',
-		filterTagPrefix = 'Filter'
+		filterTagPrefix = 'Filter',
+		showActiveFilters = true
 	}: {
 		searchPlaceholder?: string;
 		filterLabel?: string;
@@ -31,6 +32,7 @@
 		onReset?: () => void;
 		activeFilterLabel?: string;
 		filterTagPrefix?: string;
+		showActiveFilters?: boolean;
 	} = $props();
 
 	function handleInput(e: Event) {
@@ -184,7 +186,7 @@
 </div>
 
 <!-- Active Filter Bar -->
-{#if hasActiveFilters}
+{#if hasActiveFilters && showActiveFilters}
 	<div
 		class="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary-100 bg-primary-50/70 px-4 py-2.5"
 		role="status"
