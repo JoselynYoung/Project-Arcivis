@@ -114,6 +114,7 @@
 		}
 	});
 
+	// Cursor Snippet Insert
 	function insertAtCursor(snippet: string, cursorBack = 0) {
 		const current = bodyText;
 		const el = bodyEl;
@@ -127,6 +128,7 @@
 		});
 	}
 
+	// Draft Ensure Helper
 	async function ensureDraft(): Promise<string | null> {
 		if (draftId) return draftId;
 		const { data, error } = await createEmptyDraft(type);
@@ -138,6 +140,7 @@
 		return data.id;
 	}
 
+	// Step Two Advance
 	async function goStep2() {
 		if (!title.trim()) {
 			formError = 'Isi judul dulu.';
@@ -148,6 +151,7 @@
 		await ensureDraft();
 	}
 
+	// Cover Picker Handler
 	function onCoverPicked(event: Event) {
 		const input = event.currentTarget as HTMLInputElement;
 		const file = input.files?.[0] ?? null;
@@ -166,6 +170,7 @@
 		coverPreview = URL.createObjectURL(file);
 	}
 
+	// Body Image Upload Handler
 	async function onBodyImagePicked(event: Event) {
 		const input = event.currentTarget as HTMLInputElement;
 		const file = input.files?.[0] ?? null;
@@ -181,10 +186,12 @@
 		insertAtCursor(`\n\n![gambar](${path})\n\n`);
 	}
 
+	// Tag Toggle Handler
 	async function toggleTag(tagId: string) {
 		tagIds = tagIds.includes(tagId) ? tagIds.filter((id) => id !== tagId) : [...tagIds, tagId];
 	}
 
+	// Tag Create Handler
 	async function addTag() {
 		const name = newTag.trim();
 		if (!name) return;
@@ -204,6 +211,7 @@
 		newTag = '';
 	}
 
+	// Draft Publish Handler
 	async function publish(event: Event) {
 		event.preventDefault();
 		if (sending) return;
@@ -270,6 +278,7 @@
 		goto(resolve('/contribute'));
 	}
 
+	// Bank Question Submit Handler
 	async function submitSoal(event: Event) {
 		event.preventDefault();
 		if (sendingSoal) return;

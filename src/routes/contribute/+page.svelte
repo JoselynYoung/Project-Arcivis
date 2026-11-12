@@ -42,6 +42,7 @@
 
 	const newestFirst = $derived(selectedSort !== 'terlama');
 
+	// Date Sort Helper
 	function sortByDate<T>(list: T[], getDate: (item: T) => string): T[] {
 		return [...list].sort((a, b) =>
 			newestFirst ? getDate(b).localeCompare(getDate(a)) : getDate(a).localeCompare(getDate(b))
@@ -89,6 +90,7 @@
 		)
 	);
 
+	// Status Label
 	function statusLabel(status: MyContribution['status']): string {
 		if (status === 'direview') return 'Menunggu persetujuan';
 		if (status === 'revisi') return 'Perlu revisi';
@@ -96,6 +98,7 @@
 		return 'Draft';
 	}
 
+	// Bank Status Label
 	function bankStatusLabel(status: string): string {
 		if (status === 'direview') return 'Menunggu persetujuan';
 		if (status === 'revisi') return 'Perlu revisi';
@@ -103,6 +106,7 @@
 		return 'Draft';
 	}
 
+	// Status Pill Class
 	function statusClass(status: MyContribution['status']): string {
 		if (status === 'direview') return 'bg-amber-50 text-amber-700';
 		if (status === 'revisi') return 'bg-orange-50 text-orange-700';
@@ -125,21 +129,24 @@
 		});
 	});
 
+	// Composer Navigation
 	function openComposer(kind: 'soal' | 'article' | 'materi') {
 		composerOpen = false;
 		if (kind === 'soal') {
-			goto(resolve('/contribute/buat?kind=soal'));
+			goto(resolve('/contribute/new?kind=soal'));
 		} else {
 			goto(
-				resolve(`/contribute/buat?kind=tulisan&type=${kind === 'materi' ? 'learning' : 'article'}`)
+				resolve(`/contribute/new?kind=tulisan&type=${kind === 'materi' ? 'learning' : 'article'}`)
 			);
 		}
 	}
 
+	// Filter Change Handler
 	function handleFilterChange(value: string) {
 		statusFilter = value;
 	}
 
+	// Filter Reset Handler
 	function resetFilters() {
 		query = '';
 		selectedSort = 'terbaru';
