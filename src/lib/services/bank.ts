@@ -74,6 +74,38 @@ export async function getBankQuestions(): Promise<{
 	return { data: questions, error: null };
 }
 
+export async function getMyBankQuestions(): Promise<{
+	data: BankQuestion[];
+	error: string | null;
+}> {
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return { data: [], error: null };
+
+	const { data, error } = await supabase
+		.from('question_bank')
+		.select(bankSelect)
+		.eq('author_id', user.id)
+		.order('created_at', { ascending: false });
+
+	if (error) {
+		return { data: [], error: error.message };
+	}
+
+	const rows = (data ?? []) as unknown as BankRow[];
+	const names = await getAuthorNames(rows.map((row) => row.author_id));
+	const questions: BankQuestion[] = [];
+	for (const row of rows) {
+		try {
+			questions.push(mapBankRow(row, names.get(row.author_id ?? '')));
+		} catch (err) {
+			console.error('Skipping malformed bank row:', err instanceof Error ? err.message : err);
+		}
+	}
+	return { data: questions, error: null };
+}
+
 export interface BankSubmission {
 	subjectId: string | null;
 	topic: string;

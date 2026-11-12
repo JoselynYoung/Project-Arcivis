@@ -1,18 +1,8 @@
 <script lang="ts">
-	import {
-		BookOpen,
-		PenLine,
-		ShieldCheck,
-		Search,
-		ArrowDownWideNarrow,
-		Plus,
-		X,
-		CircleHelp,
-		FileText,
-		Layers
-	} from '@lucide/svelte';
+	import { BookOpen, PenLine, Plus, X, CircleHelp, FileText, Layers } from '@lucide/svelte';
 	import AuthNotice from '#lib/components/AuthNotice.svelte';
 	import EmptyState from '#lib/components/EmptyState.svelte';
+	import FilterBar from '#lib/components/FilterBar.svelte';
 	import { getPublicSubjects } from '#lib/services/subjects';
 	import {
 		createEmptyDraft,
@@ -25,17 +15,15 @@
 		type ContributionType,
 		type MyContribution
 	} from '#lib/services/contributions';
-	import { getBankQuestions, submitBankQuestion, type BankQuestion } from '#lib/services/bank';
-	import { getReviewQueue, decideReview, type ReviewItem } from '#lib/services/review';
-	import { getMyRole, CONTRIBUTOR_ROLES, MODERATOR_ROLES } from '#lib/services/profile';
+	import { getMyBankQuestions, submitBankQuestion, type BankQuestion } from '#lib/services/bank';
+	import { getMyRole, CONTRIBUTOR_ROLES } from '#lib/services/profile';
 	import { supabase } from '#lib/services/supabaseClient';
 
-	type TabId = 'soal' | 'article' | 'materi' | 'review';
+	type TabId = 'soal' | 'article' | 'materi';
 
 	let signedIn = $state<boolean | null>(null);
 	let role = $state<string | null>(null);
 	const canContribute = $derived(role !== null && CONTRIBUTOR_ROLES.includes(role));
-	const canReview = $derived(role !== null && MODERATOR_ROLES.includes(role));
 
 	let subjects = $state<{ id: string; name: string }[]>([]);
 	let allTags = $state<{ id: string; name: string }[]>([]);
@@ -43,13 +31,11 @@
 	let mine = $state<MyContribution[]>([]);
 	let loadError = $state<string | null>(null);
 
-	let items = $state<ReviewItem[]>([]);
-	let reviewError = $state<string | null>(null);
-	let acting = $state<string | null>(null);
-
 	let activeTab = $state<TabId>('soal');
 	let query = $state('');
-	let newestFirst = $state(true);
+	let selectedFilter = $state('Semua');
+	let selectedSort = $state('terbaru');
+	let isSortDropdownOpen = $state(false);
 	let subjectFilter = $state('Semua');
 	let tagFilter = $state('Semua');
 	let statusFilter = $state('Semua');
@@ -87,12 +73,34 @@
 
 	const AUTOSAVE_KEY = 'kontribusi-draft-backup';
 
-	const tabMeta: Record<TabId, { label: string; placeholder: string }> = {
-		soal: { label: 'Bank soal', placeholder: 'Cari soal, topik, atau materi...' },
-		article: { label: 'Article', placeholder: 'Cari artikel, topik, atau kategori...' },
-		materi: { label: 'Materi', placeholder: 'Cari materi atau topik...' },
-		review: { label: 'Antrian review', placeholder: 'Cari judul kiriman...' }
+	const tabMeta: Record<TabId, { label: string; placeholder: string; filterLabel: string }> = {
+		soal: {
+			label: 'Bank soal',
+			placeholder: 'Cari soal, topik, atau materi...',
+			filterLabel: 'Filter'
+		},
+		article: {
+			label: 'Article',
+			placeholder: 'Cari artikel, topik, atau kategori...',
+			filterLabel: 'Kategori'
+		},
+		materi: { label: 'Materi', placeholder: 'Cari materi atau topik...', filterLabel: 'Status' }
 	};
+
+	const filterOptions = $derived(
+		activeTab === 'soal'
+			? ['Semua', ...subjects.map((subject) => subject.name)]
+			: activeTab === 'article'
+				? ['Semua', ...allTags.map((tag) => tag.name)]
+				: ['Semua', 'Draft', 'Menunggu']
+	);
+
+	const sortOptions = [
+		{ id: 'terbaru', label: 'Terbaru' },
+		{ id: 'terlama', label: 'Terlama' }
+	];
+
+	const newestFirst = $derived(selectedSort !== 'terlama');
 
 	function sortByDate<T>(list: T[], getDate: (item: T) => string): T[] {
 		return [...list].sort((a, b) =>
@@ -104,6 +112,7 @@
 		sortByDate(
 			questions.filter(
 				(question) =>
+					question.status !== 'diverifikasi' &&
 					(subjectFilter === 'Semua' || question.subject === subjectFilter) &&
 					(query.trim() === '' ||
 						`${question.text} ${question.topic} ${question.subject}`
@@ -119,6 +128,7 @@
 			mine.filter(
 				(item) =>
 					item.type === 'article' &&
+					item.status !== 'diverifikasi' &&
 					(tagFilter === 'Semua' || item.tags.includes(tagFilter)) &&
 					(query.trim() === '' || item.title.toLowerCase().includes(query.trim().toLowerCase()))
 			),
@@ -131,18 +141,9 @@
 			mine.filter(
 				(item) =>
 					item.type === 'learning' &&
+					item.status !== 'diverifikasi' &&
 					(statusFilter === 'Semua' || statusLabel(item.status) === statusFilter) &&
 					(query.trim() === '' || item.title.toLowerCase().includes(query.trim().toLowerCase()))
-			),
-			(item) => item.updatedAt
-		)
-	);
-
-	const reviewVisible = $derived(
-		sortByDate(
-			items.filter(
-				(item) =>
-					query.trim() === '' || item.title.toLowerCase().includes(query.trim().toLowerCase())
 			),
 			(item) => item.updatedAt
 		)
@@ -167,14 +168,9 @@
 				role = await getMyRole();
 				const mineResult = await getMyContributions();
 				if (!mineResult.error) mine = mineResult.data;
-				if (role && MODERATOR_ROLES.includes(role)) {
-					const { data: queue, error } = await getReviewQueue();
-					if (error) reviewError = error;
-					else items = queue;
-				}
 			}
 		});
-		getBankQuestions().then(({ data, error }) => {
+		getMyBankQuestions().then(({ data, error }) => {
 			if (error) loadError = error;
 			else questions = data;
 		});
@@ -412,28 +408,31 @@
 		options = ['', '', '', ''];
 		correctIndex = 0;
 		explanation = '';
-		const refreshed = await getBankQuestions();
+		const refreshed = await getMyBankQuestions();
 		if (!refreshed.error) questions = refreshed.data;
 	}
 
-	async function decide(id: string, decision: 'diverifikasi' | 'draft') {
-		if (acting) return;
-		acting = id;
-		const { error } = await decideReview(id, decision);
-		acting = null;
-		if (error) {
-			reviewError = error;
-			return;
-		}
-		items = items.filter((item) => item.id !== id);
+	$effect(() => {
+		const tab = activeTab;
+		selectedFilter = tab === 'soal' ? subjectFilter : tab === 'article' ? tagFilter : statusFilter;
+	});
+
+	function handleFilterChange(value: string) {
+		selectedFilter = value;
+		if (activeTab === 'soal') subjectFilter = value;
+		else if (activeTab === 'article') tagFilter = value;
+		else statusFilter = value;
+	}
+
+	function resetFilters() {
+		query = '';
+		selectedSort = 'terbaru';
+		isSortDropdownOpen = false;
+		handleFilterChange('Semua');
 	}
 </script>
 
 <div class="mx-auto w-full max-w-5xl pb-24">
-	<div class="mb-1.5 flex items-center gap-2 text-[11px] font-medium text-slate-400">
-		<span>Arcivis</span><span>/</span><span class="text-primary-700">Contribute</span>
-	</div>
-
 	{#if signedIn === null}
 		<p class="py-8 text-sm text-slate-500">Memuat...</p>
 	{:else if !signedIn}
@@ -441,28 +440,23 @@
 			<AuthNotice message="Masuk untuk berkontribusi." />
 		</div>
 	{:else}
-		<div class="mb-5 flex items-center gap-2 sm:gap-3">
-			<label
-				class="focus-within:border-primary-500 flex h-10 min-w-0 flex-1 items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 text-slate-400 shadow-sm"
-			>
-				<Search size={15} class="shrink-0" aria-hidden="true" />
-				<span class="sr-only">Cari {tabMeta[activeTab].label.toLowerCase()}</span>
-				<input
-					bind:value={query}
-					placeholder={tabMeta[activeTab].placeholder}
-					class="min-w-0 flex-1 bg-transparent text-xs text-slate-700 outline-none placeholder:text-slate-400"
-				/>
-			</label>
-			<button
-				type="button"
-				onclick={() => (newestFirst = !newestFirst)}
-				class="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50"
-				aria-label={newestFirst ? 'Urutkan terlama' : 'Urutkan terbaru'}
-			>
-				<ArrowDownWideNarrow size={14} class="text-primary-600" />{newestFirst
-					? 'Terbaru'
-					: 'Terlama'}
-			</button>
+		<div class="mb-5 flex items-start gap-2 sm:gap-3">
+			<div class="min-w-0 flex-1 [&>div]:mb-0">
+				{#key activeTab}
+					<FilterBar
+						searchPlaceholder={tabMeta[activeTab].placeholder}
+						filterLabel={tabMeta[activeTab].filterLabel}
+						{filterOptions}
+						bind:selectedFilter
+						{sortOptions}
+						bind:selectedSort
+						bind:searchQuery={query}
+						bind:isSortDropdownOpen
+						onFilterChange={handleFilterChange}
+						onReset={resetFilters}
+					/>
+				{/key}
+			</div>
 			<button
 				type="button"
 				onclick={() => (composerOpen = true)}
@@ -845,54 +839,6 @@
 			class="overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm backdrop-blur-sm"
 		>
 			<div class="flex flex-col border-b border-slate-100 px-3 pt-3 sm:px-4">
-				<div class="flex items-center gap-1.5 overflow-x-auto pb-3" aria-label="Filter">
-					{#if activeTab === 'soal'}
-						{@const subjectOptions = ['Semua', ...subjects.map((subject) => subject.name)]}
-						{#each subjectOptions as option (option)}
-							<button
-								type="button"
-								onclick={() => (subjectFilter = option)}
-								aria-pressed={subjectFilter === option}
-								class="shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-medium transition {subjectFilter ===
-								option
-									? 'border-primary-600 bg-primary-600 text-white shadow-sm'
-									: 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'}"
-							>
-								{option}
-							</button>
-						{/each}
-					{:else if activeTab === 'article'}
-						{@const articleOptions = ['Semua', ...allTags.map((tag) => tag.name)]}
-						{#each articleOptions as option (option)}
-							<button
-								type="button"
-								onclick={() => (tagFilter = option)}
-								aria-pressed={tagFilter === option}
-								class="shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-medium transition {tagFilter ===
-								option
-									? 'border-primary-600 bg-primary-600 text-white shadow-sm'
-									: 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'}"
-							>
-								{option}
-							</button>
-						{/each}
-					{:else if activeTab === 'materi'}
-						{@const statusOptions = ['Semua', 'Draft', 'Menunggu', 'Disetujui']}
-						{#each statusOptions as option (option)}
-							<button
-								type="button"
-								onclick={() => (statusFilter = option)}
-								aria-pressed={statusFilter === option}
-								class="shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-medium transition {statusFilter ===
-								option
-									? 'border-primary-600 bg-primary-600 text-white shadow-sm'
-									: 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'}"
-							>
-								{option}
-							</button>
-						{/each}
-					{/if}
-				</div>
 				<div class="flex gap-0.5 overflow-x-auto" role="tablist" aria-label="Jenis kontribusi">
 					<button
 						type="button"
@@ -942,28 +888,6 @@
 							>{myMateri.length}</span
 						>
 					</button>
-					{#if canReview}
-						<button
-							type="button"
-							role="tab"
-							aria-selected={activeTab === 'review'}
-							onclick={() => (activeTab = 'review')}
-							class="inline-flex shrink-0 items-center gap-1.5 rounded-t-lg border-b-2 px-2.5 py-2.5 text-[11px] font-semibold transition sm:gap-2 sm:px-3 sm:text-[13px] {activeTab ===
-							'review'
-								? 'border-primary-600 text-slate-800'
-								: 'border-transparent text-slate-400 hover:bg-slate-50 hover:text-slate-600'}"
-						>
-							<ShieldCheck
-								size={14}
-								class="size-3.5 shrink-0 sm:size-4"
-								aria-hidden="true"
-							/>Antrian review
-							<span
-								class="rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500"
-								>{reviewVisible.length}</span
-							>
-						</button>
-					{/if}
 				</div>
 			</div>
 
@@ -999,7 +923,7 @@
 						<p
 							class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-6 text-center text-xs text-slate-500"
 						>
-							Belum ada artikel. Tulis artikel pertamamu.
+							Belum ada artikel yang perlu direview.
 						</p>
 					{:else}
 						<div class="flex flex-col gap-3">
@@ -1028,7 +952,7 @@
 						<p
 							class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-6 text-center text-xs text-slate-500"
 						>
-							Belum ada materi. Bagikan rangkuman atau materi belajar pertamamu.
+							Belum ada materi yang perlu direview.
 						</p>
 					{:else}
 						<div class="flex flex-col gap-3">
@@ -1048,49 +972,6 @@
 									{#if item.tags.length > 0}
 										<p class="mt-1 text-xs text-slate-400">{item.tags.join(' · ')}</p>
 									{/if}
-								</div>
-							{/each}
-						</div>
-					{/if}
-				{:else if canReview}
-					{#if reviewError}
-						<EmptyState
-							icon={ShieldCheck}
-							title="Antrian Tidak Dapat Dimuat"
-							description={reviewError}
-						/>
-					{:else if reviewVisible.length === 0}
-						<p
-							class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-6 text-center text-xs text-slate-500"
-						>
-							Tidak ada konten yang menunggu keputusan.
-						</p>
-					{:else}
-						<div class="flex flex-col gap-3">
-							{#each reviewVisible as item (item.id)}
-								<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-									<p class="text-sm font-semibold text-slate-800">{item.title}</p>
-									<p class="mb-3 text-xs text-slate-500">
-										{item.type} · oleh {item.authorName}
-									</p>
-									<div class="flex gap-2">
-										<button
-											type="button"
-											onclick={() => decide(item.id, 'diverifikasi')}
-											disabled={acting === item.id}
-											class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400"
-										>
-											{acting === item.id ? '...' : 'Setujui'}
-										</button>
-										<button
-											type="button"
-											onclick={() => decide(item.id, 'draft')}
-											disabled={acting === item.id}
-											class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 disabled:text-slate-400"
-										>
-											Kembalikan
-										</button>
-									</div>
 								</div>
 							{/each}
 						</div>
