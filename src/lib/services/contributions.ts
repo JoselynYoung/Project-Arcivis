@@ -359,3 +359,57 @@ export async function submitContribution(
 
 	return { data: { id: row.id }, error: null };
 }
+export interface MyContribution {
+	id: string;
+	title: string;
+	type: ContributionType;
+	status: 'draft' | 'direview' | 'diverifikasi';
+	subject: string;
+	tags: string[];
+	updatedAt: string;
+}
+
+interface MyContributionRow {
+	id: string;
+	title: string;
+	type: string;
+	status: string;
+	updated_at: string;
+	subject: { name: string } | null;
+	content_tags: { tags: { name: string } | null }[];
+}
+
+export function mapMyContributionRow(row: MyContributionRow): MyContribution {
+	return {
+		id: row.id,
+		title: row.title,
+		type: row.type === 'learning' ? 'learning' : 'article',
+		status: row.status === 'direview' || row.status === 'diverifikasi' ? row.status : 'draft',
+		subject: row.subject?.name ?? 'Umum',
+		tags: row.content_tags.map((entry) => entry.tags?.name ?? '').filter((name) => name !== ''),
+		updatedAt: row.updated_at
+	};
+}
+
+export async function getMyContributions(): Promise<{
+	data: MyContribution[];
+	error: string | null;
+}> {
+	const {
+		data: { user }
+	} = await supabase.auth.getUser();
+	if (!user) return { data: [], error: null };
+
+	const { data, error } = await supabase
+		.from('content')
+		.select('id, title, type, status, updated_at, subject:subjects(name), content_tags(tags(name))')
+		.eq('author_id', user.id)
+		.in('type', ['article', 'learning'])
+		.order('updated_at', { ascending: false });
+
+	if (error) return { data: [], error: error.message };
+	return {
+		data: ((data ?? []) as unknown as MyContributionRow[]).map(mapMyContributionRow),
+		error: null
+	};
+}

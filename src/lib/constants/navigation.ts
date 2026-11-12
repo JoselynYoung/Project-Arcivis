@@ -17,7 +17,7 @@ export const navItems = [
 	{ href: ROUTES.learning, label: 'Learning', icon: Layers },
 	{ href: ROUTES.articles, label: 'Articles', icon: Newspaper },
 	{ href: ROUTES.statistics, label: 'Statistics', icon: BarChart3 },
-	{ href: ROUTES.contribute, label: 'Tulis', icon: PenLine },
+	{ href: ROUTES.contribute, label: 'Contribute', icon: PenLine },
 	{ href: ROUTES.settings, label: 'Settings', icon: Settings },
 	{ href: ROUTES.profile, label: 'Profile', icon: User }
 ] as const;
