@@ -102,4 +102,18 @@ describe('mapMyContributionRow', () => {
 			updatedAt: '2026-11-02T00:00:00.000Z'
 		});
 	});
+
+	it('passes ditolak through', () => {
+		expect(
+			mapMyContributionRow({
+				id: 'c3',
+				title: 'Ditolak',
+				type: 'article',
+				status: 'ditolak',
+				updated_at: '2026-11-03T00:00:00.000Z',
+				subject: null,
+				content_tags: []
+			}).status
+		).toBe('ditolak');
+	});
 });

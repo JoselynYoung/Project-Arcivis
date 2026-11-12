@@ -33,11 +33,8 @@
 
 	let activeTab = $state<TabId>('soal');
 	let query = $state('');
-	let selectedFilter = $state('Semua');
 	let selectedSort = $state('terbaru');
 	let isSortDropdownOpen = $state(false);
-	let subjectFilter = $state('Semua');
-	let tagFilter = $state('Semua');
 	let statusFilter = $state('Semua');
 	let composerOpen = $state(false);
 
@@ -73,27 +70,13 @@
 
 	const AUTOSAVE_KEY = 'kontribusi-draft-backup';
 
-	const tabMeta: Record<TabId, { label: string; placeholder: string; filterLabel: string }> = {
-		soal: {
-			label: 'Bank soal',
-			placeholder: 'Cari soal, topik, atau materi...',
-			filterLabel: 'Filter'
-		},
-		article: {
-			label: 'Article',
-			placeholder: 'Cari artikel, topik, atau kategori...',
-			filterLabel: 'Kategori'
-		},
-		materi: { label: 'Materi', placeholder: 'Cari materi atau topik...', filterLabel: 'Status' }
+	const tabMeta: Record<TabId, { label: string; placeholder: string }> = {
+		soal: { label: 'Bank soal', placeholder: 'Cari soal, topik, atau materi...' },
+		article: { label: 'Article', placeholder: 'Cari artikel atau topik...' },
+		materi: { label: 'Materi', placeholder: 'Cari materi atau topik...' }
 	};
 
-	const filterOptions = $derived(
-		activeTab === 'soal'
-			? ['Semua', ...subjects.map((subject) => subject.name)]
-			: activeTab === 'article'
-				? ['Semua', ...allTags.map((tag) => tag.name)]
-				: ['Semua', 'Draft', 'Menunggu']
-	);
+	const filterOptions = ['Semua', 'Draft', 'Menunggu persetujuan', 'Ditolak'];
 
 	const sortOptions = [
 		{ id: 'terbaru', label: 'Terbaru' },
@@ -113,7 +96,7 @@
 			questions.filter(
 				(question) =>
 					question.status !== 'diverifikasi' &&
-					(subjectFilter === 'Semua' || question.subject === subjectFilter) &&
+					(statusFilter === 'Semua' || bankStatusLabel(question.status) === statusFilter) &&
 					(query.trim() === '' ||
 						`${question.text} ${question.topic} ${question.subject}`
 							.toLowerCase()
@@ -129,7 +112,7 @@
 				(item) =>
 					item.type === 'article' &&
 					item.status !== 'diverifikasi' &&
-					(tagFilter === 'Semua' || item.tags.includes(tagFilter)) &&
+					(statusFilter === 'Semua' || statusLabel(item.status) === statusFilter) &&
 					(query.trim() === '' || item.title.toLowerCase().includes(query.trim().toLowerCase()))
 			),
 			(item) => item.updatedAt
@@ -150,14 +133,20 @@
 	);
 
 	function statusLabel(status: MyContribution['status']): string {
-		if (status === 'direview') return 'Menunggu';
-		if (status === 'diverifikasi') return 'Disetujui';
+		if (status === 'direview') return 'Menunggu persetujuan';
+		if (status === 'ditolak') return 'Ditolak';
+		return 'Draft';
+	}
+
+	function bankStatusLabel(status: string): string {
+		if (status === 'direview') return 'Menunggu persetujuan';
+		if (status === 'ditolak') return 'Ditolak';
 		return 'Draft';
 	}
 
 	function statusClass(status: MyContribution['status']): string {
 		if (status === 'direview') return 'bg-amber-50 text-amber-700';
-		if (status === 'diverifikasi') return 'bg-emerald-50 text-emerald-700';
+		if (status === 'ditolak') return 'bg-red-50 text-red-700';
 		return 'bg-slate-100 text-slate-500';
 	}
 
@@ -412,16 +401,8 @@
 		if (!refreshed.error) questions = refreshed.data;
 	}
 
-	$effect(() => {
-		const tab = activeTab;
-		selectedFilter = tab === 'soal' ? subjectFilter : tab === 'article' ? tagFilter : statusFilter;
-	});
-
 	function handleFilterChange(value: string) {
-		selectedFilter = value;
-		if (activeTab === 'soal') subjectFilter = value;
-		else if (activeTab === 'article') tagFilter = value;
-		else statusFilter = value;
+		statusFilter = value;
 	}
 
 	function resetFilters() {
@@ -445,9 +426,9 @@
 				{#key activeTab}
 					<FilterBar
 						searchPlaceholder={tabMeta[activeTab].placeholder}
-						filterLabel={tabMeta[activeTab].filterLabel}
+						filterLabel="Status"
 						{filterOptions}
-						bind:selectedFilter
+						bind:selectedFilter={statusFilter}
 						{sortOptions}
 						bind:selectedSort
 						bind:searchQuery={query}

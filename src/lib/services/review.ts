@@ -1,7 +1,7 @@
 import { supabase } from './supabaseClient';
 import { getAuthorNames } from './authorNames';
 
-export type ReviewDecision = 'diverifikasi' | 'draft';
+export type ReviewDecision = 'diverifikasi' | 'draft' | 'ditolak';
 
 export interface ReviewItem {
 	id: string;
